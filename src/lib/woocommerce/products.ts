@@ -47,7 +47,7 @@ export async function getProducts(
 
   // 2) Store in cache (shorter TTL for lists)
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(products), "EX", 60 * 10); // 10 min
+    await redis.set(cacheKey, JSON.stringify(products), "EX", 60 * 120); // 120 min
   }
 
   return products;
@@ -80,7 +80,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   const product = products[0] ?? null;
 
   if (product && redis) {
-    await redis.set(cacheKey, JSON.stringify(product), "EX", 60 * 5); // 5 min
+    await redis.set(cacheKey, JSON.stringify(product), "EX", 60 * 60); // 5 min
   }
 
   return product;
@@ -125,7 +125,7 @@ export async function getProductBySlugWithVariations(
     };
 
     if (redis) {
-      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 5); // 5 min
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 60 min
       // (shorter TTL since it's a single product)
     }
 
@@ -149,7 +149,7 @@ export async function getProductBySlugWithVariations(
   };
 
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 5); // 5 min
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 5 min
   }
 
   return result;

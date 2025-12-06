@@ -6,6 +6,8 @@ import { SiteHeader } from "@/components/navigation/site-header";
 import { AppProviders } from "@/providers/app-providers";
 import { AuthProvider } from "@/providers/auth-provider";
 import { QueryProvider } from "@/providers/query-provider";
+import { Suspense } from "react";
+import ScrollToTop from "@/components/navigation/scroll-to-top";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -26,20 +28,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
-        <AuthProvider>
-          <AppProviders>
-            <QueryProvider>
-              <PromoBanner />
-              {/* Make the WHOLE header sticky */}
-              <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b">
-                <SiteHeader />
-              </header>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ScrollToTop />
+          <AuthProvider>
+            <AppProviders>
+              <QueryProvider>
+                <PromoBanner />
+                {/* Make the WHOLE header sticky */}
+                <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b">
+                  <SiteHeader />
+                </header>
 
-              {/* With sticky you usually don't need extra padding */}
-              <main>{children}</main>
-            </QueryProvider>
-          </AppProviders>
-        </AuthProvider>
+                {/* With sticky you usually don't need extra padding */}
+                <main>{children}</main>
+              </QueryProvider>
+            </AppProviders>
+          </AuthProvider>
+        </Suspense>
       </body>
     </html>
   );

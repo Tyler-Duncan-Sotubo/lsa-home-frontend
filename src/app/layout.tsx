@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
+import PromoBanner from "@/components/banners/promo-banner";
+import { SiteHeader } from "@/components/navigation/site-header";
+import { AppProviders } from "@/providers/app-providers";
+import { AuthProvider } from "@/providers/auth-provider";
+import { QueryProvider } from "@/providers/query-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const lato = Lato({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+  variable: "--font-lato",
 });
 
 export const metadata: Metadata = {
@@ -24,10 +25,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${lato.variable} antialiased`}>
+        <AuthProvider>
+          <AppProviders>
+            <QueryProvider>
+              <PromoBanner />
+              {/* Make the WHOLE header sticky */}
+              <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b">
+                <SiteHeader />
+              </header>
+
+              {/* With sticky you usually don't need extra padding */}
+              <main>{children}</main>
+            </QueryProvider>
+          </AppProviders>
+        </AuthProvider>
       </body>
     </html>
   );

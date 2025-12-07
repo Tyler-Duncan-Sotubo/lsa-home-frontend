@@ -39,9 +39,9 @@ export function WishlistButton({
       aria-label={wishlisted ? "Remove from wishlist" : "Save to wishlist"}
     >
       {wishlisted ? (
-        <FaHeart className="text-primary-foreground size-6" />
+        <FaHeart className="text-primary-foreground size-4 sm:size-6" />
       ) : (
-        <FaRegHeart className="size-6" />
+        <FaRegHeart className="size-4 sm:size-6" />
       )}
     </Button>
   );

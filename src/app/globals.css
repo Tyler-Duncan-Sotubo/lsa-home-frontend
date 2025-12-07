@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -184,4 +185,32 @@
   .animate-lsa-line {
     animation: lsa-line 1.4s ease-in-out infinite;
   }
+}
+
+.prose {
+  @apply text-gray-800;
+}
+
+.prose h2 {
+  @apply text-2xl font-semibold;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mt-6;
+}
+
+.prose ul {
+  @apply list-disc pl-6;
+}
+
+/* globals.css or your main stylesheet */
+.no-scrollbar {
+  /* Hide scrollbar on WebKit (Chrome, Safari, Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  -webkit-overflow-scrolling: touch;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }

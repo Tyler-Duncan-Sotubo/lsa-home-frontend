@@ -6,9 +6,13 @@ import { ProductCard } from "@/components/products/product-card";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function WishlistPage() {
   const items = useAppSelector(selectWishlistItems);
+  const { data: session } = useSession();
+
+  console.log(items);
 
   return (
     <section className="mx-auto w-[95%] py-8 md:py-12">
@@ -21,22 +25,33 @@ export default function WishlistPage() {
 
       <div className="flex items-center justify-between mb-8 md:mb-12">
         <h1 className="text-2xl md:text-4xl font-semibold mb-6">Wishlist</h1>
-        <div className="flex text-sm md:text-base">
-          <div className="flex flex-wrap">
-            <Link href="/account/login" className="cursor-pointer underline">
-              Sign in
+        {!session?.user?.email ? (
+          <div className="flex text-sm md:text-base">
+            <div className="flex flex-wrap">
+              <Link href="/account/login" className="cursor-pointer underline">
+                Sign in
+              </Link>
+              <p className="ml-1">
+                to view your wishlist across all your devices or
+              </p>
+            </div>
+            <Link
+              href="/account/register"
+              className="ml-2 cursor-pointer underline"
+            >
+              Create an account.
             </Link>
-            <p className="ml-1">
-              to view your wishlist across all your devices or
-            </p>
           </div>
-          <Link
-            href="/account/register"
-            className="ml-2 cursor-pointer underline"
-          >
-            Create an account.
-          </Link>
-        </div>
+        ) : (
+          <div>
+            <Link
+              href="/account"
+              className="text-sm md:text-base underline cursor-pointer"
+            >
+              View Account
+            </Link>
+          </div>
+        )}
       </div>
 
       {items.length > 0 && (
@@ -53,6 +68,8 @@ export default function WishlistPage() {
               salePrice={item.salePrice ?? undefined}
               onSale={item.onSale ?? false}
               priceHtml={item.priceHtml ?? undefined}
+              averageRating={item.rating ?? 0}
+              ratingCount={item.reviews ?? 0}
             />
           ))}
         </div>

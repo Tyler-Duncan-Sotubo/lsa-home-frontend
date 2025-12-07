@@ -123,6 +123,18 @@ export function ProductDetailsPanel({
     return true;
   }, [activeVariation, product]);
 
+  // Determine weight in kg from variation or product (Woo stores as string)
+  const weightKg = useMemo(() => {
+    const vAny = activeVariation as any | null;
+    const pAny = product as any;
+
+    const rawWeight = vAny?.weight ?? pAny?.weight ?? null;
+    if (!rawWeight) return 0;
+
+    const numeric = Number(rawWeight);
+    return Number.isFinite(numeric) ? numeric : undefined;
+  }, [activeVariation, product]);
+
   // Choose the image for the active variation, fallback to product image
   const variationImageSrc = useMemo(() => {
     if (!activeVariation) {
@@ -252,6 +264,7 @@ export function ProductDetailsPanel({
                 size: effectiveSize,
                 color: effectiveColor,
               }}
+              weightKg={weightKg} // 👈 NEW: weight to cart
               onAddedToCart={onAddedToCart}
               disabled={!isInStock}
             />

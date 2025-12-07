@@ -1,8 +1,13 @@
 // app/account/page.tsx
 import { auth } from "@/app/api/auth/[...nextauth]/route";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+// React Icons
+import { FaBox, FaLock, FaMapMarkedAlt } from "react-icons/fa";
 
 export default async function AccountPage() {
-  const session = await auth(); // 👈 server-side session
+  const session = await auth();
 
   if (!session) {
     return (
@@ -16,21 +21,60 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">My Account</h1>
+    <div className="p-6 space-y-6 max-w-5xl mx-auto mt-3">
+      <h1 className="text-3xl font-semibold">Your Account</h1>
 
-      <div className="rounded-lg border p-4 space-y-2">
-        <p>
-          <strong>Name:</strong> {session.user?.name}
-        </p>
-        <p>
-          <strong>Email:</strong> {session.user?.email}
-        </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* YOUR ORDERS */}
+        <Link href="/account/orders" className="block">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <FaBox className="text-blue-600 text-xl" />
+                Your Orders
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Track, return, cancel an order, download invoice or buy again.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        {/* This is your WordPress JWT token */}
-        <p className="text-xs break-all text-muted-foreground">
-          <strong>Access Token:</strong> {session.accessToken}
-        </p>
+        {/* LOGIN & SECURITY */}
+        <Link href="/account/security" className="block">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <FaLock className="text-green-600 text-xl" />
+                Login & Security
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Manage your password, email, and phone number.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        {/* ADDRESSES */}
+        <Link href="/account/addresses" className="block">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <FaMapMarkedAlt className="text-orange-600 text-xl" />
+                Your Addresses
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Edit, remove, or set a default address.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
   );

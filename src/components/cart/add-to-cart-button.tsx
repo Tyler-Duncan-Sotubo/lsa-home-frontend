@@ -13,10 +13,10 @@ export interface AddToCartButtonProps {
   priceHtml?: string | null;
   quantity?: number;
   attributes?: Record<string, string | null>;
+  weightKg?: number; // 👈 NEW
   className?: string;
   size?: "sm" | "lg" | "default";
 
-  // 👇 NEW
   onAddedToCart?: () => void;
   disabled?: boolean;
 }
@@ -30,6 +30,7 @@ export function AddToCartButton({
   priceHtml,
   quantity = 1,
   attributes = {},
+  weightKg, // 👈 NEW
   className = "",
   size = "lg",
   onAddedToCart,
@@ -48,10 +49,10 @@ export function AddToCartButton({
         priceHtml,
         attributes,
         quantity,
+        weightKg, // 👈 forward to redux
       })
     );
 
-    // 👇 Automatically notify parent
     if (onAddedToCart) onAddedToCart();
   };
 

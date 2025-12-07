@@ -8,6 +8,7 @@ import { AuthProvider } from "@/providers/auth-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { Suspense } from "react";
 import ScrollToTop from "@/components/navigation/scroll-to-top";
+import { SiteFooter } from "@/components/navigation/site-footer";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -40,7 +41,8 @@ export default function RootLayout({
                 </header>
 
                 {/* With sticky you usually don't need extra padding */}
-                <main>{children}</main>
+                <main className="min-h-screen">{children}</main>
+                <SiteFooter />
               </QueryProvider>
             </AppProviders>
           </AuthProvider>

@@ -11,6 +11,9 @@ export type CartItem = {
   priceHtml?: string | null; // optional formatted price
   quantity: number;
   attributes?: Record<string, string | null>; // e.g. { size: "L", color: "White" }
+
+  /** Per-unit weight in kilograms, from WooCommerce product data */
+  weightKg?: number;
 };
 
 export type CartState = {
@@ -153,6 +156,12 @@ export const selectCartCount = (state: RootState) =>
 export const selectCartTotal = (state: RootState) =>
   state.cart.items.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
+    0
+  );
+
+export const selectCartTotalWeightKg = (state: RootState) =>
+  state.cart.items.reduce(
+    (sum, item) => sum + (item.weightKg ?? 0) * item.quantity,
     0
   );
 

@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { QuickViewDialogProps } from "@/types/products";
 import { ProductGallery } from "../products/product-gallery";
 import { ProductDetailsPanel } from "../products/product-details";
+import LsaLoading from "../ui/lsa-loading";
 
 export function QuickViewDialog({
   open,
@@ -14,70 +16,59 @@ export function QuickViewDialog({
   onOpenChange,
 }: QuickViewDialogProps) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [fullProduct, setFullProduct] = useState<
-    QuickViewDialogProps["product"] | null
-  >(product);
-  const [loading, setLoading] = useState(false);
 
-  // Reset state when base product changes
+  // Reset color when product changes
   useEffect(() => {
-    setFullProduct(product);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedColor(null);
   }, [product]);
 
-  // When dialog opens, fetch enriched product (with variations) if needed
-  useEffect(() => {
-    if (!open || !product) return;
+  // SAFE: hooks run even if product is null
+  const hasFullVariations = useMemo(() => {
+    if (!product) return false;
 
-    // If we already have variation objects, no need to fetch
     const variations = (product as any).variations;
-    const hasFullVariations =
+    return (
       Array.isArray(variations) &&
       variations.length > 0 &&
       typeof variations[0] === "object" &&
-      "regular_price" in variations[0];
+      "regular_price" in variations[0]
+    );
+  }, [product]);
 
-    if (hasFullVariations) {
-      setFullProduct(product);
-      return;
-    }
-
-    const fetchFullProduct = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/products/${product.id}`);
-        if (!res.ok) {
-          console.error("Failed to fetch full product", await res.text());
-          setFullProduct(product);
-          return;
-        }
-
-        const data = await res.json();
-        setFullProduct(data);
-      } catch (err) {
-        console.error("Quick view fetch error", err);
-        setFullProduct(product);
-      } finally {
-        setLoading(false);
+  // Fetch enriched product only when needed
+  const {
+    data: fetchedProduct,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["quick-view-product", product?.id],
+    queryFn: async () => {
+      const res = await fetch(`/api/products/${product?.id}`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch product");
       }
-    };
+      return res.json();
+    },
+    enabled: open && !!product && !hasFullVariations,
+    staleTime: 1000 * 60 * 5,
+  });
 
-    fetchFullProduct();
-  }, [open, product]);
-
+  // AFTER HOOKS: safe early return
   if (!product) return null;
 
-  const productToUse = fullProduct ?? product;
+  const productToUse = fetchedProduct ?? product;
+
+  const loading = (isLoading || isFetching) && !hasFullVariations;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="
           p-0 md:p-3 gap-0
-          w-[90%] h-[90%]
+          w-[90%] h-[95%] overflow-auto
           max-w-none sm:max-w-none
           sm:rounded-sm md:rounded-md
-          overflow-hidden
         "
       >
         <DialogTitle>
@@ -89,7 +80,6 @@ export function QuickViewDialog({
             product={productToUse}
             selectedColor={selectedColor}
           />
-
           <ProductDetailsPanel
             product={productToUse}
             selectedColor={selectedColor}
@@ -99,13 +89,7 @@ export function QuickViewDialog({
           />
         </div>
 
-        {loading && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background/40">
-            <span className="text-xs text-muted-foreground">
-              Loading details…
-            </span>
-          </div>
-        )}
+        {loading && <LsaLoading />}
       </DialogContent>
     </Dialog>
   );

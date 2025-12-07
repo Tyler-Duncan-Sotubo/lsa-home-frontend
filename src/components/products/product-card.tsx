@@ -152,14 +152,16 @@ export function ProductCard({
         </div>
 
         {/* Content */}
-        <div className="p-3 flex flex-col gap-2">
-          <div className="flex items-start justify-between gap-2">
+        <div className="p-1 flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
             <Link
               href={href}
               className="flex-1"
               onClick={handleMarkRecentlyViewed}
             >
-              <h3 className="text-lg font-semibold line-clamp-2">{name}</h3>
+              <h3 className="text-sm md:text-base font-medium line-clamp-2">
+                {name}
+              </h3>
             </Link>
 
             <WishlistButton
@@ -172,6 +174,8 @@ export function ProductCard({
                 onSale,
                 priceHtml, // 👈 add this if you have it
                 image: imageSrc ?? null,
+                rating: averageRating,
+                reviews: ratingCount,
               }}
             />
           </div>
@@ -186,11 +190,13 @@ export function ProductCard({
               <span className="text-primary font-semibold">{sale}</span>
             </div>
           ) : regular ? (
-            <p className="font-semibold text-sm">{regular}</p>
+            <p className="text-xs md:text-sm font-semibold text-foreground">
+              {regular}
+            </p>
           ) : priceHtml ? (
             // Fallback: WooCommerce price_html (works well for variable products)
             <div
-              className="text-lg font-medium"
+              className="text-xs md:text-sm font-semibold text-foreground"
               dangerouslySetInnerHTML={{ __html: cleanedHtml ?? "" }}
             />
           ) : null}

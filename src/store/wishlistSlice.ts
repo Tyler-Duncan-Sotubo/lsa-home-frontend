@@ -16,6 +16,8 @@ export type WishlistItem = {
   priceHtml?: string | null;
 
   image?: string | null;
+  rating?: number;
+  reviews?: number;
 };
 
 export type WishlistState = {
@@ -40,6 +42,8 @@ const normalizeItem = (item: WishlistItem): WishlistItem => ({
   onSale: item.onSale ?? false,
   priceHtml: item.priceHtml ?? null,
   image: item.image ?? null,
+  rating: item.rating ?? 0,
+  reviews: item.reviews ?? 0,
 });
 
 const wishlistSlice = createSlice({

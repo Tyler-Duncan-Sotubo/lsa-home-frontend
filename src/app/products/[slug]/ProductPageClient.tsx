@@ -22,8 +22,6 @@ interface ProductPageClientProps {
 export function ProductPageClient({ product, user }: ProductPageClientProps) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-  console.log("Rendering ProductPageClient for product:", product);
-
   // Controls the review modal
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 

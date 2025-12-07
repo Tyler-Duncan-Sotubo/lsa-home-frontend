@@ -120,3 +120,68 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* e.g. in globals.css or spin-wheel.css */
+
+/* ------------------------------ */
+/*     Guinness Loader Animations */
+/* ------------------------------ */
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animate the whole ring */
+.animate-spin-slow {
+  animation: spin-slow 2.6s linear infinite;
+}
+
+/* Dot animations with delays */
+.animate-ball-1 {
+  animation: wave 1s ease-in-out infinite;
+}
+.animate-ball-2 {
+  animation: wave 1s ease-in-out infinite 0.15s;
+}
+.animate-ball-3 {
+  animation: wave 1s ease-in-out infinite 0.3s;
+}
+.animate-ball-4 {
+  animation: wave 1s ease-in-out infinite 0.45s;
+}
+
+@layer utilities {
+  @keyframes lsa-line {
+    0% {
+      transform: translateX(-100%);
+      width: 40%;
+    }
+    50% {
+      transform: translateX(20%);
+      width: 60%;
+    }
+    100% {
+      transform: translateX(120%);
+      width: 40%;
+    }
+  }
+
+  .animate-lsa-line {
+    animation: lsa-line 1.4s ease-in-out infinite;
+  }
+}

@@ -1,8 +1,8 @@
-// app/api/orders/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@/app/api/auth/[...nextauth]/route";
 import { wcFetch } from "@/lib/woocommerce/client";
 import { getCustomerIdByEmail } from "@/lib/woocommerce/customers";
+import { ORDER_FIELDS } from "@/constants/product-api";
 
 type WooOrder = {
   id: number;
@@ -52,6 +52,7 @@ export async function GET() {
         params: {
           customer: customerId,
           per_page: 50,
+          _fields: ORDER_FIELDS,
         },
       });
     } else {
@@ -59,6 +60,7 @@ export async function GET() {
       const allOrders = await wcFetch<WooOrder[]>("/orders", {
         params: {
           per_page: 100,
+          _fields: ORDER_FIELDS,
         },
       });
 

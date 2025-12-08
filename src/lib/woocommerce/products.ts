@@ -1,7 +1,14 @@
 // src/lib/woocommerce/products.ts
+
 import { wcFetch } from "./client";
-import type { Product, WooVariation } from "@/types/products";
+import type { Product, WooVariation, ProductReview } from "@/types/products";
 import { redis } from "@/lib/redis";
+import {
+  PRODUCT_DETAIL_FIELDS,
+  PRODUCT_LIST_FIELDS,
+  REVIEW_FIELDS,
+  VARIATION_FIELDS,
+} from "@/constants/product-api";
 
 type GetProductsOptions = {
   page?: number;
@@ -10,6 +17,11 @@ type GetProductsOptions = {
   search?: string;
 };
 
+/**
+ * Get paginated products for listing (category page, search, etc.)
+ * NOTE: This uses PRODUCT_LIST_FIELDS, so it does NOT include heavy fields
+ * like full description/meta_data/weight (only stock_status for UI).
+ */
 export async function getProducts(
   options: GetProductsOptions = {}
 ): Promise<Product[]> {
@@ -35,25 +47,28 @@ export async function getProducts(
     page,
     per_page: perPage,
     status: "publish",
+    _fields: PRODUCT_LIST_FIELDS,
   };
 
   if (categoryId) params.category = categoryId;
   if (search) params.search = search;
 
-  // ✅ use new wcFetch signature
   const products = await wcFetch<Product[]>("/products", {
     params,
   });
 
-  // 2) Store in cache (shorter TTL for lists)
+  // 2) Store in cache (5 minutes)
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(products), "EX", 60 * 5); // 60 min
+    await redis.set(cacheKey, JSON.stringify(products), "EX", 60 * 5);
   }
 
   return products;
 }
 
-// Simple version (no variations)
+/**
+ * Get a single product by slug (no variations attached).
+ * Full detail product (including weight + stock info).
+ */
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const cacheKey = `product:${slug}:basic`;
 
@@ -74,19 +89,26 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       slug,
       status: "publish",
       per_page: 1,
+      _fields: PRODUCT_DETAIL_FIELDS,
     },
   });
 
   const product = products[0] ?? null;
 
   if (product && redis) {
-    await redis.set(cacheKey, JSON.stringify(product), "EX", 60 * 60); // 60 min
+    // 60 minutes
+    await redis.set(cacheKey, JSON.stringify(product), "EX", 60 * 60 * 24);
   }
 
   return product;
 }
 
-// Full version: product + variations as full objects
+/**
+ * Get a single product by slug, including full variation objects.
+ * Uses:
+ *  - PRODUCT_DETAIL_FIELDS for the base product
+ *  - VARIATION_FIELDS for each variation
+ */
 export async function getProductBySlugWithVariations(
   slug: string
 ): Promise<(Product & { variations?: WooVariation[] }) | null> {
@@ -106,18 +128,20 @@ export async function getProductBySlugWithVariations(
     }
   }
 
+  // 2) Fetch base product
   const products = await wcFetch<Product[]>("/products", {
     params: {
       slug,
       status: "publish",
       per_page: 1,
+      _fields: PRODUCT_DETAIL_FIELDS,
     },
   });
 
   const product = products[0];
   if (!product) return null;
 
-  // Non-variable: no variations to fetch
+  // Non-variable: nothing extra to fetch
   if (product.type !== "variable") {
     const result: Product & { variations?: WooVariation[] } = {
       ...product,
@@ -125,20 +149,20 @@ export async function getProductBySlugWithVariations(
     };
 
     if (redis) {
-      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 60 min
-      // (shorter TTL since it's a single product)
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60 * 24);
     }
 
     return result;
   }
 
-  // Variable: fetch full variation objects
+  // 3) Variable product: fetch full variation objects (trimmed via _fields)
   const variations = await wcFetch<WooVariation[]>(
     `/products/${product.id}/variations`,
     {
       params: {
         per_page: 100,
         status: "publish",
+        _fields: VARIATION_FIELDS,
       },
     }
   );
@@ -149,8 +173,23 @@ export async function getProductBySlugWithVariations(
   };
 
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 60 min
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60 * 24);
   }
 
   return result;
+}
+
+/**
+ * Get approved reviews for a product (trimmed via _fields).
+ */
+export async function getProductReviews(
+  productId: number
+): Promise<ProductReview[]> {
+  return wcFetch<ProductReview[]>("/products/reviews", {
+    params: {
+      product: productId,
+      status: "approved",
+      _fields: REVIEW_FIELDS,
+    },
+  });
 }

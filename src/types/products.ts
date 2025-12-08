@@ -36,6 +36,9 @@ export type WooVariation = {
   manage_stock: boolean;
   stock_quantity: number | null;
 
+  // ✅ needed for shipping calculation
+  weight?: string | null;
+
   meta_data?: WooMetaData[];
 };
 
@@ -72,6 +75,15 @@ export type WooProductApi = {
 
   // note: IDs here in the raw API
   variations?: number[];
+
+  // ✅ product-level stock info (used as fallback)
+  stock_status?: "instock" | "outofstock" | "onbackorder";
+  in_stock?: boolean;
+  manage_stock?: boolean;
+  stock_quantity?: number | null;
+
+  // ✅ product-level weight (string in Woo)
+  weight?: string | null;
 };
 
 // ✅ App-wide product type used in components

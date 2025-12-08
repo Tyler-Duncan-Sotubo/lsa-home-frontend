@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { wcFetch } from "@/lib/woocommerce/client";
 import { redis } from "@/lib/redis";
 import type { Product, WooVariation } from "@/types/products";
+import { VARIATION_FIELDS } from "@/constants/product-api";
 
 export async function GET(
   _req: Request,
@@ -51,6 +52,7 @@ export async function GET(
         params: {
           per_page: 100,
           status: "publish",
+          _fields: VARIATION_FIELDS,
         },
       }
     );
@@ -62,7 +64,7 @@ export async function GET(
 
     // 5) Cache combined product+variations
     if (redis) {
-      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 5);
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60 * 24);
     }
 
     return NextResponse.json(result);

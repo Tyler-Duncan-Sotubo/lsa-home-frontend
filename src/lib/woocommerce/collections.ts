@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/lib/woocommerce/collections.ts (or wherever you keep this)
+// src/lib/woocommerce/collections.ts
+
 import type { Product, WooCategory } from "@/types/products";
 import { wcFetch } from "./client";
 import { redis } from "@/lib/redis";
+import { CATEGORY_FIELDS, PRODUCT_LIST_FIELDS } from "@/constants/product-api";
 
 interface GetCollectionByCategorySlugOptions {
   page?: number;
@@ -63,6 +65,7 @@ export async function getCollectionByCategorySlug(
       slug: categorySlug,
       per_page: 1,
       hide_empty: false,
+      _fields: CATEGORY_FIELDS,
     },
   });
 
@@ -85,13 +88,14 @@ export async function getCollectionByCategorySlug(
 
   const categoryIds: number[] = [category.id];
 
-  // 3) Optionally include direct children (e.g. "Down Alternative Pillows - PAIRS" under "Pillows")
+  // 3) Optionally include direct children
   if (includeChildren) {
     const children = await wcFetch<WooCategory[]>("/products/categories", {
       params: {
         parent: category.id,
         per_page: 100,
         hide_empty: false,
+        _fields: CATEGORY_FIELDS,
       },
     });
 
@@ -100,13 +104,14 @@ export async function getCollectionByCategorySlug(
     }
   }
 
-  // 4) Fetch products for these category IDs
+  // 4) Fetch products for these category IDs (trimmed via _fields)
   const products = await wcFetch<Product[]>("/products", {
     params: {
       page,
       per_page: perPage,
       status,
       category: categoryIds.join(","), // Woo accepts comma-separated IDs
+      _fields: PRODUCT_LIST_FIELDS,
     },
   });
 
@@ -174,6 +179,7 @@ export async function getParentCategoryCollections(
       slug: parentSlug,
       per_page: 1,
       hide_empty: false,
+      _fields: CATEGORY_FIELDS,
     },
   });
 
@@ -193,6 +199,7 @@ export async function getParentCategoryCollections(
       parent: parent.id,
       per_page: 100,
       hide_empty: false,
+      _fields: CATEGORY_FIELDS,
     },
   });
 
@@ -204,7 +211,7 @@ export async function getParentCategoryCollections(
     return result;
   }
 
-  // 4) For each child, fetch a small set of products
+  // 4) For each child, fetch a small set of products (trimmed via _fields)
   const childrenWithProducts = await Promise.all(
     childCategories.map(async (cat) => {
       const products = await wcFetch<Product[]>("/products", {
@@ -212,6 +219,7 @@ export async function getParentCategoryCollections(
           per_page: perChild,
           status,
           category: cat.id, // single category id
+          _fields: PRODUCT_LIST_FIELDS,
         },
       });
 
@@ -229,7 +237,7 @@ export async function getParentCategoryCollections(
 
   // 5) Cache everything
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 5 min
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 1 hour
   }
 
   return result;

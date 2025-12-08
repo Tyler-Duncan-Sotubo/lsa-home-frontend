@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { wcFetch } from "@/lib/woocommerce/client";
 import type { ProductReview } from "@/types/products";
 import { redis } from "@/lib/redis";
+import { REVIEW_FIELDS } from "@/constants/product-api";
 
 async function deleteKeys(pattern: string) {
   if (!redis) return;
@@ -38,6 +39,7 @@ export async function GET(
         status: "all",
         per_page: 20,
         page: 1,
+        _fields: REVIEW_FIELDS,
       },
     });
 

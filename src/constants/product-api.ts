@@ -21,3 +21,6 @@ export const CATEGORY_FIELDS = "id,name,slug,parent";
 
 export const ORDER_FIELDS =
   "id,status,currency,total,date_created,customer_id," + "billing, line_items";
+
+export const PRODUCT_LIST_WITH_FILTER_FIELDS =
+  PRODUCT_LIST_FIELDS + ",tags,attributes";

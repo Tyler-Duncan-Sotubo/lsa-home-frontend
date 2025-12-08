@@ -4,7 +4,10 @@
 import type { Product, WooCategory } from "@/types/products";
 import { wcFetch } from "./client";
 import { redis } from "@/lib/redis";
-import { CATEGORY_FIELDS, PRODUCT_LIST_FIELDS } from "@/constants/product-api";
+import {
+  PRODUCT_LIST_WITH_FILTER_FIELDS,
+  CATEGORY_FIELDS,
+} from "@/constants/product-api";
 
 interface GetCollectionByCategorySlugOptions {
   page?: number;
@@ -13,14 +16,6 @@ interface GetCollectionByCategorySlugOptions {
   status?: "publish" | "any";
 }
 
-/**
- * Fetches all products for a given WooCommerce category slug,
- * optionally including direct child categories.
- *
- * Useful for "collections" pages like:
- *   /collections/pillows
- *   /collections/bedding/pillows/down-alternative-pillows-pairs
- */
 export async function getCollectionByCategorySlug(
   categorySlug: string,
   {
@@ -32,7 +27,7 @@ export async function getCollectionByCategorySlug(
 ): Promise<{
   category: WooCategory | null;
   products: Product[];
-  categoryIds: number[]; // ids actually used in the query
+  categoryIds: number[];
 }> {
   const cacheKey = [
     "collection",
@@ -43,7 +38,6 @@ export async function getCollectionByCategorySlug(
     status,
   ].join(":");
 
-  // 1) Try cache
   if (redis) {
     const cached = await redis.get(cacheKey);
     if (cached) {
@@ -54,7 +48,7 @@ export async function getCollectionByCategorySlug(
           categoryIds: number[];
         };
       } catch {
-        // bad cache → ignore and refetch
+        // ignore bad cache
       }
     }
   }
@@ -71,7 +65,6 @@ export async function getCollectionByCategorySlug(
 
   const category = categories[0] ?? null;
 
-  // If no category, cache the negative result too (to avoid repeated lookups)
   if (!category) {
     const result = {
       category: null,
@@ -80,7 +73,7 @@ export async function getCollectionByCategorySlug(
     };
 
     if (redis) {
-      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 1 hour
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60);
     }
 
     return result;
@@ -104,14 +97,14 @@ export async function getCollectionByCategorySlug(
     }
   }
 
-  // 4) Fetch products for these category IDs (trimmed via _fields)
+  // 4) Fetch products for these category IDs (now with tags + attributes)
   const products = await wcFetch<Product[]>("/products", {
     params: {
       page,
       per_page: perPage,
       status,
-      category: categoryIds.join(","), // Woo accepts comma-separated IDs
-      _fields: PRODUCT_LIST_FIELDS,
+      category: categoryIds.join(","),
+      _fields: PRODUCT_LIST_WITH_FILTER_FIELDS,
     },
   });
 
@@ -121,9 +114,8 @@ export async function getCollectionByCategorySlug(
     categoryIds,
   };
 
-  // 5) Store in cache
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 1 hour TTL
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60);
   }
 
   return result;
@@ -134,16 +126,6 @@ interface GetParentCollectionsOptions {
   status?: "publish" | "any";
 }
 
-/**
- * For a parent category slug (e.g. "all-bedding"),
- * fetch:
- *  - the parent category
- *  - its direct child categories (e.g. "Pillows", "Duvets")
- *  - a limited number of products for each child
- *
- * Perfect for pages like `/pages/all-bedding` that
- * show multiple sub-collections.
- */
 export async function getParentCategoryCollections(
   parentSlug: string,
   { perChild = 8, status = "publish" }: GetParentCollectionsOptions = {}
@@ -158,7 +140,6 @@ export async function getParentCategoryCollections(
     ":"
   );
 
-  // 1) Try cache
   if (redis) {
     const cached = await redis.get(cacheKey);
     if (cached) {
@@ -173,7 +154,6 @@ export async function getParentCategoryCollections(
     }
   }
 
-  // 2) Find parent category by slug ("all-bedding")
   const parents = await wcFetch<WooCategory[]>("/products/categories", {
     params: {
       slug: parentSlug,
@@ -193,7 +173,6 @@ export async function getParentCategoryCollections(
     return result;
   }
 
-  // 3) Get direct child categories (e.g. Pillows, Duvets)
   const childCategories = await wcFetch<WooCategory[]>("/products/categories", {
     params: {
       parent: parent.id,
@@ -211,15 +190,15 @@ export async function getParentCategoryCollections(
     return result;
   }
 
-  // 4) For each child, fetch a small set of products (trimmed via _fields)
+  // For each child, fetch products (also with tags + attributes for filters)
   const childrenWithProducts = await Promise.all(
     childCategories.map(async (cat) => {
       const products = await wcFetch<Product[]>("/products", {
         params: {
           per_page: perChild,
           status,
-          category: cat.id, // single category id
-          _fields: PRODUCT_LIST_FIELDS,
+          category: cat.id,
+          _fields: PRODUCT_LIST_WITH_FILTER_FIELDS,
         },
       });
 
@@ -235,9 +214,8 @@ export async function getParentCategoryCollections(
     children: childrenWithProducts,
   };
 
-  // 5) Cache everything
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60); // 1 hour
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60);
   }
 
   return result;

@@ -73,10 +73,6 @@ export function getCollectionFilterMeta(
   const allSizes = extractSizesFromProducts(products);
   const allTags = extractTagsFromProducts(products);
 
-  if (process.env.NODE_ENV !== "production") {
-    console.log("[filters] meta", { allColors, allSizes, allTags });
-  }
-
   return { allColors, allSizes, allTags };
 }
 

@@ -75,6 +75,8 @@ export function ProductCard({
         onSale: onSale ?? false,
         image: imageSrc ?? null,
         priceHtml: priceHtml ?? null,
+        averageRating: averageRating,
+        ratingCount: ratingCount,
       })
     );
   }, [
@@ -87,6 +89,8 @@ export function ProductCard({
     onSale,
     imageSrc,
     priceHtml,
+    averageRating,
+    ratingCount,
   ]);
 
   return (

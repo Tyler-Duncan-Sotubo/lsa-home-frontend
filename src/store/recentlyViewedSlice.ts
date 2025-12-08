@@ -15,6 +15,9 @@ export type RecentlyViewedItem = {
   // HTML price (Woo price_html) for ranges / variable products
   priceHtml?: string | null;
 
+  averageRating?: number;
+  ratingCount?: number | null;
+
   image?: string | null;
   viewedAt: number;
 };
@@ -42,6 +45,8 @@ const normalizeItem = (
   onSale: item.onSale ?? false,
   priceHtml: item.priceHtml ?? null,
   image: item.image ?? null,
+  averageRating: item.averageRating,
+  ratingCount: item.ratingCount ?? null,
   viewedAt: Date.now(),
 });
 

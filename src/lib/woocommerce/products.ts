@@ -266,3 +266,81 @@ export async function getRelatedProductsByCategory(
 
   return related;
 }
+
+type GetBestSellingOptions = {
+  page?: number;
+  perPage?: number;
+  categoryId?: number;
+};
+
+/**
+ * Retrieves best-selling products from WooCommerce with caching support.
+ *
+ * @param options - Configuration options for fetching products
+ * @param options.page - Page number for pagination (default: 1)
+ * @param options.perPage - Number of products per page (default: 12)
+ * @param options.categoryId - Optional category ID to filter products by
+ *
+ * @returns Promise that resolves to an array of Product objects sorted by popularity
+ *
+ * @example
+ * ```typescript
+ * // Get first page of best sellers
+ * const products = await getBestSellingProducts();
+ *
+ * // Get best sellers from specific category
+ * const categoryProducts = await getBestSellingProducts({
+ *   categoryId: 123,
+ *   perPage: 20
+ * });
+ * ```
+ *
+ * @remarks
+ * - Products are ordered by popularity in descending order
+ * - Results are cached in Redis for 10 minutes to improve performance
+ * - Only published products are returned
+ * - Uses optimized field selection for better performance
+ */
+export async function getBestSellingProducts(
+  options: GetBestSellingOptions = {}
+): Promise<Product[]> {
+  const { page = 1, perPage = 12, categoryId } = options;
+
+  const cacheKey = `products:best-sellers:${page}:${perPage}:${
+    categoryId ?? "all"
+  }`;
+
+  // 1) Try cache
+  if (redis) {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      try {
+        return JSON.parse(cached as string) as Product[];
+      } catch {
+        // ignore bad cache
+      }
+    }
+  }
+
+  const params: Record<string, string | number> = {
+    page,
+    per_page: perPage,
+    status: "publish",
+    orderby: "popularity", // 👈 THIS is the key
+    order: "desc",
+    _fields: PRODUCT_LIST_FIELDS,
+  };
+
+  if (categoryId) {
+    params.category = categoryId;
+  }
+
+  const products = await wcFetch<Product[]>("/products", { params });
+
+  // Cache for, say, 10–60 minutes (tweak as you like)
+  if (redis) {
+    await redis.set(cacheKey, JSON.stringify(products), "EX", 60 * 10);
+  }
+
+  return products;
+}

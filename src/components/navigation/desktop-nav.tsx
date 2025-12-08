@@ -34,12 +34,20 @@ type NavFeature = {
 export function DesktopNav({ items }: { items: NavItem[] }) {
   return (
     <NavigationMenu className="hidden flex-1 justify-center md:flex">
-      <NavigationMenuList className="flex flex-row gap-4">
+      <NavigationMenuList className="flex flex-row gap-2">
         {items.map((item) =>
           item.type === "mega" ? (
             <MegaNavItem key={item.label} item={item} />
           ) : (
-            <SimpleNavItem key={item.label} href={item.href}>
+            <SimpleNavItem
+              key={item.label}
+              href={item.href}
+              className={
+                item.label === "Sales & Offers"
+                  ? "bg-red-600 text-white hover:bg-red-700 rounded-md h-9 flex items-center justify-center px-4 hover:underline-none"
+                  : ""
+              }
+            >
               {item.label}
             </SimpleNavItem>
           )
@@ -75,7 +83,7 @@ function MegaNavItem({
     shadow-none
     border-none
     px-3 py-1
-    text-base font-medium
+    text-sm font-medium
     hover:underline hover:font-semibold
     transition-all
     cursor-pointer
@@ -130,7 +138,7 @@ function MegaNavItem({
             <NavigationMenuLink asChild>
               <Link
                 href={item.feature.href}
-                className="group flex h-full flex-col overflow-hidden rounded-md border bg-card no-underline outline-hidden transition-all duration-200 hover:shadow-md"
+                className="group flex h-full flex-col overflow-hidden rounded-md border bg-card no-underline outline-hidden transition-all duration-200 hover:shadow-md hover:bg-none"
               >
                 <div className="relative h-40 w-full">
                   <Image
@@ -165,21 +173,24 @@ function MegaNavItem({
 function SimpleNavItem({
   href,
   children,
+  className = "",
 }: {
   href: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <NavigationMenuItem>
       <Link
         href={href}
-        className="
-          px-3 py-1 
-          text-base font-medium
-          transition-all
-          hover:underline 
-          hover:font-semibold
-        "
+        className={`
+    px-3 py-1 
+    text-sm font-medium
+    transition-all
+    hover:underline 
+    hover:font-semibold
+    ${className}
+  `}
       >
         {children}
       </Link>

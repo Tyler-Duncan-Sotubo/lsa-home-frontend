@@ -12,8 +12,6 @@ export default function WishlistPage() {
   const items = useAppSelector(selectWishlistItems);
   const { data: session } = useSession();
 
-  console.log(items);
-
   return (
     <section className="mx-auto w-[95%] py-8 md:py-12">
       <Breadcrumb

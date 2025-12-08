@@ -25,7 +25,7 @@ export function ProductReviewList({ reviews }: ProductReviewListProps) {
   }
 
   return (
-    <ul className="space-y-6 border-t border-b border-accent-foreground/5 divide-y divide-accent-foreground/5">
+    <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {reviews.map((review) => {
         // Format name like: "Biplang Liadi" -> "Biplang L"
         const parts = review.reviewer.trim().split(" ");
@@ -43,20 +43,23 @@ export function ProductReviewList({ reviews }: ProductReviewListProps) {
         const paragraphs = cleanedText.split(/\n+/).filter(Boolean);
 
         return (
-          <li key={review.id} className="p-4 space-y-4">
-            {/* ⭐ BIGGER STARS */}
-            <div className="text-yellow-500 text-xl font-semibold">
-              {"★".repeat(review.rating)}
-              {"☆".repeat(5 - review.rating)}
+          <li
+            key={review.id}
+            className="border border-accent-foreground/5 rounded-lg p-4 flex flex-col h-full bg-background"
+          >
+            {/* Top row: stars (left) + date (right) */}
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-yellow-500 text-xl font-semibold">
+                {"★".repeat(review.rating)}
+                {"☆".repeat(5 - review.rating)}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {new Date(review.date_created).toLocaleDateString()}
+              </p>
             </div>
 
-            {/* 👤 NAME */}
-            <div className="text-base font-medium text-foreground">
-              {formattedName}
-            </div>
-
-            {/* 📝 Review paragraphs */}
-            <div className="space-y-3 text-base text-muted-foreground leading-relaxed">
+            {/* Review text */}
+            <div className="space-y-3 text-sm text-muted-foreground leading-relaxed flex-1">
               {paragraphs.map((para, idx) => (
                 <p key={idx} className={idx === 0 ? "font-semibold" : ""}>
                   {para}
@@ -64,15 +67,17 @@ export function ProductReviewList({ reviews }: ProductReviewListProps) {
               ))}
             </div>
 
-            {/* 📅 DATE */}
-            <p className="text-xs text-muted-foreground">
-              {new Date(review.date_created).toLocaleDateString()}
-            </p>
-
-            {/* ✔ Verified purchase */}
-            {review.verified && (
-              <p className="text-[11px] text-emerald-600">Verified purchase</p>
-            )}
+            {/* Name + verified under review */}
+            <div className="pt-4">
+              <p className="text-sm font-medium text-foreground">
+                {formattedName}
+              </p>
+              {review.verified && (
+                <p className="text-[11px] text-emerald-600">
+                  Verified purchase
+                </p>
+              )}
+            </div>
           </li>
         );
       })}

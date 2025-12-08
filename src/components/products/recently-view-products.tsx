@@ -35,6 +35,8 @@ export function RecentlyViewedRail({ currentSlug }: RecentlyViewedRailProps) {
         sale_price: item.salePrice ?? "",
         on_sale: item.onSale ?? false,
         price_html: item.priceHtml ?? "",
+        average_rating: item.averageRating,
+        rating_count: item.ratingCount,
 
         // Image
         images: item.image
@@ -47,9 +49,6 @@ export function RecentlyViewedRail({ currentSlug }: RecentlyViewedRailProps) {
             ]
           : [],
 
-        // Fields we don’t have in recently viewed yet (safe defaults)
-        average_rating: "0",
-        rating_count: 0,
         tags: [],
       };
     });

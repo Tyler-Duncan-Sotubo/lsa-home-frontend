@@ -40,43 +40,34 @@ export function ProductPageClient({
   };
 
   return (
-    <section className="mx-auto w-[95%] py-8 ">
-      <Breadcrumb
-        items={[
-          { label: "Home", href: "/" },
-          ...product.categories.map((cat) => ({
-            label: cat.name,
-            href: getCategoryHref(cat),
-          })),
-          { label: product.name },
-        ]}
-      />
+    <section className="py-8">
+      <div className="mx-auto w-[95%]">
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            ...product.categories.map((cat) => ({
+              label: cat.name,
+              href: getCategoryHref(cat),
+            })),
+            { label: product.name },
+          ]}
+        />
 
-      <div className="grid md:grid-cols-[1.3fr_1fr] gap-3 md:gap-3 items-start mt-6">
-        <div className="md:sticky md:top-24 self-start">
-          <ProductGallery product={product} selectedColor={selectedColor} />
-        </div>
+        <div className="grid md:grid-cols-[1.3fr_1fr] gap-3 md:gap-3 items-start mt-6">
+          <div className="md:sticky md:top-24 self-start">
+            <ProductGallery product={product} selectedColor={selectedColor} />
+          </div>
 
-        <div>
-          <ProductDetailsPanel
-            product={product}
-            selectedColor={selectedColor}
-            onSelectColor={setSelectedColor}
-          />
+          <div>
+            <ProductDetailsPanel
+              product={product}
+              selectedColor={selectedColor}
+              onSelectColor={setSelectedColor}
+            />
+          </div>
         </div>
       </div>
-
-      {/* You May Also Like - server-fetched, just rendered here */}
-      {relatedProducts.length > 0 && (
-        <ProductRail
-          title="Shop the Collection"
-          subtitle="Recommended picks based on this product’s category."
-          products={relatedProducts}
-          sectionClassName="mt-24"
-        />
-      )}
-
-      <div className="mt-24">
+      <div className="mt-24 bg-gray-50 p-10">
         <Element name="reviews-section">
           <ProductReviews
             averageRating={product.average_rating}
@@ -86,18 +77,29 @@ export function ProductPageClient({
           />
         </Element>
       </div>
+      <div className="mx-auto w-[95%]">
+        {/* You May Also Like - server-fetched, just rendered here */}
+        {relatedProducts.length > 0 && (
+          <ProductRail
+            title="Shop the Collection"
+            subtitle="Recommended picks based on this product’s category."
+            products={relatedProducts}
+            sectionClassName="mt-24"
+          />
+        )}
 
-      <WriteReviewDialog
-        productId={product.id}
-        open={isReviewDialogOpen}
-        onOpenChange={setIsReviewDialogOpen}
-        onSubmitted={handleReviewSubmitted}
-        user={user}
-        slug={product.slug}
-      />
+        <WriteReviewDialog
+          productId={product.id}
+          open={isReviewDialogOpen}
+          onOpenChange={setIsReviewDialogOpen}
+          onSubmitted={handleReviewSubmitted}
+          user={user}
+          slug={product.slug}
+        />
 
-      <div className="mt-12">
-        <RecentlyViewedRail currentSlug={product.slug} />
+        <div className="mt-12">
+          <RecentlyViewedRail currentSlug={product.slug} />
+        </div>
       </div>
     </section>
   );

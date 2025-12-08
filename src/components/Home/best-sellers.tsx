@@ -1,9 +1,9 @@
 // src/components/sections/best-sellers-slider.tsx
 import { ProductRail } from "@/components/products/product-rail";
-import { getProducts } from "@/lib/woocommerce/products";
+import { getBestSellingProducts } from "@/lib/woocommerce/products";
 
 export default async function BestSellersSlider() {
-  const products = await getProducts({ perPage: 12 });
+  const products = await getBestSellingProducts({ perPage: 12 });
 
   return (
     <ProductRail

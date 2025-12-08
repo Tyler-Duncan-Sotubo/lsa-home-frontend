@@ -2,56 +2,57 @@ import { NavItem } from "@/components/navigation/types";
 
 export const mainNav: NavItem[] = [
   {
-    label: "Gifts",
-    href: "/collections/holiday-gift-guide",
+    label: "Beds",
+    href: "/",
     type: "mega",
     sections: [
       {
         title: "Shop",
         items: [
-          { label: "All Gifts", href: "/collections/holiday-gift-guide" },
+          { label: "All Beds", href: "/collections/all-beds" },
           {
-            label: "Gifts Under $150",
-            href: "/collections/holiday-gift-guide?filter.p.m.filter.category_single_line_text_with_list_of_values=Gifts%20Under%20%24150",
+            label: "Bed Frames",
+            href: "/collections/bed-frames",
           },
           {
-            label: "Holiday Exclusives",
-            href: "/collections/holiday-gift-guide?filter.p.m.filter.category_single_line_text_with_list_of_values=Holiday%20Exclusives",
+            label: "Headboards",
+            href: "/collections/headboards",
           },
           {
-            label: "Bundle Savings",
-            href: "/collections/holiday-gift-guide?filter.p.m.filter.category_single_line_text_with_list_of_values=Bundle%20Savings",
+            label: "Bedroom Bundles",
+            href: "/collections/bedroom-bundles",
           },
         ],
       },
       {
         title: "Trending",
         items: [
-          { label: "Robes", href: "/collections/robes" },
+          { label: "Upholstered Beds", href: "/collections/upholstered-beds" },
           {
-            label: "Throw Blankets",
-            href: "/collections/throw-blankets-pillow-covers",
+            label: "Wooden Frames",
+            href: "/collections/wooden-bed-frames",
           },
           {
-            label: "Mulberry Silk",
-            href: "/collections/mulberry-silk-collection",
+            label: "Adjustable Bases",
+            href: "/collections/adjustable-bases",
           },
           { label: "Best Sellers", href: "/collections/best-sellers" },
         ],
       },
     ],
     feature: {
-      label: "Shop the Gift Guide",
-      href: "/collections/holiday-gift-guide",
+      label: "Shop Bed Frames",
+      href: "/collections/bed-frames",
       image:
-        "https://cdn.shopify.com/s/files/1/0951/7126/files/BKL_25-07_Holiday_Film_1572x_9x8_WO.jpg?v=1761687456",
+        "https://lsahome.instawp.site/wp-content/uploads/2025/12/IMG_9834-scaled.webp",
       description:
-        "Get more, get merry. Shop guaranteed good gifts like robes, throws, Waffle, and more.",
+        "Upgrade your sleep setup with beautifully built frames designed for comfort, support, and timeless style.",
     },
   },
+
   {
-    label: "Bed",
-    href: "/pages/all-bed",
+    label: "Mattresses",
+    href: "/pages/all-mattresses",
     type: "mega",
     sections: [
       {
@@ -68,44 +69,44 @@ export const mainNav: NavItem[] = [
         ],
       },
       {
-        title: "Shop by Fabric",
+        title: "Shop All Things Mattresses",
         items: [
           {
-            label: "Luxe Sateen",
-            href: "/collections/luxe-sateen-sheets",
+            label: "Sublime Mattress",
+            href: "/products/sublime-mattress",
             badge: "Best Seller",
             description:
-              "Our softest, smoothest, most luxurious sheets with a subtle sheen.",
+              "Premium comfort and deep support engineered for cooler nights and truly restorative sleep.",
           },
           {
-            label: "Classic Percale",
-            href: "/collections/classic-percale-sheets",
+            label: "Mattress Protector",
+            href: "/collections/mattress-protectors",
+            description:
+              "Breathable, waterproof protection that keeps your mattress fresh, clean, and lasting longer.",
           },
           {
-            label: "Washed Classic Percale",
-            href: "/collections/washed-classic-sheets",
+            label: "Mattress Topper",
+            href: "/collections/mattress-toppers",
             badge: "New",
-          },
-          {
-            label: "Washed European Linen",
-            href: "/collections/washed-linen-sheets",
+            description:
+              "A plush, cloud-like layer that enhances softness and elevates your overall sleep experience.",
           },
         ],
       },
     ],
     feature: {
-      label: "Shop Luxe Sateen",
-      href: "/collections/luxe-sateen-sheets",
+      label: "Shop Signature Mattress",
+      href: "/products/signature-mattress",
       image:
-        "https://cdn.shopify.com/s/files/1/0951/7126/files/BKL_25-08_HolidayOverheads_Look2_638_x_9x8_WO.jpg?v=1761687457",
+        "https://lsahome.instawp.site/wp-content/uploads/2025/12/LSA-HOME03-07-2401575-scaled.webp",
       description:
-        "Get guest-ready with irresistibly smooth, luxuriously soft Luxe Sateen.",
+        "The Signature Mattress offers superior comfort and support for a better night's sleep.",
     },
   },
-  { label: "Bath", href: "/pages/all-bath" },
-  { label: "Bundle Savings", href: "/pages/all-bundles" },
-  { label: "Best Sellers", href: "/collections/best-sellers" },
-  { label: "Home", href: "/collections/throw-blankets-pillow-covers" },
-  { label: "New Arrivals", href: "/collections/new-arrivals" },
-  { label: "Sale", href: "/collections/last-call" },
+  { label: "Kids", href: "/" },
+  { label: "Bath", href: "/pages/all-baths" },
+  { label: "Bundle Savings", href: "/" },
+  { label: "New Arrivals", href: "/" },
+  { label: "Sales & Offers", href: "/" },
+  { label: "Help & Advice", href: "/" },
 ];

@@ -38,7 +38,7 @@ function ReviewSummaryHeader({
   const maxCount = counts.length ? Math.max(...counts) : 0;
 
   return (
-    <div className="grid max-w-5xl my-16 gap-8 md:grid-cols-3 mx-auto items-center">
+    <div className="w-full my-16 gap-8 flex flex-col md:flex-row md:justify-between md:items-start">
       {/* LEFT: Overall summary */}
       <div className="space-y-4 flex flex-col items-center">
         {/* Reviews count */}
@@ -75,10 +75,16 @@ function ReviewSummaryHeader({
         <p className="text-sm text-muted-foreground">
           {averageRating.toFixed(1)} of 5 stars
         </p>
+        {/* Write Review Button */}
+        <div className="flex justify-end">
+          <Button onClick={onWriteReview} className="w-full">
+            Write a Review
+          </Button>
+        </div>
       </div>
 
       {/* RIGHT: distribution + button */}
-      <div className="space-y-4">
+      <div className="space-y-4 md:w-1/2">
         {/* Star Distribution */}
         <div className="space-y-2">
           {([5, 4, 3, 2, 1] as const).map((stars) => {
@@ -112,16 +118,6 @@ function ReviewSummaryHeader({
             );
           })}
         </div>
-      </div>
-
-      {/* Write Review Button */}
-      <div className="flex justify-end">
-        <Button
-          onClick={onWriteReview}
-          className="w-full md:w-[80%] lg:w-[70%]"
-        >
-          Write a Review
-        </Button>
       </div>
     </div>
   );
@@ -182,7 +178,9 @@ export function ProductReviews({
     <section className="space-y-6">
       {/* Title */}
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl text-foreground uppercase font-bold">Reviews</h2>
+        <h2 className="text-xl text-foreground capitalize font-bold">
+          Product Reviews
+        </h2>
       </div>
 
       {/* Summary header */}

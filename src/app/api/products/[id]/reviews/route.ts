@@ -75,22 +75,20 @@ export async function POST(
 
   try {
     const body = await req.json();
-    const { rating, review, headline, name, email, slug } = body;
+    const { rating, review, name, email, slug } = body;
 
-    if (!rating || !review || !headline || !name || !email) {
+    if (!rating || !review || !name || !email) {
       return NextResponse.json(
         { error: "Missing required review fields." },
         { status: 400 }
       );
     }
 
-    const fullReviewText = `**${headline}**\n\n${review}`;
-
     const response = await wcFetch("/products/reviews", {
       method: "POST",
       data: {
         product_id: productId,
-        review: fullReviewText,
+        review,
         reviewer: name,
         reviewer_email: email,
         rating,

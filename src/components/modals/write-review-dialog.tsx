@@ -30,7 +30,6 @@ interface WriteReviewDialogProps {
 // Zod schemas
 const loggedInReviewSchema = z.object({
   rating: z.number().min(1, "Please select a rating."),
-  headline: z.string().trim().min(1, "Add a headline."),
   review: z.string().trim().min(1, "Write a review."),
 });
 
@@ -51,7 +50,6 @@ export function WriteReviewDialog({
 
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
-  const [headline, setHeadline] = useState("");
   const [review, setReview] = useState("");
   const [name, setName] = useState(""); // used only when not logged in
   const [email, setEmail] = useState(""); // used only when not logged in
@@ -66,8 +64,8 @@ export function WriteReviewDialog({
 
     // Validate with Zod
     const data = isLoggedIn
-      ? { rating, headline, review }
-      : { rating, headline, review, name, email };
+      ? { rating, review }
+      : { rating, review, name, email };
 
     const result = isLoggedIn
       ? loggedInReviewSchema.safeParse(data)
@@ -90,7 +88,6 @@ export function WriteReviewDialog({
         body: JSON.stringify({
           rating,
           review,
-          headline,
           name: isLoggedIn ? user?.name : name,
           email: isLoggedIn ? user?.email : email,
           slug,
@@ -105,7 +102,6 @@ export function WriteReviewDialog({
 
       setSuccess("Thank you! Your review has been submitted.");
       setReview("");
-      setHeadline("");
       setRating(0);
 
       if (!isLoggedIn) {
@@ -181,18 +177,6 @@ export function WriteReviewDialog({
                 </span>
               )}
             </div>
-          </div>
-
-          {/* Headline */}
-          <div className="space-y-1.5">
-            <Label className="text-sm font-medium">
-              Add a headline <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              placeholder="Summarize your experience"
-            />
           </div>
 
           {/* Review Body */}

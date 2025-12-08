@@ -35,18 +35,11 @@ async function deleteKeysByPattern(pattern: string) {
   }
 
   if (keysToDelete.length) {
-    console.log("Deleting Redis keys:", keysToDelete);
     await redis.del(...keysToDelete);
   }
 }
 
 async function handleProductInvalidation(product: WooProductPayload) {
-  console.log("Invalidating product cache:", {
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-  });
-
   await deleteKeysByPattern("products:*");
 
   if (product.slug) {
@@ -100,8 +93,6 @@ export async function POST(req: Request) {
     }
 
     const body = JSON.parse(rawBody) as WooProductPayload;
-
-    console.log("✅ Woo webhook:", { topic, body });
 
     if (
       topic === "product.created" ||

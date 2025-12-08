@@ -181,15 +181,88 @@ export async function getProductBySlugWithVariations(
 
 /**
  * Get approved reviews for a product (trimmed via _fields).
+ * Cached for a short period to avoid stale data after new reviews.
  */
 export async function getProductReviews(
   productId: number
 ): Promise<ProductReview[]> {
-  return wcFetch<ProductReview[]>("/products/reviews", {
+  const cacheKey = `product:${productId}:reviews`;
+
+  // 1) Try cache
+  if (redis) {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      try {
+        return JSON.parse(cached as string) as ProductReview[];
+      } catch {
+        // bad cache → ignore and fetch fresh
+      }
+    }
+  }
+
+  // 2) Fetch from WooCommerce
+  const reviews = await wcFetch<ProductReview[]>("/products/reviews", {
     params: {
       product: productId,
       status: "approved",
       _fields: REVIEW_FIELDS,
     },
   });
+
+  // 3) Store in cache (e.g. 5–10 minutes; here: 10 min)
+  if (redis) {
+    await redis.set(cacheKey, JSON.stringify(reviews), "EX", 60 * 60 * 24);
+  }
+
+  return reviews;
+}
+
+/**
+ * Get "You May Also Like" products based on the same categories as the given product.
+ * Uses PRODUCT_LIST_FIELDS (lightweight) and excludes the current product.
+ */
+export async function getRelatedProductsByCategory(
+  product: Product,
+  limit = 4
+): Promise<Product[]> {
+  const categoryIds =
+    product.categories?.map((cat) => cat.id).filter(Boolean) ?? [];
+
+  if (categoryIds.length === 0) {
+    return [];
+  }
+
+  const cacheKey = `product:${product.id}:related:${limit}`;
+
+  // 1) Try cache
+  if (redis) {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      try {
+        return JSON.parse(cached as string) as Product[];
+      } catch {
+        // ignore bad cache and fetch fresh
+      }
+    }
+  }
+
+  // 2) Fetch products in the same categories
+  const params: Record<string, string | number> = {
+    status: "publish",
+    per_page: limit + 1, // fetch one extra in case the current product is included
+    _fields: PRODUCT_LIST_FIELDS,
+    category: categoryIds.join(","), // WooCommerce REST expects comma-separated IDs
+  };
+
+  const products = await wcFetch<Product[]>("/products", { params });
+
+  // 3) Filter out the current product and trim to `limit`
+  const related = products.filter((p) => p.id !== product.id).slice(0, limit);
+
+  // 4) Cache result (e.g., 24 hours)
+  if (redis) {
+    await redis.set(cacheKey, JSON.stringify(related), "EX", 60 * 60 * 24);
+  }
+
+  return related;
 }

@@ -168,7 +168,7 @@ export async function getParentCategoryCollections(
   if (!parent) {
     const result = { parent: null, children: [] as any[] };
     if (redis) {
-      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60);
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 660 * 60 * 24);
     }
     return result;
   }
@@ -185,7 +185,7 @@ export async function getParentCategoryCollections(
   if (!Array.isArray(childCategories) || childCategories.length === 0) {
     const result = { parent, children: [] as any[] };
     if (redis) {
-      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60);
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60 * 24);
     }
     return result;
   }
@@ -215,7 +215,7 @@ export async function getParentCategoryCollections(
   };
 
   if (redis) {
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60);
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60 * 60 * 24);
   }
 
   return result;

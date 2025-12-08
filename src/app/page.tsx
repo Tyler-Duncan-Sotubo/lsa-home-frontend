@@ -1,6 +1,6 @@
-import BestSellersSection from "@/components/pages/Home/best-sellers";
-import CategorySlider from "@/components/pages/Home/category-slider";
-import HeroBanner from "@/components/pages/Home/HeroBanner";
+import BestSellersSection from "@/components/Home/best-sellers";
+import CategorySlider from "@/components/Home/category-slider";
+import HeroBanner from "@/components/Home/HeroBanner";
 import { ProductRailSkeleton } from "@/components/skeleton/product-rail-skeleton";
 import { Suspense } from "react";
 

@@ -27,16 +27,11 @@ export function ProductRailSkeleton({
           </div>
         </div>
 
-        {/* Slider skeleton */}
-        <div className="flex gap-6 overflow-hidden pb-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="shrink-0 w-full sm:w-1/2 md:w-1/3 space-y-3"
-            >
-              {/* Shorter Image */}
+        {/* Grid skeleton: 2 columns on mobile, 4 on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="space-y-3">
               <Skeleton className="w-full aspect-4/5 rounded-lg" />
-
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
             </div>

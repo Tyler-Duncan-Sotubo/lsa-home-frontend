@@ -27,7 +27,7 @@ const customerCareLinks = [
 const companyLinks = [
   { href: "/pages/about-us", label: "About" },
   { href: "/pages/contact-us", label: "Contact" },
-  { href: "/blogs/blog", label: "Blog" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export function SiteFooter() {

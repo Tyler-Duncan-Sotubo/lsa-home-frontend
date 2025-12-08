@@ -7,12 +7,21 @@ import Image from "next/image";
 import { FaPlus } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { Rating } from "@/components/products/reviews/rating";
-import { WishlistButton } from "@/components/products/wishlist-button";
 import { useAppDispatch } from "@/store/hooks";
 import { addRecentlyViewed } from "@/store/recentlyViewedSlice";
 import { QuickViewDialog } from "../modals/quick-view-modal";
 import { formatNaira } from "@/utils/format-naira";
 import { cleanPriceHtml } from "@/utils/cleanPriceHtml";
+
+import dynamic from "next/dynamic";
+
+const WishlistButton = dynamic(
+  () =>
+    import("@/components/products/wishlist-button").then(
+      (m) => m.WishlistButton
+    ),
+  { ssr: false }
+);
 
 export interface ProductCardProps {
   id: number | string;

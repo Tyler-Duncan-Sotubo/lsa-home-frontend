@@ -41,7 +41,9 @@ export function ProductRail({
         {/* Header */}
         <div className="mb-6 flex items-end justify-between">
           <div>
-            <h2 className="text-2xl md:text-3xl font-semibold">{title}</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary-foreground">
+              {title}
+            </h2>
             {subtitle && (
               <p className="text-sm text-muted-foreground">{subtitle}</p>
             )}

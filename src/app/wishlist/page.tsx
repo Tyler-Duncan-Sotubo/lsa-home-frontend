@@ -4,7 +4,7 @@ import { useAppSelector } from "@/store/hooks";
 import { selectWishlistItems } from "@/store/wishlistSlice";
 import { ProductCard } from "@/components/products/product-card";
 import { Button } from "@/components/ui/button";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { Breadcrumb } from "@/components/seo/breadcrumb";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 

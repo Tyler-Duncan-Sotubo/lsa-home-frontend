@@ -79,18 +79,18 @@ export function ProductGallery({ product, selectedColor }: GalleryProps) {
       <div className="flex h-full">
         {/* Thumbs (desktop) */}
         <aside className="hidden md:flex flex-col gap-3 p-2 w-18 shrink-0 overflow-y-auto">
-          {galleryImages.map((src, index) => (
+          {galleryImages.slice(0, 9).map((src, index) => (
             <button
               key={`${src || "placeholder"}-${index}`}
               onClick={() => setActiveImage(index)}
               className={`
-                relative w-full aspect-square overflow-hidden border
-                ${
-                  index === safeActive
-                    ? "ring-2 ring-foreground"
-                    : "opacity-70 hover:opacity-100"
-                }
-              `}
+      relative w-full aspect-square overflow-hidden 
+      ${
+        index === safeActive
+          ? "ring-2 ring-foreground"
+          : "opacity-70 hover:opacity-100"
+      }
+    `}
             >
               <Image
                 src={src || "/placeholder.png"}

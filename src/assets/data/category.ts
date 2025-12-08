@@ -7,7 +7,7 @@ export const categories = [
   },
   {
     title: "All Bedding",
-    href: "/",
+    href: "/pages/all-bed",
     image: "/images/Capture-One-Catalog0100-1.webp",
   },
   {
@@ -20,12 +20,12 @@ export const categories = [
   },
   {
     title: "All Bath",
-    href: "/",
+    href: "/pages/all-baths",
     image: "/images/Lsahome-Deluxe-Bath-Sheet.webp",
   },
   {
     title: "Comforters & Pillows",
-    href: "/",
+    href: "/collections/pillows",
     image: "/images/LSA HOME03-07-2401903.webp",
   },
   {

@@ -60,6 +60,8 @@ export async function GET(
 // ----------------------------
 // POST → Submit a review
 // ----------------------------
+// src/app/api/products/[id]/reviews/route.ts
+
 export async function POST(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -73,7 +75,7 @@ export async function POST(
 
   try {
     const body = await req.json();
-    const { rating, review, headline, name, email } = body;
+    const { rating, review, headline, name, email, slug } = body;
 
     if (!rating || !review || !headline || !name || !email) {
       return NextResponse.json(
@@ -84,7 +86,6 @@ export async function POST(
 
     const fullReviewText = `**${headline}**\n\n${review}`;
 
-    // CREATE REVIEW IN WOOCOMMERCE
     const response = await wcFetch("/products/reviews", {
       method: "POST",
       data: {
@@ -99,16 +100,13 @@ export async function POST(
     // -------------------------------------------
     // 🔥 CACHE INVALIDATION
     // -------------------------------------------
+    if (redis) {
+      // clear the specific reviews cache for this product
+      await redis.del(`product:${productId}:reviews`);
 
-    // 1. Delete individual product caches
-    await deleteKeys(`product:*`); // removes product:slug:basic, product:slug:with-variations
-
-    // 2. Delete product list caches
-    await deleteKeys(`products:*`);
-
-    // You can be more specific:
-    // await deleteKeys(`product:${slug}:*`);
-    // await deleteKeys(`products:*`);
+      // clear any slug-based product caches (details, with-variations, related, etc)
+      await deleteKeys(`product:${slug}:*`);
+    }
 
     return NextResponse.json(
       { success: true, review: response },

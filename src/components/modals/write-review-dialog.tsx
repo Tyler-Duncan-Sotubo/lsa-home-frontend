@@ -24,6 +24,7 @@ interface WriteReviewDialogProps {
     name: string;
     email: string;
   } | null;
+  slug: string;
 }
 
 // Zod schemas
@@ -44,6 +45,7 @@ export function WriteReviewDialog({
   onOpenChange,
   onSubmitted,
   user,
+  slug,
 }: WriteReviewDialogProps) {
   const isLoggedIn = !!user;
 
@@ -91,6 +93,7 @@ export function WriteReviewDialog({
           headline,
           name: isLoggedIn ? user?.name : name,
           email: isLoggedIn ? user?.email : email,
+          slug,
           // You can add more fields here if your WooCommerce endpoint needs them
         }),
       });

@@ -191,8 +191,12 @@
   @apply text-gray-800;
 }
 
+.prose h1 {
+  @apply text-4xl font-bold my-2;
+}
+
 .prose h2 {
-  @apply text-2xl font-semibold;
+  @apply text-2xl font-semibold mt-6;
 }
 
 .prose h3 {

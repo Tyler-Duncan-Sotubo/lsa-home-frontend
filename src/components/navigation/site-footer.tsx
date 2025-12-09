@@ -15,11 +15,11 @@ const shopLinks = [
 
 const customerCareLinks = [
   { href: "/policies/refund-policy", label: "Refund Policy" },
-  { href: "https://shopify.com/60057092157/account/", label: "Account" },
+  { href: "/account/", label: "Account" },
   { href: "/pages/faqs", label: "FAQs" },
-  { href: "/pages/privacy-policy", label: "Privacy Policy" },
+  { href: "/policies/privacy-policy", label: "Privacy Policy" },
   {
-    href: "https://lsahome.co/policies/terms-of-service",
+    href: "/policies/terms-of-service",
     label: "Terms of Use",
   },
 ];

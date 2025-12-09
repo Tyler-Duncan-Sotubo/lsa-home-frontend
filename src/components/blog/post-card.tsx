@@ -14,7 +14,7 @@ export default function PostCard({ post }: PostCardProps) {
   const date = format(new Date(post.date), "MMMM d, yyyy");
 
   return (
-    <article className="flex h-full flex-col">
+    <article className="flex h-full flex-col mt-10">
       {image && (
         <Link
           href={`/blog/${post.slug}`}

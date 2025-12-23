@@ -1,5 +1,5 @@
-import { CheckoutClient } from "@/features/checkout/ui/checkout-client";
+import { redirect } from "next/navigation";
 
-export default function CheckoutPage() {
-  return <CheckoutClient />;
+export default function PagesIndexRedirect() {
+  redirect("/"); // /pages → /
 }

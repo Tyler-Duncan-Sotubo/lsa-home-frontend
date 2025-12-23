@@ -1,7 +1,5 @@
-// app/refund-policy/page.tsx
-
 import { Metadata } from "next";
-import { refundPolicyHtml } from "@/assets/data/policies";
+import RefundPolicyClient from "@/features/policies/ui/refund-policy-client";
 
 export const metadata: Metadata = {
   title: "Refund Policy | LSA HOME",
@@ -24,15 +22,5 @@ export const metadata: Metadata = {
 };
 
 export default function RefundPolicyPage() {
-  return (
-    <div className="mx-auto w-[90%] max-w-6xl my-10">
-      {refundPolicyHtml.map((section, i) => (
-        <div
-          key={i}
-          className="prose prose-slate max-w-none px-4 md:px-0"
-          dangerouslySetInnerHTML={{ __html: section }}
-        />
-      ))}
-    </div>
-  );
+  return <RefundPolicyClient />;
 }

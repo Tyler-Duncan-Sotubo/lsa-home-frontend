@@ -1,7 +1,9 @@
-import BestSellersSection from "@/components/Home/best-sellers";
-import CategorySlider from "@/components/Home/category-slider";
-import HeroBanner from "@/components/Home/HeroBanner";
-import { ProductRailSkeleton } from "@/components/skeleton/product-rail-skeleton";
+import BestSellersSection from "@/features/Home/ui/best-sellers";
+import CategorySlider from "@/features/Home/ui/category-slider";
+import HeroBanner from "@/features/Home/ui/HeroBanner";
+import LatestSlider from "@/features/Home/ui/latest";
+import SerenePromo from "@/features/Home/ui/serene-promo";
+import { ProductRailSkeleton } from "@/features/products/ui/product-rail-skeleton";
 import { Suspense } from "react";
 
 export default function Home() {
@@ -15,6 +17,8 @@ export default function Home() {
         }
       >
         <BestSellersSection />
+        <SerenePromo />
+        <LatestSlider />
       </Suspense>
     </div>
   );

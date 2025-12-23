@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
 import {
   Form,
   FormField,
@@ -14,15 +14,17 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/shared/ui/form";
 import Link from "next/link";
+import { Checkbox } from "@/shared/ui/checkbox";
 
 type RegisterFormValues = {
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone?: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
+  marketingOptIn: boolean;
 };
 
 export default function RegisterPage() {
@@ -32,45 +34,43 @@ export default function RegisterPage() {
 
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<RegisterFormValues>({
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
       firstName: "",
       lastName: "",
+      email: "",
+      phone: "",
+      password: "",
     },
   });
+
+  const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = async (values: RegisterFormValues) => {
     setError(null);
     setSuccessMsg(null);
-    setIsSubmitting(true);
 
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+        }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        setError(data.error || "Unable to create your account.");
+        setError(data?.error || "Unable to create your account.");
         return;
       }
 
-      // Option A: show success + send to login
-      // setSuccessMsg("Account created! You can now sign in.");
-      // router.push("/account/login");
-
-      // Option B: auto-login immediately
+      // Auto-login (email-based)
       const loginRes = await signIn("credentials", {
         redirect: false,
-        username: values.username,
+        email: values.email,
         password: values.password,
         callbackUrl,
       });
@@ -85,8 +85,6 @@ export default function RegisterPage() {
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -113,6 +111,7 @@ export default function RegisterPage() {
                 <FormField
                   control={form.control}
                   name="firstName"
+                  rules={{ required: "First name is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>First name</FormLabel>
@@ -131,6 +130,7 @@ export default function RegisterPage() {
                 <FormField
                   control={form.control}
                   name="lastName"
+                  rules={{ required: "Last name is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Last name</FormLabel>
@@ -149,21 +149,6 @@ export default function RegisterPage() {
 
               <FormField
                 control={form.control}
-                name="username"
-                rules={{ required: "Username is required" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input type="text" autoComplete="username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="email"
                 rules={{ required: "Email is required" }}
                 render={({ field }) => (
@@ -179,8 +164,22 @@ export default function RegisterPage() {
 
               <FormField
                 control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone (optional)</FormLabel>
+                    <FormControl>
+                      <Input type="tel" autoComplete="tel" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="password"
-                rules={{ required: "Password is required" }}
+                rules={{ required: "Password is required", minLength: 6 }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
@@ -196,13 +195,47 @@ export default function RegisterPage() {
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="marketingOptIn"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start gap-3 rounded-lg border p-3">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value ?? false}
+                        onCheckedChange={(checked) =>
+                          field.onChange(Boolean(checked))
+                        }
+                      />
+                    </FormControl>
+
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-sm font-medium">
+                        Subscribe to marketing emails
+                      </FormLabel>
+                      <p className="text-xs text-muted-foreground">
+                        Get early access to launches, special offers, and
+                        member-only promotions. You can unsubscribe anytime.
+                      </p>
+                    </div>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {error && <p className="text-sm text-destructive">{error}</p>}
               {successMsg && (
                 <p className="text-sm text-emerald-600">{successMsg}</p>
               )}
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Creating account..." : "Create account"}
+              <Button
+                type="submit"
+                className="w-full"
+                isLoading={isSubmitting}
+                loadingText="Creating account..."
+              >
+                Create account
               </Button>
 
               <p className="pt-2 text-center text-xs text-muted-foreground">

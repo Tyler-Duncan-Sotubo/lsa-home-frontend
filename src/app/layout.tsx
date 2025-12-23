@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
-import PromoBanner from "@/components/banners/promo-banner";
-import { SiteHeader } from "@/components/navigation/site-header";
-import { AppProviders } from "@/providers/app-providers";
-import { AuthProvider } from "@/providers/auth-provider";
-import { QueryProvider } from "@/providers/query-provider";
+import PromoBanner from "@/features/navigation/ui/promo-banner";
+import { SiteHeader } from "@/features/navigation/ui/site-header";
+import { AppProviders } from "@/shared/providers/app-providers";
+import { AuthProvider } from "@/shared/providers/auth-provider";
+import { QueryProvider } from "@/shared/providers/query-provider";
 import { Suspense } from "react";
-import ScrollToTop from "@/components/navigation/scroll-to-top";
-import { SiteFooter } from "@/components/navigation/site-footer";
+import ScrollToTop from "@/features/navigation/ui/scroll-to-top";
+import { SiteFooter } from "@/features/navigation/ui/site-footer";
 
 const lato = Lato({
   subsets: ["latin"],

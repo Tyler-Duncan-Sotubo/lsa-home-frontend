@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { wpFetch } from "@/lib/graphql/client";
 import { LATEST_POSTS } from "@/lib/graphql/queries";
 import { LatestPostsData, Post } from "@/lib/graphql/type";
-import FeaturedPost from "../../components/blog/featured-post";
-import PostGrid from "../../components/blog/post-grid";
+import FeaturedPost from "../../features/blog/featured-post";
+import PostGrid from "../../features/blog/post-grid";
 import { redis } from "@/lib/redis"; // 👈 adjust path to your redis client
 
 export const revalidate = 60; // route-level revalidation (optional alongside Redis)

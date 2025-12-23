@@ -1,36 +1,36 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/store/cartSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 
 export type CartItem = {
-  id: number | string; // Woo product / variation id
-  slug?: string;
+  slug: string;
+  variantId?: string | null;
+
+  // ✅ UI fields
   name: string;
   image?: string | null;
-  unitPrice: number; // numeric price for totals
-  priceHtml?: string | null; // optional formatted price
-  quantity: number;
-  attributes?: Record<string, string | null>; // e.g. { size: "L", color: "White" }
+  unitPrice: number;
 
-  /** Per-unit weight in kilograms, from WooCommerce product data */
+  quantity: number;
+
+  // optional
+  priceHtml?: string | null;
+  attributes?: Record<string, string | null>;
   weightKg?: number;
 };
 
 export type CartState = {
   items: CartItem[];
-  isOpen: boolean; // controls cart drawer UI
+  isOpen: boolean;
 };
 
 export type CartStateFromStorage = {
   items: CartItem[];
 };
 
-// helper: stable key per item+attributes
-function buildItemKey(item: Pick<CartItem, "id" | "attributes">): string {
-  const attrs = item.attributes || {};
-  const sortedKeys = Object.keys(attrs).sort();
-  const attrsString = sortedKeys.map((k) => `${k}:${attrs[k] ?? ""}`).join("|");
-  return `${item.id}__${attrsString}`;
+function buildKey(slug: string, variantId?: string | null) {
+  return `${slug}__${variantId ?? ""}`;
 }
 
 const initialState: CartState = {
@@ -42,7 +42,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // hydrating only items (not isOpen) from localStorage
+    // ✅ keep this for localStorage hydration
     hydrateCart(state, action: PayloadAction<CartStateFromStorage>) {
       state.items = Array.isArray(action.payload.items)
         ? action.payload.items
@@ -51,66 +51,103 @@ const cartSlice = createSlice({
 
     addToCart(
       state,
-      action: PayloadAction<Omit<CartItem, "quantity"> & { quantity?: number }>
+      action: PayloadAction<{
+        slug: string;
+        variantId?: string | null;
+        quantity?: number;
+
+        name: string;
+        image?: string | null;
+        unitPrice: number;
+
+        priceHtml?: string | null;
+        attributes?: Record<string, any>;
+        weightKg?: number;
+      }>
     ) {
-      const { quantity = 1, ...rest } = action.payload;
+      const {
+        slug,
+        variantId = null,
+        quantity = 1,
+        name,
+        image = null,
+        unitPrice,
+        priceHtml = null,
+        attributes,
+        weightKg,
+      } = action.payload;
 
-      const key = buildItemKey({
-        id: rest.id,
-        attributes: rest.attributes,
-      });
+      const key = buildKey(slug, variantId);
+      const index = state.items.findIndex(
+        (it) => buildKey(it.slug, it.variantId) === key
+      );
 
-      const existing = state.items.find((item) => buildItemKey(item) === key);
-
-      if (existing) {
+      if (index !== -1) {
+        // ✅ update existing
+        const existing = state.items[index];
         existing.quantity += quantity;
+
+        existing.name = name;
+        existing.image = image;
+        existing.unitPrice = unitPrice;
+        existing.priceHtml = priceHtml;
+        existing.attributes = attributes;
+        existing.weightKg = weightKg;
+
+        // ✅ move to front (newest-first)
+        state.items.splice(index, 1);
+        state.items.unshift(existing);
       } else {
-        state.items.push({
-          ...rest,
+        // ✅ insert at front (not push)
+        state.items.unshift({
+          slug,
+          variantId,
           quantity,
-          image: rest.image ?? null,
-          priceHtml: rest.priceHtml ?? null,
+          name,
+          image,
+          unitPrice,
+          priceHtml,
+          attributes,
+          weightKg,
         });
       }
 
-      // auto-open drawer whenever cart is modified via add
       state.isOpen = true;
     },
 
     removeFromCart(
       state,
-      action: PayloadAction<{
-        id: CartItem["id"];
-        attributes?: Record<string, string | null>;
-      }>
+      action: PayloadAction<{ slug: string; variantId?: string | null }>
     ) {
-      const keyToRemove = buildItemKey({
-        id: action.payload.id,
-        attributes: action.payload.attributes,
-      });
-
+      const key = buildKey(
+        action.payload.slug,
+        action.payload.variantId ?? null
+      );
       state.items = state.items.filter(
-        (item) => buildItemKey(item) !== keyToRemove
+        (it) => buildKey(it.slug, it.variantId) !== key
       );
     },
 
     updateCartQuantity(
       state,
       action: PayloadAction<{
-        id: CartItem["id"];
-        attributes?: Record<string, string | null>;
+        slug: string;
+        variantId?: string | null;
         quantity: number;
       }>
     ) {
-      const { id, attributes, quantity } = action.payload;
-      const key = buildItemKey({ id, attributes });
+      const { slug, variantId = null, quantity } = action.payload;
+      const key = buildKey(slug, variantId);
 
-      const existing = state.items.find((item) => buildItemKey(item) === key);
-
+      const existing = state.items.find(
+        (it) => buildKey(it.slug, it.variantId) === key
+      );
       if (!existing) return;
 
       if (quantity <= 0) {
-        state.items = state.items.filter((item) => buildItemKey(item) !== key);
+        state.items = state.items.filter(
+          (it) => buildKey(it.slug, it.variantId) !== key
+        );
       } else {
         existing.quantity = quantity;
       }
@@ -135,7 +172,7 @@ const cartSlice = createSlice({
 });
 
 export const {
-  hydrateCart,
+  hydrateCart, // ✅ exported
   addToCart,
   removeFromCart,
   updateCartQuantity,

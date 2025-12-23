@@ -1,6 +1,6 @@
-// app/collections/[slug]/page.tsx
-import { getCollectionByCategorySlug } from "@/lib/woocommerce/collections";
-import { CollectionPageClient } from "./collection-page-client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { listCollectionProducts } from "@/features/collections/actions/get-collections";
+import { CollectionPageClient } from "@/features/collections/ui/collection-page-client";
 
 export default async function CollectionPage({
   params,
@@ -9,18 +9,19 @@ export default async function CollectionPage({
 }) {
   const { slug } = await params;
 
-  const { category, products } = await getCollectionByCategorySlug(slug, {
+  const products = await listCollectionProducts(slug, {
     perPage: 24,
     includeChildren: true,
   });
 
-  if (!category) {
-    return (
-      <div className="w-[95%] mx-auto py-8">
-        <h1 className="text-2xl font-semibold">Collection not found</h1>
-      </div>
-    );
+  if (!products[0]?.categories) {
+    return <div>Collection not found</div>;
   }
 
-  return <CollectionPageClient category={category} products={products} />;
+  return (
+    <CollectionPageClient
+      category={products[0]?.categories as any}
+      products={products}
+    />
+  );
 }

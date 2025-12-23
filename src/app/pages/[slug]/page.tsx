@@ -1,8 +1,7 @@
-// app/pages/[slug]/page.tsx
 import { Suspense } from "react";
-import { getParentCategoryCollections } from "@/lib/woocommerce/collections";
-import { ProductRail } from "@/components/products/product-rail";
-import { ProductRailSkeleton } from "@/components/skeleton/product-rail-skeleton";
+import { ProductRailSkeleton } from "@/features/products/ui/product-rail-skeleton";
+import { ProductRail } from "@/features/products/ui/product-rail";
+import { getCollectionProductsGroupedBySlug } from "@/features/collections/actions/get-collections";
 
 export default async function AllCategoryPage({
   params,
@@ -11,12 +10,15 @@ export default async function AllCategoryPage({
 }) {
   const { slug } = await params;
 
-  const { parent, children } = await getParentCategoryCollections(slug, {
-    perChild: 8,
-    status: "publish",
+  // ✅ NEW: backend grouped endpoint by slug
+  const groups = await getCollectionProductsGroupedBySlug(slug, {
+    perPage: 8, // per child category (your backend uses limit per category)
+    page: 1,
+    includeChildren: true,
   });
 
-  if (!parent) {
+  // If the slug is invalid / no children
+  if (!groups || groups.length === 0) {
     return (
       <div className="w-[95%] mx-auto py-10">
         <h1 className="text-2xl font-semibold">Collection not found</h1>
@@ -24,25 +26,28 @@ export default async function AllCategoryPage({
     );
   }
 
+  // We no longer have `parent` from Woo helper, so derive a sensible heading from the slug
+  const title = slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
   return (
     <div className="w-[95%] mx-auto py-10 space-y-10">
       {/* Page heading */}
       <header>
-        <h1 className="text-3xl md:text-4xl font-semibold">
-          {parent.name.replace(/^All\s+/i, "")}
+        <h1 className="text-3xl md:text-4xl font-semibold capitalize">
+          {title.replace(/^All\s+/i, "")}
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Explore our full {parent.name.replace(/^All\s+/i, "").toLowerCase()}{" "}
+          Explore our full {title.replace(/^All\s+/i, "").toLowerCase()}{" "}
           collection.
         </p>
       </header>
 
-      {/* One section per child category */}
-      {children.map(({ category, products }) =>
-        products.length === 0 ? null : (
+      {/* One section per child category (each group) */}
+      {groups.map(({ category, products }) =>
+        !products || products.length === 0 ? null : (
           <Suspense
-            // Suspense isn’t strictly needed here since we already awaited,
-            // but you can keep skeletons if you refactor to stream later.
             key={category.id}
             fallback={<ProductRailSkeleton sectionClassName="w-full py-8" />}
           >

@@ -1,14 +1,13 @@
 // app/account/page.tsx
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth/auth";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
 // React Icons
 import { FaBox, FaLock, FaMapMarkedAlt } from "react-icons/fa";
 
 export default async function AccountPage() {
   const session = await auth();
-
   if (!session) {
     return (
       <div className="p-6 text-center">

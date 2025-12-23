@@ -1,12 +1,12 @@
 // components/account/orders-tab.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
 import { cn } from "@/lib/utils";
-import LsaLoading from "@/components/ui/lsa-loading";
+import LsaLoading from "@/shared/ui/lsa-loading";
 
 type WooOrderLineItem = {
   id: number;

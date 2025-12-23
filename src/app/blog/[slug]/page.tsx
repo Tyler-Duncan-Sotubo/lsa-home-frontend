@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Breadcrumb from "@/components/blog/Breadcrumb";
+import Breadcrumb from "@/features/blog/Breadcrumb";
 import Image from "next/image";
 import { format } from "date-fns";
-import FloatingShare from "@/components/blog/FloatingShare";
+import FloatingShare from "@/features/blog/FloatingShare";
 import type { Metadata } from "next";
 import { POST_BY_SLUG } from "@/lib/graphql/queries";
 import { wpFetch } from "@/lib/graphql/client";

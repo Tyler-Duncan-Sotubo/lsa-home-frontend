@@ -28,7 +28,7 @@ export async function generateMetadata({
 
   const product = await getProductBySlugWithVariations(slug);
 
-  if (!product) {
+  if (!product || Array.isArray(product)) {
     return {
       title: "Product not found | LSA Home",
       robots: { index: false, follow: false },
@@ -49,7 +49,7 @@ export default async function ProductPage({
   const { slug } = await params;
 
   const product = await getProductBySlugWithVariations(slug);
-  if (!product) return notFound();
+  if (!product || Array.isArray(product)) return notFound();
 
   const firstCategory = product.categories?.[1];
 

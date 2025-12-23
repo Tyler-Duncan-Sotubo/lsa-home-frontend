@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use(
     const { getSession } = await import("next-auth/react");
     const session = await getSession();
 
-    const accessToken = session?.customerTokens?.accessToken;
+    const accessToken = session?.backendTokens.accessToken;
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }

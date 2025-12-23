@@ -5,9 +5,8 @@ import { LATEST_POSTS } from "@/lib/graphql/queries";
 import { LatestPostsData, Post } from "@/lib/graphql/type";
 import FeaturedPost from "../../features/blog/featured-post";
 import PostGrid from "../../features/blog/post-grid";
-import { redis } from "@/lib/redis"; // 👈 adjust path to your redis client
 
-export const revalidate = 60; // route-level revalidation (optional alongside Redis)
+export const revalidate = 60; // ISR: revalidate every 60s
 
 // ✅ Blog home metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -37,45 +36,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const BLOG_LATEST_POSTS_CACHE_KEY = "blog:latest-posts";
-
-// 🔐 Helper with Redis cache
+// 🔹 Fetch latest posts (Next.js cache only)
 async function getLatestPosts(): Promise<LatestPostsData> {
-  // 1) Try Redis cache
-  if (redis) {
-    const cached = await redis.get(BLOG_LATEST_POSTS_CACHE_KEY);
-    if (cached) {
-      try {
-        return JSON.parse(cached as string) as LatestPostsData;
-      } catch {
-        // bad cache → ignore and fetch fresh
-      }
-    }
-  }
-
-  // 2) Fetch fresh from WordPress
-  const data = await wpFetch<LatestPostsData>({
+  return wpFetch<LatestPostsData>({
     query: LATEST_POSTS,
-    revalidate: 0, // we handle caching via Redis here
+    revalidate: 60, // aligns with route ISR
     tags: ["posts", "blog-home"],
   });
-
-  // 3) Store in Redis (TTL: 10 minutes here)
-  if (redis) {
-    await redis.set(
-      BLOG_LATEST_POSTS_CACHE_KEY,
-      JSON.stringify(data),
-      "EX",
-      60 * 10 // 10 minutes
-    );
-  }
-
-  return data;
 }
 
 export default async function BlogHome() {
   const data = await getLatestPosts();
-
   const posts: Post[] = data.posts?.nodes ?? [];
 
   if (!posts.length) {

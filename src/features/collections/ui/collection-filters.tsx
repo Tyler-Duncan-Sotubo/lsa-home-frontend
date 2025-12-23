@@ -10,11 +10,11 @@ import {
   SheetTrigger,
 } from "@/shared/ui/sheet";
 import { colorSwatchMap } from "@/shared/constants/product-colors";
+import { IoFilterSharp, IoClose } from "react-icons/io5";
 import {
   CollectionFilterMeta,
   CollectionFiltersState,
-} from "@/lib/woocommerce/filters";
-import { IoFilterSharp, IoClose } from "react-icons/io5";
+} from "../actions/filters";
 
 interface CollectionFiltersProps {
   meta: CollectionFilterMeta;

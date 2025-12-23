@@ -37,24 +37,3 @@ export async function POST(req: Request) {
     headers: { "Cache-Control": "no-store" },
   });
 }
-
-export async function GET(
-  _req: Request,
-  { params }: { params: { checkoutId: string } }
-) {
-  const jar = await cookies();
-  const cartToken = jar.get(CART_TOKEN_COOKIE)?.value ?? null;
-
-  if (!cartToken) {
-    return NextResponse.json({ error: "No cart session" }, { status: 401 });
-  }
-
-  const checkout = await storefrontFetch<any>(
-    `/api/storefront/checkouts/${params.checkoutId}`,
-    { method: "GET", cartToken, cache: "no-store" }
-  );
-
-  return NextResponse.json(checkout, {
-    headers: { "Cache-Control": "no-store" },
-  });
-}

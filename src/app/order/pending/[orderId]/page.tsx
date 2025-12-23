@@ -1,8 +1,10 @@
-export default async function CheckoutPage({
+import { OrderDetails } from "@/features/orders/ui/order-details";
+
+export default async function OrderPage({
   params,
 }: {
   params: Promise<{ orderId: string }>;
 }) {
   const { orderId } = await params;
-  return <div>{orderId}</div>;
+  return <OrderDetails orderId={orderId} />;
 }

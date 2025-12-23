@@ -154,13 +154,13 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "No cart session" }, { status: 401 });
   }
 
-  const cart = await storefrontFetch<any>(`/api/storefront/carts/${cartId}`, {
-    method: "GET",
-    cartToken,
-    cache: "no-store",
-  });
+  // ✅ fetch items from the correct endpoint
+  const items = await storefrontFetch<any[]>(
+    `/api/storefront/carts/${cartId}/items`,
+    { method: "GET", cartToken, cache: "no-store" }
+  );
 
-  const cartItemId = findCartItemId(cart, productOrVariantId, attributes);
+  const cartItemId = findCartItemId({ items }, productOrVariantId, attributes);
   if (!cartItemId) {
     return NextResponse.json({ error: "Cart item not found" }, { status: 404 });
   }
@@ -184,13 +184,12 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "No cart session" }, { status: 401 });
   }
 
-  const cart = await storefrontFetch<any>(`/api/storefront/carts/${cartId}`, {
-    method: "GET",
-    cartToken,
-    cache: "no-store",
-  });
+  const items = await storefrontFetch<any[]>(
+    `/api/storefront/carts/${cartId}/items`,
+    { method: "GET", cartToken, cache: "no-store" }
+  );
 
-  const cartItemId = findCartItemId(cart, productOrVariantId, attributes);
+  const cartItemId = findCartItemId({ items }, productOrVariantId, attributes);
   if (!cartItemId) {
     return NextResponse.json({ error: "Cart item not found" }, { status: 404 });
   }

@@ -35,6 +35,8 @@ export function CollectionPageClient({
     [products, filters]
   );
 
+  console.log({ filteredProducts });
+
   return (
     <section className="mx-auto w-[95%] space-y-6 py-8">
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5">

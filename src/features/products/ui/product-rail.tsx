@@ -40,6 +40,8 @@ export function ProductRail({
 
   const isWrap = layout === "wrap";
 
+  console.log("Rendering ProductRail with products:", products);
+
   return (
     <section className={sectionClassName}>
       <div className="mx-auto w-full">
@@ -88,32 +90,34 @@ export function ProductRail({
               md:gap-6
             "
           >
-            {products.map((product, idx) => (
-              <div
-                key={createStableKey("product", product.id, "wrap", idx)}
-                className="
+            {products.map((product, idx) => {
+              return (
+                <div
+                  key={createStableKey("product", product.id, "wrap", idx)}
+                  className="
         w-[calc(33.333%-0.67rem)]
         sm:w-[calc(33.333%-0.84rem)]
         md:w-[calc(33.333%-1rem)]
       "
-              >
-                <ProductCard
-                  id={product.id}
-                  name={product.name}
-                  slug={product.slug}
-                  permalink={product.permalink}
-                  imageSrc={product.images?.[0]?.src}
-                  priceHtml={product.price_html}
-                  averageRating={Number(product.average_rating ?? 0)}
-                  ratingCount={product.rating_count ?? 0}
-                  tagLabel={product.tags?.[0]?.name}
-                  quickViewProduct={product}
-                  regularPrice={product.regular_price}
-                  salePrice={product.sale_price}
-                  onSale={product.on_sale}
-                />
-              </div>
-            ))}
+                >
+                  <ProductCard
+                    id={product.id}
+                    name={product.name}
+                    slug={product.slug}
+                    permalink={product.permalink}
+                    imageSrc={product.images?.[0]?.src}
+                    priceHtml={product.price_html}
+                    averageRating={Number(product.average_rating ?? 0)}
+                    ratingCount={product.rating_count ?? 0}
+                    tagLabel={product.tags?.[0]?.name}
+                    quickViewProduct={product}
+                    regularPrice={product.regular_price}
+                    salePrice={product.sale_price}
+                    onSale={product.on_sale}
+                  />
+                </div>
+              );
+            })}
           </div>
         ) : (
           <>

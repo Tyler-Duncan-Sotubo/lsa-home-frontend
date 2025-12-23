@@ -1,11 +1,12 @@
+const normalizeNumber = (value: string) => value.replace(/[₦,\s]/g, "").trim();
+
 export const formatNaira = (value?: string | number | null) => {
-  if (!value) return null;
+  if (value == null || value === "") return null;
 
-  // Convert WooCommerce string values ("35000") to a number
-  const num = Number(value);
+  const num =
+    typeof value === "number" ? value : Number(normalizeNumber(value));
 
-  // Prevent NaN errors
-  if (Number.isNaN(num)) return null;
+  if (!Number.isFinite(num)) return null;
 
   return num.toLocaleString("en-NG", {
     style: "currency",
@@ -16,16 +17,20 @@ export const formatNaira = (value?: string | number | null) => {
 
 /**
  * Formats:
- *  - "8500"           → ₦8,500
- *  - "8500 - 35000"   → ₦8,500 – ₦35,000
- *  - null / ""        → null
+ *  - "8500"                    → ₦8,500.00
+ *  - "₦8,500.00"               → ₦8,500.00
+ *  - "8500 - 35000"            → ₦8,500.00 – ₦35,000.00
+ *  - "₦8,500 – ₦35,000"        → ₦8,500.00 – ₦35,000.00
+ *  - null / ""                 → null
  */
 export function formatPriceDisplay(value?: string | null): string | null {
   if (!value) return null;
 
-  // Range: "8500 - 35000"
-  if (value.includes("-")) {
-    const [min, max] = value.split("-").map((v) => v.trim());
+  // Normalize dash variants
+  const normalized = value.replace(/–/g, "-");
+
+  if (normalized.includes("-")) {
+    const [min, max] = normalized.split("-").map((v) => v.trim());
     const minFmt = formatNaira(min);
     const maxFmt = formatNaira(max);
 
@@ -34,7 +39,5 @@ export function formatPriceDisplay(value?: string | null): string | null {
     }
   }
 
-  // Single numeric value
-  const single = formatNaira(value);
-  return single ?? null;
+  return formatNaira(normalized);
 }

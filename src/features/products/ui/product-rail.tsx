@@ -40,8 +40,6 @@ export function ProductRail({
 
   const isWrap = layout === "wrap";
 
-  console.log("Rendering ProductRail with products:", products);
-
   return (
     <section className={sectionClassName}>
       <div className="mx-auto w-full">

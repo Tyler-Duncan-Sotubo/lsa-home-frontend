@@ -5,47 +5,37 @@ import { cookies } from "next/headers";
 import { storefrontFetch } from "@/shared/api/fetch";
 import { auth } from "@/lib/auth/auth";
 
+export const runtime = "nodejs"; // avoid Edge quirks if auth/storefront uses Node stuff
+export const dynamic = "force-dynamic"; // ensure this route isn't cached
+
 const CART_ID_COOKIE = "sf_cart_id";
 const CART_TOKEN_COOKIE = "sf_cart_token";
 
 async function readSession() {
-  const jar = cookies();
-  const cartId = (await jar).get(CART_ID_COOKIE)?.value ?? null;
-  const cartToken = (await jar).get(CART_TOKEN_COOKIE)?.value ?? null;
-  return { jar: await jar, cartId, cartToken };
+  const jar = await cookies();
+  const cartId = jar.get(CART_ID_COOKIE)?.value ?? null;
+  const cartToken = jar.get(CART_TOKEN_COOKIE)?.value ?? null;
+  return { cartId, cartToken };
 }
 
 async function ensureCartSession() {
   const jar = await cookies();
+
   let cartId = jar.get(CART_ID_COOKIE)?.value ?? null;
   let cartToken = jar.get(CART_TOKEN_COOKIE)?.value ?? null;
 
   const session = await auth();
-  const customerId = session?.user.id ?? null;
+  const customerId = session?.user?.id ?? null;
 
   if (!cartId || !cartToken) {
     const cart = await storefrontFetch<any>("/api/storefront/carts", {
       method: "POST",
       body: { channel: "online", currency: "NGN", customerId },
+      cache: "no-store",
     });
 
-    cartId = cart.id;
-    cartToken = cart.guestToken;
-
-    if (cartId) {
-      jar.set(CART_ID_COOKIE, cartId, {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-      });
-    }
-    if (cartToken) {
-      jar.set(CART_TOKEN_COOKIE, cartToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-      });
-    }
+    cartId = cart?.id ?? null;
+    cartToken = cart?.guestToken ?? null;
   }
 
   return { cartId, cartToken };
@@ -80,8 +70,13 @@ function findCartItemId(
 // GET /api/cart
 export async function GET() {
   const { cartId, cartToken } = await readSession();
-  if (!cartId || !cartToken)
-    return NextResponse.json({ cartId: null, items: [], subtotal: 0 });
+
+  if (!cartId || !cartToken) {
+    return NextResponse.json(
+      { cartId: null, items: [], subtotal: 0 },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  }
 
   const items = await storefrontFetch<any>(
     `/api/storefront/carts/${cartId}/items`,
@@ -98,19 +93,28 @@ export async function GET() {
   );
 }
 
-// POST /api/cart  (add)
+// POST /api/cart (add)
 export async function POST(req: Request) {
   const input = await req.json();
-  if (!input?.slug)
+  if (!input?.slug) {
     return NextResponse.json({ error: "Missing slug" }, { status: 400 });
+  }
 
   const { cartId, cartToken } = await ensureCartSession();
+  if (!cartId || !cartToken) {
+    return NextResponse.json(
+      { error: "Unable to create cart" },
+      { status: 500 }
+    );
+  }
 
+  // Add item
   const cart = await storefrontFetch<any>(
     `/api/storefront/carts/${cartId}/items`,
     {
       method: "POST",
       cartToken,
+      cache: "no-store",
       body: {
         slug: input.slug,
         variantId: input.variantId ?? null,
@@ -119,55 +123,84 @@ export async function POST(req: Request) {
     }
   );
 
-  return NextResponse.json(cart);
+  // ✅ Guarantee cookies are attached to this response
+  const res = NextResponse.json(cart, {
+    headers: { "Cache-Control": "no-store" },
+  });
+
+  res.cookies.set(CART_ID_COOKIE, cartId, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  res.cookies.set(CART_TOKEN_COOKIE, cartToken, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  return res;
 }
 
-// PATCH /api/cart  (update qty by key)
+// PATCH /api/cart
 export async function PATCH(req: Request) {
   const { productOrVariantId, quantity, attributes } = await req.json();
 
   const { cartId, cartToken } = await readSession();
-  if (!cartId || !cartToken)
+  if (!cartId || !cartToken) {
     return NextResponse.json({ error: "No cart session" }, { status: 401 });
+  }
 
   const cart = await storefrontFetch<any>(`/api/storefront/carts/${cartId}`, {
     method: "GET",
     cartToken,
+    cache: "no-store",
   });
 
   const cartItemId = findCartItemId(cart, productOrVariantId, attributes);
-  if (!cartItemId)
+  if (!cartItemId) {
     return NextResponse.json({ error: "Cart item not found" }, { status: 404 });
+  }
 
   const updated = await storefrontFetch<any>(
     `/api/storefront/carts/${cartId}/items/${cartItemId}`,
-    { method: "PATCH", cartToken, body: { quantity } }
+    { method: "PATCH", cartToken, cache: "no-store", body: { quantity } }
   );
 
-  return NextResponse.json(updated);
+  return NextResponse.json(updated, {
+    headers: { "Cache-Control": "no-store" },
+  });
 }
 
-// DELETE /api/cart  (remove by key)
+// DELETE /api/cart
 export async function DELETE(req: Request) {
   const { productOrVariantId, attributes } = await req.json();
 
   const { cartId, cartToken } = await readSession();
-  if (!cartId || !cartToken)
+  if (!cartId || !cartToken) {
     return NextResponse.json({ error: "No cart session" }, { status: 401 });
+  }
 
   const cart = await storefrontFetch<any>(`/api/storefront/carts/${cartId}`, {
     method: "GET",
     cartToken,
+    cache: "no-store",
   });
 
   const cartItemId = findCartItemId(cart, productOrVariantId, attributes);
-  if (!cartItemId)
+  if (!cartItemId) {
     return NextResponse.json({ error: "Cart item not found" }, { status: 404 });
+  }
 
   const updated = await storefrontFetch<any>(
     `/api/storefront/carts/${cartId}/items/${cartItemId}`,
-    { method: "DELETE", cartToken }
+    { method: "DELETE", cartToken, cache: "no-store" }
   );
 
-  return NextResponse.json(updated);
+  return NextResponse.json(updated, {
+    headers: { "Cache-Control": "no-store" },
+  });
 }

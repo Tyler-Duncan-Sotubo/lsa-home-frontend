@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/shared/ui/button";
 import { Stagger, StaggerItem } from "@/shared/animations/stagger";
 import { AboutHeroSectionV1 } from "@/config/types/pages/About/about-sections.types";
+import { HeroSectionV1 } from "@/config/types/pages/common/hero-section.type";
 
 type Align = "left" | "center" | "right";
 
@@ -25,7 +26,7 @@ function getAlign(align: Align) {
 export default function AboutHeroSection({
   config,
 }: {
-  config: AboutHeroSectionV1;
+  config: AboutHeroSectionV1 | HeroSectionV1;
 }) {
   if (config.enabled === false) return null;
 

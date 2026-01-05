@@ -100,7 +100,7 @@ export function WriteReviewDialog({
 
       // ✅ ensures the server-rendered reviews + rating summary updates immediately
       router.refresh();
-
+      setSuccess("");
       onSubmitted?.();
       onOpenChange(false);
     } catch (err) {
@@ -175,7 +175,7 @@ export function WriteReviewDialog({
               value={review}
               onChange={(e) => setReview(e.target.value)}
               placeholder="Tell us what you like or dislike"
-              className="min-h-[120px]"
+              className="min-h-30"
             />
           </div>
 
@@ -212,7 +212,7 @@ export function WriteReviewDialog({
           <DialogFooter className="mt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="clean"
               onClick={() => onOpenChange(false)}
               disabled={submitting}
             >

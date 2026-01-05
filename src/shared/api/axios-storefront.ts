@@ -6,10 +6,11 @@ export const storefrontAxios = Axios.create({
 
 storefrontAxios.interceptors.request.use(
   (config) => {
-    const apiKey = process.env.NEXT_PUBLIC_STOREFRONT_KEY;
+    const apiKey = process.env.STOREFRONT_API_KEY;
+    console.log("Using STOREFRONT_API_KEY:", apiKey);
 
     if (!apiKey) {
-      throw new Error("NEXT_PUBLIC_STOREFRONT_KEY is not set");
+      throw new Error("STOREFRONT_API_KEY is not set");
     }
 
     config.headers["X-API-Key"] = apiKey;

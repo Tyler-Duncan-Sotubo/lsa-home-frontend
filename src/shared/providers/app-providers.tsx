@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { store } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 import {
   hydrateWishlist,
   WishlistStateFromStorage,
@@ -13,19 +14,26 @@ import {
   RecentlyViewedStateFromStorage,
 } from "@/store/recentlyViewedSlice";
 import { hydrateCart, CartStateFromStorage } from "@/store/cartSlice";
+
+import { hydrateQuote, QuoteStateFromStorage } from "@/store/quoteSlice";
+
 import { useCartEventRefresh } from "../hooks/use-cart-event-refresh";
 
 const WISHLIST_KEY = "wishlist:v1";
 const RECENTLY_VIEWED_KEY = "recentlyViewed:v1";
 const CART_KEY = "cart:v1";
+const QUOTE_KEY = "quote:v1";
 
 function ReduxPersistence({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
+
   const wishlist = useAppSelector((state) => state.wishlist.items);
   const recentlyViewed = useAppSelector((state) => state.recentlyViewed.items);
   const cartItems = useAppSelector((state) => state.cart.items);
+  const quoteItems = useAppSelector((state) => state.quote.items);
 
   useCartEventRefresh(true);
+
   // hydrate on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -52,6 +60,14 @@ function ReduxPersistence({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(cartRaw) as CartStateFromStorage;
         if (Array.isArray(parsed.items)) {
           dispatch(hydrateCart(parsed));
+        }
+      }
+
+      const quoteRaw = window.localStorage.getItem(QUOTE_KEY);
+      if (quoteRaw) {
+        const parsed = JSON.parse(quoteRaw) as QuoteStateFromStorage;
+        if (Array.isArray(parsed.items)) {
+          dispatch(hydrateQuote(parsed));
         }
       }
     } catch {
@@ -85,6 +101,15 @@ function ReduxPersistence({ children }: { children: ReactNode }) {
       window.localStorage.setItem(CART_KEY, JSON.stringify(payload));
     } catch {}
   }, [cartItems]);
+
+  // persist quote items (not isOpen, not step)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const payload: QuoteStateFromStorage = { items: quoteItems };
+      window.localStorage.setItem(QUOTE_KEY, JSON.stringify(payload));
+    } catch {}
+  }, [quoteItems]);
 
   return <>{children}</>;
 }

@@ -41,3 +41,31 @@ export function formatPriceDisplay(value?: string | null): string | null {
 
   return formatNaira(normalized);
 }
+
+// src/shared/utils/format-price-display.ts
+export function formatPriceDisplayWith(
+  value: string | null | undefined,
+  formatMoney: (n: number) => string
+): string | null {
+  if (!value) return null;
+
+  // normalize dash variants
+  const normalized = value.replace(/–/g, "-");
+
+  // range price: "10000 - 15000"
+  if (normalized.includes("-")) {
+    const [min, max] = normalized
+      .split("-")
+      .map((v) => Number(v.trim()))
+      .filter((v) => !Number.isNaN(v));
+
+    if (min != null && max != null) {
+      return `${formatMoney(min)} – ${formatMoney(max)}`;
+    }
+  }
+
+  const num = Number(normalized);
+  if (Number.isNaN(num)) return null;
+
+  return formatMoney(num);
+}

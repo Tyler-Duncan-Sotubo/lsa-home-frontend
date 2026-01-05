@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { ProductRailSkeleton } from "@/features/products/ui/product-rail-skeleton";
-import { ProductRail } from "@/features/products/ui/product-rail";
-import { getCollectionProductsGroupedBySlug } from "@/features/collections/actions/get-collections";
+import { ProductRailSkeleton } from "@/features/Pages/Products/ui/product-rail-skeleton";
+import { ProductRail } from "@/features/Pages/Products/ui/product-rail";
+import { getCollectionProductsGroupedBySlug } from "@/features/Pages/Collections/actions/get-collections";
 
 export default async function AllCategoryPage({
   params,

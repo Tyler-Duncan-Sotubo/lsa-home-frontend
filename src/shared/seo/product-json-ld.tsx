@@ -2,7 +2,7 @@
 import type {
   Product,
   ProductReview,
-} from "@/features/products/types/products";
+} from "@/features/Pages/Products/types/products";
 
 interface ProductJsonLdProps {
   product: Product;

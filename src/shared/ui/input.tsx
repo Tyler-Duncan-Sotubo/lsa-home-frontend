@@ -1,21 +1,73 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
+import { Eye, EyeOff, Lock } from "lucide-react";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
-  return (
-    <input
-      type={type}
-      data-slot="input"
-      className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-12 w-full min-w-0 rounded-xl border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className
-      )}
-      {...props}
-    />
-  );
+interface InputProps extends React.ComponentProps<"input"> {
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  isPassword?: boolean;
 }
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, leftIcon, rightIcon, isPassword, ...props }, ref) => {
+    const [showPassword, setShowPassword] = React.useState(false);
+    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+
+    return (
+      <span className="relative flex items-center w-full">
+        {/* Left Icon for Password */}
+        {isPassword && (
+          <Lock className="absolute left-3 h-5 w-5 text-muted-foreground" />
+        )}
+
+        {/* Custom Left Icon */}
+        {leftIcon && !isPassword && (
+          <span className="absolute left-3 text-muted-foreground">
+            {leftIcon}
+          </span>
+        )}
+
+        <input
+          type={inputType}
+          className={cn(
+            "flex h-12 w-full rounded-md border-input bg-muted px-3 py-2 text-base",
+            "placeholder:text-muted-foreground placeholder:text-xs",
+            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            // Padding adjustments for icons
+            (leftIcon || isPassword) && "pl-10",
+            rightIcon && !isPassword && "pr-10",
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+
+        {/* Right Icon (Password Toggle) */}
+        {isPassword ? (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 text-muted-foreground focus:outline-none"
+          >
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
+          </button>
+        ) : (
+          rightIcon && (
+            <span className="absolute right-3 text-muted-foreground">
+              {rightIcon}
+            </span>
+          )
+        )}
+      </span>
+    );
+  }
+);
+
+Input.displayName = "Input";
 
 export { Input };

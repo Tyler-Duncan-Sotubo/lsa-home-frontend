@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Button } from "@/shared/ui/button";
 import { Breadcrumb } from "@/shared/seo/breadcrumb";
-import { ProductCard } from "@/features/products/ui/product-card";
+import { ProductCard } from "@/features/Pages/Products/ui/product-card";
 import { useWishlistController } from "@/features/wishlist/hooks/use-wishlist-controller";
 
 export function WishlistClient() {
@@ -25,17 +25,14 @@ export function WishlistClient() {
         {!isAuthed ? (
           <div className="flex text-sm md:text-base">
             <div className="flex flex-wrap">
-              <Link href="/account/login" className="cursor-pointer underline">
+              <Link href="/login" className="cursor-pointer underline">
                 Sign in
               </Link>
               <p className="ml-1">
                 to view your wishlist across all your devices or
               </p>
             </div>
-            <Link
-              href="/account/register"
-              className="ml-2 cursor-pointer underline"
-            >
+            <Link href="/register" className="ml-2 cursor-pointer underline">
               Create an account.
             </Link>
           </div>
@@ -81,8 +78,8 @@ export function WishlistClient() {
             Shop your favorite sheets, robes, and more. Your body will thank
             you.
           </p>
-          <Button variant="outline" asChild>
-            <Link href="/products">Shop Now</Link>
+          <Button asChild>
+            <Link href="/collections/latest">Shop Latest Collections</Link>
           </Button>
         </div>
       )}

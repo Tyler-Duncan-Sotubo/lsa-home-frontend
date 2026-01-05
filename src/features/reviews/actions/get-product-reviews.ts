@@ -1,7 +1,7 @@
 // src/features/reviews/actions/get-product-reviews.ts
 "use server";
 
-import { ProductReview } from "@/features/products/types/products";
+import { ProductReview } from "@/features/Pages/Products/types/products";
 import { storefrontFetch } from "@/shared/api/fetch";
 
 export async function getProductReviews(productId: string) {

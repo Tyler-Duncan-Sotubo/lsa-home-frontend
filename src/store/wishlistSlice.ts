@@ -58,6 +58,7 @@ const wishlistSlice = createSlice({
 
     addItem(state, action: PayloadAction<WishlistItem>) {
       const exists = state.items.some((i) => i.id === action.payload.id);
+
       if (!exists) {
         state.items.push(normalizeItem(action.payload));
       }

@@ -1,4 +1,4 @@
-import { getProductBySlugWithVariations } from "@/features/products/actions/products";
+import { getProductBySlugWithVariations } from "@/features/Pages/Products/actions/products";
 import { NextResponse } from "next/server";
 
 export async function GET(

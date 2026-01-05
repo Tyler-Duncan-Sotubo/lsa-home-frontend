@@ -1,0 +1,1190 @@
+{
+  "version": 1,
+  "store": {
+    "id": "serene",
+    "name": "Serene",
+    "locale": "en-NG",
+    "currency": {
+      "code": "NGN",
+      "locale": "en-NG",
+      "fractionDigits": 2
+    }
+  },
+  "ui": {
+    "quickView": {
+      "enabled": true,
+      "detailsVariant": "V2"
+    },
+    "pricing": { "showPriceInDetails": "loggedInOnly" },
+    "product": { "galleryVariant": "V2" },
+    "account": {
+      "headerNav": {
+        "showRewardIcon": true,
+        "showWishlistIcon": true,
+        "showOurStoresIcon": false
+      }
+    }
+  },
+  "theme": {
+    "assets": {
+      "logoUrl": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/Serene3.PNG"
+    },
+    "mode": { "default": "light", "strategy": "class", "darkClass": "dark" },
+    "fonts": {
+      "sans": "Montserrat, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, \"Noto Sans\"",
+      "heading": "Montserrat, ui-sans-serif, system-ui",
+      "mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    },
+    "colors": {
+      "light": {
+        "background": "oklch(1 0 0)",
+        "foreground": "oklch(0.145 0 0)",
+        "primary": "oklch(0.46 0.04 145)",
+        "primaryForeground": "oklch(0.98 0.01 145)",
+        "secondary": "oklch(0.98 0 0)",
+        "secondaryForeground": "oklch(0.205 0 0)"
+      },
+      "dark": {
+        "background": "oklch(0.145 0 0)",
+        "foreground": "oklch(0.985 0 0)",
+        "primary": "oklch(0.55 0.15 145)",
+        "primaryForeground": "oklch(0.98 0.01 145)"
+      }
+    },
+    "radius": { "base": "0.625rem" },
+    "components": {
+      "button": { "radius": "pill" },
+      "card": { "radius": "lg" }
+    }
+  },
+  "seo": {
+    "title": "Serene Hospitality Solutions | Premium Home Comfort, Bedding & Sleep Essentials",
+    "description": "Serene offers thoughtfully crafted bedding, mattresses, pillows, towels, and home essentials designed to elevate everyday comfort and wellbeing.",
+    "siteName": "Serene",
+    "canonicalBaseUrl": "https://serene.ng",
+    "favicon": {
+      "svg": "/favicons/serene.svg",
+      "png": "/favicons/serene.png",
+      "ico": "/favicons/favicon.ico",
+      "appleTouch": "/favicons/apple-touch-icon.png"
+    },
+    "ogImage": {
+      "url": "/images/og.jpg",
+      "alt": "Serene – Premium Home Comfort & Sleep Essentials"
+    }
+  },
+  "header": {
+    "topBar": {
+      "enabled": true,
+      "autoplay": {
+        "enabled": false,
+        "intervalMs": 10000
+      },
+      "slides": [
+        {
+          "text": "ONE SOURCE FOR ALL HOSPITALITY SUPPLIES"
+        }
+      ]
+    },
+    "nav": {
+      "variant": "V1",
+      "items": [
+        {
+          "type": "mega",
+          "label": "Shop",
+          "href": "/collections/hubs/amenities",
+          "sections": [
+            {
+              "title": "Linens, Amenities & In-Room",
+              "items": [
+                {
+                  "label": "Mattress & Beddings",
+                  "href": "/collections/hubs/all-bed"
+                },
+                {
+                  "label": "Towels & Bathrobes",
+                  "href": "/collections/hubs/all-baths"
+                },
+                {
+                  "label": "Hotel Toiletries & Disposable Amenities",
+                  "href": "/collections/hotel-toiletries"
+                },
+                {
+                  "label": "Amenity Trays & Holders",
+                  "href": "/collections/amenity-trays-holders"
+                },
+                {
+                  "label": "Kettles & Trays",
+                  "href": "/collections/kettles-trays"
+                },
+                { "label": "Mini Bars", "href": "/collections/mini-bars" },
+                {
+                  "label": "Luggage Racks",
+                  "href": "/collections/luggage-racks"
+                },
+                { "label": "Safes", "href": "/collections/safes" },
+                { "label": "Room Bins", "href": "/collections/room-bins" },
+                {
+                  "label": "Room Accessories",
+                  "href": "/collections/room-accessories"
+                },
+                {
+                  "label": "Ironing Station",
+                  "href": "/collections/ironing-station"
+                },
+                { "label": "Hair Dryers", "href": "/collections/hair-dryers" }
+              ]
+            },
+            {
+              "title": "Public Area",
+              "items": [
+                {
+                  "label": "Trolleys & Carts",
+                  "href": "/collections/trolleys-carts"
+                },
+                {
+                  "label": "Indoor & Outdoor Bins",
+                  "href": "/collections/indoor-outdoor-bins"
+                },
+                {
+                  "label": "Dispensers & Dryers",
+                  "href": "/collections/dispensers-dryers"
+                },
+                { "label": "Signs", "href": "/collections/signs" },
+                {
+                  "label": "Reception Accessories",
+                  "href": "/collections/reception-accessories"
+                },
+                {
+                  "label": "Hotel Cleaning Supplies",
+                  "href": "/collections/hotel-cleaning-supplies"
+                }
+              ]
+            },
+            {
+              "title": "Furniture & Kitchen",
+              "items": [
+                { "label": "Beds", "href": "/collections/beds" },
+                { "label": "Chairs", "href": "/collections/chairs" },
+                { "label": "Tables", "href": "/collections/tables" },
+                { "label": "Lecterns", "href": "/collections/lecterns" },
+                { "label": "Lighting", "href": "/collections/lighting" },
+                {
+                  "label": "Plates, Cutlery & Drinkware",
+                  "href": "/collections/plates-cutlery-drinkware"
+                },
+                { "label": "Buffet", "href": "/collections/buffet" },
+                {
+                  "label": "Mini Kitchen Equipment",
+                  "href": "/collections/mini-kitchen-equipment"
+                },
+                {
+                  "label": "Racks & Trolleys",
+                  "href": "/collections/racks-trolleys"
+                },
+                {
+                  "label": "Table & Kitchen Linen",
+                  "href": "/collections/table-kitchen-linen"
+                },
+                {
+                  "label": "Commercial Kitchen Equipment",
+                  "href": "/collections/commercial-kitchen-equipment"
+                }
+              ]
+            }
+          ],
+          "feature": {
+            "label": "30ml Bottle Bath Toiletries",
+            "href": "/collections/hotel-essentials",
+            "image": {
+              "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/30g-bar-soap-hotel-amenity-2736647.webp",
+              "alt": "30ml Bottle Bath Toiletries"
+            },
+            "description": "A curated range of linens, amenities, and in-room products designed for premium hospitality experiences."
+          }
+        },
+        { "label": "Bedding", "href": "/collections/hubs/all-bed" },
+        { "label": "Bath", "href": "/collections/hubs/all-baths" },
+        { "label": "Amenities", "href": "/collections/hubs/amenities" },
+        { "label": "Catalogue", "href": "/catalogue" },
+        { "label": "About Us", "href": "/about-us" },
+        { "label": "Contact", "href": "/contact" },
+        { "label": "Blog", "href": "/blog" }
+      ],
+      "icons": {
+        "search": true,
+        "account": true,
+        "wishlist": true,
+        "cart": false,
+        "quote": true
+      }
+    }
+  },
+  "footer": {
+    "variant": "V2",
+    "brand": {
+      "logoUrl": "https://lsahome.co/cdn/shop/files/LSA-final-logo-transparent-white.png?v=1717590888",
+      "blurb": "LSA Home is your one stop shop for premium bed and bath furnishings and accessories that help to elevate your comfort and well being."
+    },
+    "columns": [
+      {
+        "title": "Shop",
+        "links": [
+          { "label": "All Beds", "href": "/collections/all-beds" },
+          { "label": "Mattresses", "href": "/pages/all-mattresses" }
+        ]
+      },
+      {
+        "title": "Customer Care",
+        "links": [
+          { "label": "Shipping", "href": "/shipping" },
+          { "label": "Returns", "href": "/returns" }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          { "label": "About", "href": "/about" },
+          { "label": "Contact", "href": "/contact" }
+        ]
+      }
+    ],
+    "contacts": {
+      "title": "Contacts",
+      "lines": [
+        "+2348097148669",
+        "Mon - Sat 9am - 6pm",
+        "info@lsahome.co",
+        "Plot 8B, Omorinre Johnson Street, Lekki phase 1, Lagos Nigeria"
+      ]
+    },
+    "newsletter": {
+      "enabled": true,
+      "title": "Subscribe to our emails",
+      "description": "Subscribe to our mailing list for insider news, product launches, and more.",
+      "placeholder": "Email",
+      "ctaLabel": "Subscribe"
+    },
+    "social": [
+      {
+        "platform": "facebook",
+        "href": "https://web.facebook.com/LSAHotelSuppliesNigeria/"
+      },
+      {
+        "platform": "instagram",
+        "href": "https://www.instagram.com/lsahotelsupplies/"
+      },
+      {
+        "platform": "youtube",
+        "href": "https://youtube.com/@lsahotelsupplies?si=NnW5VS3k9_ImUR5t"
+      }
+    ],
+    "bottomBar": {
+      "leftText": "© {year} Serene. All rights reserved.",
+      "rightText": "Designed for better sleep, comfort & wellbeing."
+    },
+    "whatsapp": {
+      "enabled": true,
+      "title": "Start a Conversation",
+      "intro": "Hi there! 👋 Need assistance? Chat with us on WhatsApp.",
+      "note": "The team typically replies in a few minutes.",
+      "agents": [
+        {
+          "name": "Serene Hospitality",
+          "role": "Serene Hospitality Manager",
+          "phone": "2348140467417",
+          "prefill": "Hi! I need help with a product."
+        }
+      ],
+      "position": "bottom-right"
+    }
+  },
+  "pages": {
+    "home": {
+      "hero": {
+        "variant": "V2",
+        "image": {
+          "src": "/images/hero-image-serene.webp",
+          "alt": "Bedroom hero"
+        },
+        "overlay": {
+          "className": "bg-gradient-to-t from-black/60 via-black/55 to-black/40"
+        },
+        "content": {
+          "eyebrow": "Create Memorable Experiences",
+          "heading": "Tailored Solutions for Every Hospitality Space",
+          "description": "Premium bedding, amenities, and equipment for elevated comfort and efficiency.",
+          "cta": {
+            "label": "Explore Our Range",
+            "href": "/collections/all-beds"
+          }
+        },
+        "bottomStrip": {
+          "enabled": true,
+          "text": "No Minimums Required • Great Pricing • Unparalleled Expertise",
+          "className": "bg-primary text-primary-foreground"
+        },
+        "layout": {
+          "align": "center"
+        }
+      },
+      "sections": [
+        {
+          "type": "topCategories",
+          "title": "Shop by Category",
+          "subtitle": "Discover comfort by room, style, or material.",
+          "categories": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_5127_fca06526-213a-460a-88a8-fcca0b343319.jpg?v=1744127701",
+              "alt": "Mattress and Beddings",
+              "href": "/collections/all-beds"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401175_1bb95515-fbe4-40a2-b9bf-06e201ad803a.jpg?v=1739370948",
+              "alt": "Bath Linens and Accessories",
+              "href": "/collections/bedding"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/360ml-dispenser-for-bath-gel-shampoo-conditioner-3488528.jpg?v=1759751185",
+              "alt": "Amenities",
+              "href": "/collections/bundles"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401323.jpg?v=1740396658",
+              "alt": "Appliances",
+              "href": "/collections/bath"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_4083.jpg?v=1740398177",
+              "alt": "Lobby and Housekeeping",
+              "href": "/collections/pillows"
+            }
+          ]
+        },
+        {
+          "type": "featureShowcase",
+          "enabled": true,
+          "image": {
+            "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/WhatsApp_Image_2025-02-17_at_10.36.41_89e5a740.jpg?v=1739960200",
+            "alt": "Serene hospitality solutions"
+          },
+          "content": {
+            "title": "Why Serene?",
+            "subtitle": "Elevating Hospitality, One Experience at a Time.",
+            "bullets": [
+              { "text": "Quick turnaround time", "icon": "bolt" },
+              { "text": "Cost efficient solutions", "icon": "check" },
+              {
+                "text": "Partnerships with established factories",
+                "icon": "factory"
+              },
+              { "text": "Customisation possibilities", "icon": "customize" },
+              { "text": "One Stop Source", "icon": "oneStop" }
+            ]
+          }
+        },
+        {
+          "type": "latestProducts",
+          "enabled": true,
+          "title": "The Latest",
+          "subtitle": "Just arrived and ready to ship.",
+          "categoryId": "019b4844-4547-7b8f-b6eb-db92cfd4d10e",
+          "limit": 6
+        },
+        {
+          "type": "featureShowcase",
+          "image": {
+            "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/bed-runner-and-throw-pillow-set-6166123.jpg?v=1756763598",
+            "alt": "Serene Hospitality Solutions"
+          },
+          "content": {
+            "title": "Beyond Bedding",
+            "subtitle": "Our Story",
+            "paragraphs": [
+              "What began as a retail store—a one-stop shop for premium bed and bath accessories—soon evolved into something much greater. As we expanded into supplying bedding to hotels, serviced apartments, and guest houses, we uncovered a deeper need within the hospitality industry: creating exceptional guest experiences goes far beyond bedding.",
+              "We realized that starting and running a hospitality establishment requires more than just comfortable linens. It calls for a complete range of solutions—from essential amenities and modern appliances to elegant furniture and functional kitchenware. This discovery inspired us to go further.",
+              "Thus, Serene Hospitality Solutions was born—a dedicated brand offering comprehensive solutions for hospitality spaces. Today, we are more than suppliers; we are partners in crafting seamless hospitality experiences. With our wide-ranging products and tailored services, we provide everything needed to transform spaces into refined destinations where comfort meets sophistication."
+            ],
+            "cta": {
+              "label": "Learn More",
+              "href": "/about"
+            }
+          },
+          "layout": {
+            "imagePosition": "right",
+            "heightClass": "md:h-[85vh]",
+            "align": "left"
+          }
+        },
+        {
+          "type": "happyCustomers",
+          "enabled": true,
+          "title": "What Are People Saying",
+          "subtitle": "Trusted by individuals and businesses across Nigeria.",
+          "platformRatings": [
+            { "label": "Google", "value": "4.8 / 5" },
+            { "label": "Instagram", "value": "4.9 / 5" },
+            { "label": "Direct Orders", "value": "5.0 / 5" }
+          ],
+          "autoplay": { "enabled": true, "intervalMs": 6000 },
+          "slides": [
+            {
+              "quote": "I received my package a few days ago, and I’m genuinely impressed. The quality exceeded my expectations and everything arrived in perfect condition. 😍",
+              "name": "Miss Fatima",
+              "role": "Lagos",
+              "avatar": {
+                "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_0804.jpg?v=1740396877",
+                "alt": "Miss Fatima"
+              }
+            },
+            {
+              "quote": "I’ve received my items. Thank you for working closely with me to ensure my order arrived on time—excellent communication throughout.",
+              "name": "Mr. Francis",
+              "role": "Abuja",
+              "avatar": {
+                "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/gtulip-06l-electric-kettle-and-tray-set-9364841.jpg?v=1752690043",
+                "alt": "Mr Francis"
+              }
+            },
+            {
+              "quote": "Thanks so much. I received my items safely and in perfect condition. Everything looks great.",
+              "name": "Mr. Kazeem",
+              "role": "Ibadan",
+              "avatar": {
+                "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/down-alternative-mattress-topper-5669652.jpg?v=1752690041",
+                "alt": "Mr Kazeem"
+              }
+            },
+            {
+              "quote": "Thank you very much. I’ve received my items and I’m very satisfied with the quality and the overall experience.",
+              "name": "Bridget Interior",
+              "role": "Interior Studio",
+              "avatar": {
+                "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/100-cotton-terry-bathrobe-4626267.jpg?v=1752690045",
+                "alt": "Bridget Interior"
+              }
+            }
+          ]
+        },
+        {
+          "type": "brandCarousel",
+          "title": "Trusted by Brands",
+          "subtitle": "A few of the companies we’ve partnered with",
+          "brands": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/images-removebg-preview.png?v=1740406819",
+              "alt": "Brand 1",
+              "href": "/"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/WhatsApp_Image_2025-02-24_at_12.14.04_6d4493b2-removebg-preview_657bb626-476e-4175-b049-493ff6b42a00.png?v=1740407675",
+              "alt": "Brand 2"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/379073522_7282322575129116_3967311256223184240_n-removebg-preview.png?v=1739782007",
+              "alt": "Brand 3"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/MAGNUM-SAMPLE-2.png?v=1740407589",
+              "alt": "Brand 4"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Frame_7-removebg-preview.png?v=1739781687",
+              "alt": "Brand 5"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Frame_6-removebg-preview.png?v=1739781558",
+              "alt": "Brand 6"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/omnia-hotels-logo-removebg-preview.png?v=1739781956",
+              "alt": "Brand 7"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Frame_10.jpg?v=1739656718",
+              "alt": "Brand 8"
+            }
+          ],
+          "carousel": {
+            "autoplay": true,
+            "intervalMs": 14000,
+            "pauseOnHover": true,
+            "loop": true
+          }
+        }
+      ],
+      "contact": {
+        "type": "contact",
+        "title": "Need Assistance? Get In Touch",
+        "subtitle": "Bulk orders, branding, and custom supply packages.",
+        "info": { "phone": ["+2348097148669"], "email": ["info@serene.ng"] },
+        "form": {
+          "enabled": true,
+          "fields": ["subject", "name", "email", "phone", "message", "company"],
+          "submitLabel": "Send Request",
+          "successMessage": "Thanks — we’ll reach out shortly."
+        },
+        "layout": {
+          "variant": "compact",
+          "image": {
+            "src": "https://cdn.shopify.com/s/files/1/0621/1000/7407/files/WhatsApp_Image_2025-01-30_at_13.33.49.jpg?v=1738243486",
+            "alt": "Serene showroom"
+          }
+        }
+      }
+    },
+    "about": {
+      "version": 1,
+      "seo": {
+        "title": "About Serene Hospitality Solutions",
+        "description": "Serene Hospitality Solutions supplies premium bedding, amenities, appliances, and essential hospitality products—helping hotels and serviced apartments deliver memorable guest experiences.",
+        "keywords": [
+          "hospitality supplies Nigeria",
+          "hotel supplies Lagos",
+          "bedding supplier Nigeria",
+          "hotel amenities supplier",
+          "serviced apartment supplies"
+        ],
+        "ogImage": {
+          "url": "/images/og-about.jpg",
+          "alt": "About Serene Hospitality Solutions"
+        }
+      },
+      "sections": [
+        {
+          "type": "aboutHero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/bed-runner-and-throw-pillow-set-6166123.jpg?v=1756763598",
+              "alt": "Serene Hospitality Solutions",
+              "overlayClassName": "bg-black/50"
+            }
+          },
+          "content": {
+            "title": "About Us",
+            "description": "Welcome to Serene Hospitality Solutions, Nigeria's leading company for the provision of hotel supplies and your premium partner for all hospitality solutions. We are a trusted source for high-quality products and services designed to enhance guest experiences and support the success of hotels, resorts, shortlets and other hospitality establishments."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "aboutSplit",
+          "enabled": true,
+          "image": {
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5127.webp",
+            "alt": "Serene Hospitality Solutions partnership"
+          },
+          "content": {
+            "title": "Working Closely With You, Every Step of the Way",
+            "paragraphs": [
+              "At Serene Hospitality Solutions, our goal is to help hotels create a warm, welcoming, and memorable experience for guests, while also giving consideration to the unique operational needs for each establishment. Our approach therefore is to work closely with clients to understand their specific needs in order to deliver personalized solutions that balance cost and efficiency.",
+              "With our passion for excellence, commitment to customer satisfaction, and our comprehensive range of supplies—including linens, towels, amenities, and equipment—we have been able to work with a number of hotels in Nigeria and West Africa.",
+              "We look forward to partnering with you to elevate your guest experience and take your business to the next level."
+            ],
+            "cta": {
+              "label": "Have questions? Get More Info",
+              "href": "/contact"
+            }
+          },
+          "layout": {
+            "imagePosition": "left",
+            "align": "left",
+            "backgroundClassName": "bg-background"
+          },
+          "overlay": {
+            "className": "bg-black/10"
+          }
+        },
+        {
+          "type": "aboutValues",
+          "enabled": true,
+          "title": "Our Goal, Vision & Mission",
+          "subtitle": "Built on quality, innovation, and partnerships that last.",
+          "items": [
+            {
+              "key": "goal",
+              "title": "Our Goal",
+              "description": "To help hotels create a warm, welcoming, and memorable experience for guests, while also giving consideration to the unique operational needs for each establishment."
+            },
+            {
+              "key": "vision",
+              "title": "Our Vision",
+              "description": "To set the benchmark for quality and innovation, ensuring every hospitality business has access to world-class supplies and solutions."
+            },
+            {
+              "key": "mission",
+              "title": "Our Mission",
+              "description": "To deliver top-tier hospitality supplies with a focus on quality, customer satisfaction, timely delivery, and sustainable growth."
+            }
+          ],
+          "layout": {
+            "backgroundClassName": "",
+            "columns": 3
+          }
+        },
+        {
+          "type": "aboutSuppliesScroller",
+          "enabled": true,
+          "content": {
+            "title": "Our Supplies",
+            "paragraphs": [
+              "With our extensive product range, industry expertise, and customer-centric approach, we are the go-to partner for hotel supplies and hospitality solutions. Let us help you elevate your guest experience and take your business to the next level.",
+              "With a passion for excellence and a commitment to customer satisfaction, we offer a comprehensive range of supplies, including linens, towels, amenities, and equipment. Our team of experts works closely with clients to understand their unique needs and deliver personalized solutions that meet their specific requirements."
+            ]
+          },
+          "items": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/down-alternative-duvet-8962023.jpg?v=1752690043",
+              "alt": "LSAHOME03-07-2401511"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/max-hotel-ironing-station-hs-0106-5282160.jpg?v=1752524468",
+              "alt": "Amenities"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/down-alternative-pillow-1902706.jpg?v=1752690041",
+              "alt": "Memory foam pillow"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/100-cotton-waffle-bathrobe-2916681.jpg?v=1752690040",
+              "alt": "Waffle bathrobe"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/100-cotton-hotel-towels-serene-dobby-design-8907732.jpg?v=1752690103",
+              "alt": "Hotel supply product"
+            }
+          ],
+          "layout": {
+            "backgroundClassName": "bg-background",
+            "containerClassName": "w-[95%] mx-auto max-w-7xl",
+            "cardWidthClassName": "w-[260px]",
+            "gapClassName": "gap-4"
+          },
+          "carousel": {
+            "variant": "marquee",
+            "autoplay": true,
+            "intervalMs": 14000,
+            "pauseOnHover": true,
+            "loop": true
+          }
+        },
+        {
+          "type": "aboutStatsSplit",
+          "enabled": true,
+          "content": {
+            "title": "We Listen & Work Together To Create The Best Experience.",
+            "description": "At Serene Hospitality, we pride ourselves on our reliability, efficiency, and dedication to building long-term relationships with our clients. Our goal is to help hotels create a warm, welcoming, and memorable experience for their guests, while also supporting their operational needs and goals."
+          },
+          "stats": [
+            {
+              "label": "Available Products",
+              "value": "300+",
+              "animate": { "type": "countUp", "to": 300, "suffix": "+" }
+            },
+
+            {
+              "label": "Customers",
+              "value": "200+",
+              "animate": { "type": "countUp", "to": 200, "suffix": "+" }
+            },
+            {
+              "label": "Satisfaction Rate",
+              "value": "90%",
+              "animate": { "type": "circle", "to": 90, "suffix": "%" }
+            }
+          ],
+
+          "image": {
+            "src": "https://cdn.shopify.com/s/files/1/0621/1000/7407/files/WhatsApp_Image_2025-01-30_at_13.33.49.jpg?v=1738243486",
+            "alt": "Serene showroom"
+          },
+          "layout": {
+            "imagePosition": "right",
+            "backgroundClassName": "bg-muted",
+            "heightClass": "md:min-h-[60vh]"
+          },
+          "cta": {
+            "label": "Get More Info",
+            "href": "/contact"
+          }
+        },
+        {
+          "type": "brandGrid",
+          "enabled": true,
+          "title": "Trusted by Brands",
+          "subtitle": "A few of the companies we’ve partnered with",
+          "brands": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/images-removebg-preview.png?v=1740406819",
+              "alt": "Brand 1",
+              "href": "/"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/WhatsApp_Image_2025-02-24_at_12.14.04_6d4493b2-removebg-preview_657bb626-476e-4175-b049-493ff6b42a00.png?v=1740407675",
+              "alt": "Brand 2"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/379073522_7282322575129116_3967311256223184240_n-removebg-preview.png?v=1739782007",
+              "alt": "Brand 3"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/MAGNUM-SAMPLE-2.png?v=1740407589",
+              "alt": "Brand 4"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Frame_7-removebg-preview.png?v=1739781687",
+              "alt": "Brand 5"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Frame_6-removebg-preview.png?v=1739781558",
+              "alt": "Brand 6"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/omnia-hotels-logo-removebg-preview.png?v=1739781956",
+              "alt": "Brand 7"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Frame_10.jpg?v=1739656718",
+              "alt": "Brand 8"
+            }
+          ],
+          "layout": {
+            "backgroundClassName": "bg-background",
+            "gapClassName": "gap-6 md:gap-10",
+            "itemClassName": "h-16 md:h-20 w-32 md:w-45"
+          }
+        },
+        {
+          "type": "aboutHero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/LSA_HOME03-07-2401184.webp",
+              "alt": "Premium hospitality supplies",
+              "overlayClassName": "bg-black/55"
+            }
+          },
+          "content": {
+            "title": "Elevating Hospitality, One Quality Supply At A Time.",
+            "description": "Complete Solutions for Every Hospitality Need",
+            "cta": {
+              "label": "Shop Now",
+              "href": "/collections/all-beds"
+            }
+          },
+          "layout": {
+            "align": "right",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-2xl",
+            "containerClassName": "w-[95%] mx-auto"
+          }
+        }
+      ]
+    },
+    "contact": {
+      "version": 1,
+      "seo": {
+        "title": "Contact Serene",
+        "description": "Bulk orders, branding, and custom supply packages."
+      },
+      "sections": [
+        {
+          "type": "Hero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/amenities-organiser-for-the-vanity-1383495.jpg?v=1756763596",
+              "alt": "Serene hospitality supplies",
+              "overlayClassName": "bg-black/50"
+            }
+          },
+          "content": {
+            "eyebrow": "Let’s talk",
+            "title": "Contact Serene",
+            "description": "Bulk orders, branding, and custom supply packages."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "contact",
+          "title": "Contact Details",
+          "info": {
+            "phone": ["08140467417"],
+            "email": ["Info@serene.ng"],
+            "locations": [
+              {
+                "label": "LAGOS",
+                "address": "Plot 8A, Omorinre Johnson Street, Lekki Phase 1, Lagos, Nigeria"
+              },
+              {
+                "label": "ABUJA",
+                "address": "Suite GF006, Israel Plaza, Adetokunbo Ademola Crescent, Wuse 2, Abuja, Nigeria"
+              },
+              {
+                "label": "IKEJA",
+                "address": "15b Oduduwa way, off Isaac John, Ikeja"
+              }
+            ],
+            "social": [
+              {
+                "platform": "instagram",
+                "handle": "@serenehospitality",
+                "href": "https://www.instagram.com/serenehospitality/"
+              }
+            ]
+          },
+          "form": {
+            "enabled": true,
+            "fields": ["subject", "name", "email", "phone", "message"],
+            "submitLabel": "Send Message",
+            "successMessage": "Thanks — we’ll reach out shortly."
+          },
+          "layout": {
+            "variant": "full",
+            "top": { "columns": 2, "order": ["details", "form"] },
+            "map": {
+              "enabled": true,
+              "embedUrl": "https://www.google.com/maps?q=Plot%208A%20Omorinre%20Johnson%20Street%20Lekki%20Phase%201%20Lagos&output=embed",
+              "heightClassName": "h-[360px]",
+              "title": "Serene (Lagos)"
+            }
+          }
+        }
+      ]
+    },
+    "catalogue": {
+      "version": 1,
+      "seo": {
+        "title": "Catalogue | Serene Hospitality Solutions",
+        "description": "Download the Serene catalogue and explore our complete range of hotel supplies — bedding, amenities, appliances, furniture and more."
+      },
+      "sections": [
+        {
+          "type": "catalogueList",
+          "enabled": true,
+          "title": "We Offer",
+          "items": [
+            { "title": "Mattress and Beddings" },
+            { "title": "Bath Linen and Accessories" },
+            { "title": "Amenities" },
+            { "title": "Appliances" },
+            { "title": "Lobby and Housekeeping Items" },
+            { "title": "Furniture" },
+            { "title": "Restaurant and Kitchen Equipment" }
+          ],
+          "layout": {
+            "columns": 2,
+            "gapClassName": "gap-4 md:gap-6"
+          }
+        },
+        {
+          "type": "heroCard",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5127.webp",
+              "alt": "Serene catalogue"
+            },
+            "overlayClassName": "bg-black/35"
+          },
+          "card": {
+            "eyebrow": "Download Catalog",
+            "title": "Explore our Complete Range of Hotel Supplies",
+            "description": "We offer everything you need to outfit hospitality spaces—quality, consistency, and efficient delivery.",
+            "cta": {
+              "label": "Download Catalogue",
+              "href": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Serene_Product_Catalog.pdf?"
+            },
+            "className": "bg-white/95"
+          },
+          "layout": {
+            "heightClass": "min-h-[65svh]",
+            "cardPosition": "centerRight",
+            "maxWidthClassName": "max-w-2xl",
+            "cardPaddingClassName": "p-2 md:p-10",
+            "textAlign": "left"
+          }
+        }
+      ]
+    },
+    "blog": {
+      "version": 1,
+      "listVariant": "V1",
+      "post": {
+        "version": 1,
+        "variant": "V1",
+        "ui": {
+          "showShare": true,
+          "showCoverImage": true
+        }
+      },
+      "seo": {
+        "title": "Blog | Serene",
+        "description": "Insights, guides, and ideas on hospitality supplies, bedding, amenities, and guest comfort."
+      },
+      "sections": [
+        {
+          "type": "blog-list",
+          "title": "Latest Articles",
+          "description": "News, insights, and hospitality tips from Serene.",
+          "variant": "featured",
+          "showHeroPost": true,
+          "featuredCount": 1
+        },
+        {
+          "type": "blog-list",
+          "title": "All Posts",
+          "variant": "grid",
+          "columns": 3,
+          "showExcerpt": true
+        }
+      ]
+    },
+    "account": {
+      "version": 1,
+      "pages": {
+        "login": {
+          "version": 1,
+          "seo": {
+            "title": "Sign in | Serene Hospitality Solutions",
+            "description": "Sign in to your account to manage orders, wishlist and rewards."
+          },
+          "ui": {
+            "variant": "V2",
+            "content": {
+              "header": {
+                "eyebrow": "Welcome back",
+                "heading": "Sign in to your account",
+                "description": "Access your orders, wishlist and rewards in one place."
+              },
+              "marketing": {
+                "badge": "Members club",
+                "heading": "Unlock a better way to shop.",
+                "description": "Collect rewards on every order, save your favourites, and enjoy a faster checkout across all your devices.",
+                "bullets": [
+                  {
+                    "title": "Earn rewards as you shop",
+                    "description": "Every purchase turns into points you can redeem for exclusive perks."
+                  },
+                  {
+                    "title": "Wishlist that follows you",
+                    "description": "Save items once and access them from any device, any time."
+                  },
+                  {
+                    "title": "Priority access & drops",
+                    "description": "Be the first to know about new collections, sales and limited releases."
+                  }
+                ],
+                "footerNote": "Trusted by thousands of customers who shop with us every month.",
+                "media": {
+                  "image": {
+                    "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/hand-wash-and-hand-lotion-set-300ml-8896148.jpg?v=1759751187",
+                    "alt": "Serene Hospitality Solutions login"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "register": {
+          "version": 1,
+          "seo": {
+            "title": "Create account | Serene Hospitality Solutions",
+            "description": "Create a Serene Hospitality Solutions account in seconds."
+          },
+          "ui": {
+            "variant": "V2",
+            "content": {
+              "header": {
+                "eyebrow": "Join us",
+                "heading": "Create your account",
+                "description": "Join in minutes and unlock exclusive benefits."
+              },
+              "marketing": {
+                "badge": "Member benefits",
+                "heading": "More than just an account.",
+                "description": "Enjoy faster checkout, saved favourites, and exclusive member-only rewards.",
+                "bullets": [
+                  {
+                    "title": "Track every order",
+                    "description": "View your order history and delivery updates in one place."
+                  },
+                  {
+                    "title": "Saved favourites",
+                    "description": "Your wishlist stays with you across devices."
+                  },
+                  {
+                    "title": "Exclusive rewards",
+                    "description": "Earn points and unlock special member perks."
+                  }
+                ],
+                "footerNote": "Join thousands of professionals who already shop smarter.",
+                "media": {
+                  "image": {
+                    "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/360ml-dispenser-for-bath-gel-shampoo-conditioner-3488528.jpg?v=1759751185",
+                    "alt": "Serene Hospitality member experience"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "account": {
+          "version": 1,
+          "seo": {
+            "title": "My Account"
+          },
+          "ui": {
+            "variant": "V1",
+            "greetingLines": ["Hello, how", "are you?"],
+            "userLabel": "My space",
+            "nav": [
+              { "label": "Dashboard", "href": "/account" },
+              { "label": "My orders", "href": "/account/orders" },
+              { "label": "My products", "href": "/account/products" },
+              { "label": "My credits", "href": "/account/credits" },
+              { "label": "My information", "href": "/account/information" },
+              { "label": "Address Book", "href": "/account/addresses" },
+              { "label": "Log Out", "action": "logout" }
+            ]
+          }
+        }
+      }
+    },
+    "collections": {
+      "version": 1,
+      "seo": {
+        "title": "Collections | Serene Hospitality Solutions",
+        "description": "Explore our curated collections of premium hospitality supplies—bedding, amenities, appliances, and more.",
+        "collections": {
+          "all-baths": {
+            "meta_title": "Luxury Bath Essentials for Hotels & Resorts | Serene",
+            "meta_description": "Discover premium bath essentials including towels, linens, and accessories designed for comfort, durability, and elevated guest experiences."
+          },
+          "all-bed": {
+            "meta_title": "Premium Hotel Bedding & Mattresses | Serene",
+            "meta_description": "Explore our collection of high-quality hotel bedding, mattresses, and sleep accessories crafted for ultimate comfort and durability."
+          },
+          "pillows": {
+            "meta_title": "Comfortable Hotel Pillows for Every Sleeper | Serene",
+            "meta_description": "Find the perfect hotel pillows designed to provide optimal support and comfort for all sleep styles and preferences."
+          },
+          "towels": {
+            "meta_title": "Premium Hotel Towels for Luxury Hospitality | Serene",
+            "meta_description": "Explore high-quality hotel towels crafted for superior absorbency, durability, and a refined guest experience."
+          },
+          "topper": {
+            "meta_title": "Luxury Mattress Toppers for Hotels & Resorts | Serene",
+            "meta_description": "Enhance guest comfort with premium mattress toppers designed to add softness, support, and long-lasting performance."
+          },
+          "mattress": {
+            "meta_title": "Hotel-Grade Mattresses for Ultimate Comfort | Serene",
+            "meta_description": "Discover hotel-grade mattresses engineered for exceptional comfort, durability, and restorative sleep experiences."
+          },
+          "latest": {
+            "meta_title": "Latest Hospitality Essentials & New Arrivals | Serene",
+            "meta_description": "Discover the latest additions to our hospitality collection, featuring new arrivals designed to elevate comfort, style, and performance."
+          }
+        }
+      },
+      "defaults": {
+        "description": "{{templates.descriptions.general}}",
+        "afterContentHtml": "{{templates.afterContentHtml.general}}",
+        "templates": {
+          "descriptions": {
+            "general": "Explore our {{categoryName}} collection — premium essentials built for comfort and performance."
+          },
+          "afterContentHtml": {
+            "general": "<h2>Shop {{categoryName}}</h2><p>Discover premium {{categoryName}} at {{storeName}}, thoughtfully designed for comfort, durability, and everyday performance. Whether for home or hospitality use, our {{categoryName}} collection combines quality materials with practical design, making it a trusted choice for individuals and businesses across Nigeria. <strong>Expert tip:</strong> Pair your {{categoryName}} with complementary essentials to enhance comfort, longevity, and overall experience.</p>"
+          }
+        }
+      },
+      "bySlug": {
+        "topper": {
+          "afterContentHtml": "<h2>Find your perfect mattress topper</h2>\n\n<p>\n  Transform your bed into a cloud of comfort with our premium range of mattress toppers.\n  Designed to enhance softness, relieve pressure, and improve sleep quality, they’re the\n  perfect upgrade if your mattress feels too firm or simply needs a plush refresh.\n  Choose from down-alternative toppers for lightweight coziness, or go for gel memory foam\n  for targeted support and cooling comfort all night long.\n</p>\n\n<h3>Why shop mattress toppers at {{storeName}}</h3>\n\n<ul>\n  <li>Plush, supportive designs for every comfort preference.</li>\n  <li>Cooling and pressure-relieving options for deeper, more restorative sleep.</li>\n  <li>Breathable materials that regulate temperature and promote airflow.</li>\n  <li>Durable construction that maintains shape and loft over time.</li>\n</ul>\n\n<h3>Protect and prolong</h3>\n\n<p>\n  Pair your mattress topper with a waterproof protector to shield against spills, sweat,\n  and allergens — keeping your sleep surface clean, fresh, and long-lasting. It’s the\n  simplest way to extend the life and comfort of both your topper and your mattress.\n</p>\n\n<p>\n  <strong>Expert tip:</strong>\n  Fluff or rotate your mattress topper every few weeks to maintain even comfort and support.\n  Use a breathable fitted sheet or protector for easier care and longer durability.\n</p>"
+        },
+        "towels": {
+          "afterContentHtml": "<h2>Luxury towels for everyday indulgence</h2>\n\n<p>\n  Wrap yourself in softness with our collection of premium towels, crafted to balance\n  absorbency, durability, and a plush hand-feel. From everyday essentials to spa-inspired\n  designs, our towels are made to elevate your bathroom and your routine.\n</p>\n\n<h3>Why choose towels from {{storeName}}</h3>\n\n<ul>\n  <li>High-GSM fabrics for a luxurious, weighty feel.</li>\n  <li>Quick-drying fibres that stay fresher for longer.</li>\n  <li>Colourfast dyes to resist fading over time.</li>\n  <li>Coordinated collections for a cohesive bathroom look.</li>\n</ul>\n\n<p>\n  <strong>Care tip:</strong>\n  Wash your towels without fabric softener to maintain maximum absorbency, and tumble dry\n  on a low setting to keep fibres fluffy.\n</p>"
+        },
+        "pillows": {
+          "afterContentHtml": "<h2>Find your perfect pillow</h2>\n\n<p>\n  The right pillow can transform the way you sleep. Our range of pillows is designed to\n  support healthy alignment of your head, neck, and spine, helping to reduce tension and\n  improve sleep quality for every type of sleeper.\n</p>\n\n<h3>Pillow options for every sleeper</h3>\n\n<ul>\n  <li>Soft, medium, and firm profiles to match your comfort preference.</li>\n  <li>Side, back, and stomach-sleeper friendly designs.</li>\n  <li>Hypoallergenic fillings for a cleaner, fresher sleep environment.</li>\n  <li>Cooling and breathable options to prevent overheating at night.</li>\n</ul>\n\n<p>\n  <strong>Expert tip:</strong>\n  Replace your pillows every 1–2 years, or sooner if they lose loft or no longer spring\n  back when folded, to maintain proper support and hygiene.\n</p>"
+        },
+        "mattress": {
+          "afterContentHtml": "<h2>Find your perfect mattress</h2>\n\n<p>\n  A great night’s sleep starts with the right mattress. Our collection of premium mattresses\n  is crafted to deliver exceptional comfort, support, and long-lasting durability. Whether\n  you prefer a plush, cloud-like feel or a firmer, more supportive surface, we offer designs\n  tailored to every sleep style, body type, and comfort preference.\n</p>\n\n<p>\n  From hybrid mattresses that combine adaptive foam with responsive springs to memory foam\n  models engineered for pressure relief, each mattress is designed to promote proper spine\n  alignment and deeper, more restorative sleep. Enjoy breathable, temperature-regulating\n  materials that help prevent overheating and maintain a comfortable sleep environment all\n  night long.\n</p>\n\n<h3>Why choose a mattress from {{storeName}}</h3>\n\n<ul>\n  <li>Premium materials engineered for comfort, support, and breathability.</li>\n  <li>Hybrid and memory foam options to suit every type of sleeper.</li>\n  <li>Pressure-relieving designs that reduce tossing and turning.</li>\n  <li>Temperature-regulating layers that help keep you cool throughout the night.</li>\n  <li>Durable, long-lasting construction for consistent comfort over time.</li>\n</ul>\n\n<h3>Upgrade your sleep experience</h3>\n\n<p>\n  Pair your mattress with one of our high-quality toppers or protectors for enhanced comfort\n  and extended mattress life. A breathable topper can add plushness or extra support, while a\n  waterproof protector shields against spills, allergens, and general wear — helping your\n  mattress stay fresh, hygienic, and in peak condition for years.\n</p>\n\n<p>\n  <strong>Expert tip:</strong>\n  Rotate your mattress every 2–3 months to encourage even wear. Use a breathable mattress\n  protector to safeguard against moisture, dust mites, and allergens, improving both hygiene\n  and longevity.\n</p>"
+        },
+        "all-baths": {
+          "afterContentHtml": "<h2>Refresh your bathroom with everyday luxury</h2>\n\n<p>\n  Create a space that feels calm, clean, and effortlessly elevated with our bathroom essentials.\n  From plush towels and absorbent bath mats to practical accessories that keep everything in place,\n  this collection is designed to bring comfort and style to your daily routine.\n</p>\n\n<h3>What you’ll find in our bathroom collection</h3>\n\n<ul>\n  <li>Soft, high-absorbency towels for a spa-like dry.</li>\n  <li>Bath mats and rugs designed for comfort underfoot and dependable grip.</li>\n  <li>Coordinated sets and colourways to make styling easy.</li>\n  <li>Durable, easy-care materials made for everyday use.</li>\n</ul>\n\n<h3>Why shop bathroom essentials at {{storeName}}</h3>\n\n<ul>\n  <li>Premium fabrics chosen for softness, absorbency, and longevity.</li>\n  <li>Care-friendly designs that stay fresh and look great over time.</li>\n  <li>Thoughtful details that elevate your space without extra effort.</li>\n</ul>\n\n<p>\n  <strong>Care tip:</strong>\n  Wash towels and bath mats separately from items with zips or hooks to prevent snags.\n  Skip fabric softener on towels to maintain maximum absorbency.\n</p>"
+        },
+        "all-bed": {
+          "afterContentHtml": "<h2>Build your perfect bed, layer by layer</h2>\n\n<p>\n  Better sleep starts with the right setup. Our bedding collection helps you create a bed that looks\n  inviting and feels even better — with breathable layers, supportive essentials, and comfort upgrades\n  for every season.\n</p>\n\n<h3>Everything you need for a sleep-ready space</h3>\n\n<ul>\n  <li>Pillows in a range of feels to support your preferred sleep position.</li>\n  <li>Mattress toppers to add plushness, cooling comfort, or extra support.</li>\n  <li>Protectors to help guard against spills, allergens, and everyday wear.</li>\n  <li>Comfort-focused essentials designed to help you sleep deeper and wake up better.</li>\n</ul>\n\n<h3>Why shop bedding at {{storeName}}</h3>\n\n<ul>\n  <li>Comfort-first designs made for real, everyday sleep needs.</li>\n  <li>Quality materials chosen for breathability, durability, and easy care.</li>\n  <li>Options for every preference — from plush and cosy to cool and supportive.</li>\n</ul>\n\n<p>\n  <strong>Expert tip:</strong>\n  Refresh your sleep setup seasonally: switch to lighter, more breathable layers in warmer months,\n  and add a topper or extra pillow support when you want a cosier feel.\n</p>"
+        }
+      },
+      "exploreMore": {
+        "enabled": true,
+        "heading": "Explore more",
+        "items": [
+          {
+            "title": "Mattress and Beddings",
+            "href": "/collections/hubs/all-bed",
+            "buttonLabel": "Shop beds",
+            "image": {
+              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_5127_fca06526-213a-460a-88a8-fcca0b343319.jpg?v=1744127701",
+              "alt": "Mattress and Beddings"
+            }
+          },
+          {
+            "title": "Bath Linens and Accessories",
+            "href": "/collections/hubs/all-baths",
+            "buttonLabel": "Shop bath",
+            "image": {
+              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401175_1bb95515-fbe4-40a2-b9bf-06e201ad803a.jpg?v=1739370948",
+              "alt": "Bath Linens and Accessories"
+            }
+          },
+          {
+            "title": "Amenities",
+            "href": "/collections/hubs/bundles",
+            "buttonLabel": "Shop amenities",
+            "image": {
+              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/360ml-dispenser-for-bath-gel-shampoo-conditioner-3488528.jpg?v=1759751185",
+              "alt": "Amenities"
+            }
+          },
+          {
+            "title": "Appliances",
+            "href": "/collections/hubs/appliances",
+            "buttonLabel": "Shop appliances",
+            "image": {
+              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401323.jpg?v=1740396658",
+              "alt": "Appliances"
+            }
+          },
+          {
+            "title": "Lobby and Housekeeping",
+            "href": "/collections/hubs/lobby-and-housekeeping",
+            "buttonLabel": "Shop collection",
+            "image": {
+              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_4083.jpg?v=1740398177",
+              "alt": "Lobby and Housekeeping"
+            }
+          }
+        ]
+      },
+      "ui": {
+        "afterContentExpandable": true,
+        "afterContentCollapsedHeightPx": 300,
+        "exploreMoreColumns": 3
+      }
+    }
+  }
+}

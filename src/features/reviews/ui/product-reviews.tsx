@@ -2,7 +2,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ProductReview } from "@/features/products/types/products";
+import type { ProductReview } from "@/features/Pages/Products/types/products";
 import { Button } from "@/shared/ui/button";
 import {
   Select,
@@ -201,7 +201,7 @@ export function ProductReviews({
               setRatingFilter(val as "all" | "1" | "2" | "3" | "4" | "5")
             }
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-37.5">
               <SelectValue placeholder="Filter rating" />
             </SelectTrigger>
             <SelectContent>

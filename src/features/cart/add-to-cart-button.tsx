@@ -51,7 +51,7 @@ export function AddToCartButton({
 
   return (
     <Button
-      className={`flex-1 bg-primary-foreground text-white ${className}`}
+      className={`flex-1 ${className}`}
       size={size}
       type="button"
       onClick={handleAddToCart}

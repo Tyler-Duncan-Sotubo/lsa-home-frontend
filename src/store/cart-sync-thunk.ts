@@ -24,6 +24,7 @@ async function callApi(method: "POST" | "PATCH" | "DELETE", body: any) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+  console.log("callApi response:", res);
   if (!res.ok) throw new Error("Cart sync failed");
   return res.json(); // if your API returns cart, great
 }

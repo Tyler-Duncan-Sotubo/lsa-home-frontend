@@ -1,5 +1,5 @@
 export const categorySeoContent: Record<string, string> = {
-  "Mattress Toppers": `
+  Topper: `
     <h2>Find your perfect mattress topper</h2>
 
     <p>
@@ -83,7 +83,7 @@ export const categorySeoContent: Record<string, string> = {
       back when folded, to maintain proper support and hygiene.
     </p>
   `,
-  Mattress: `
+  mattress: `
     <h2>Find your perfect mattress</h2>
 
     <p>

@@ -1,14 +1,26 @@
-import { useCreateMutation } from "@/shared/hooks/use-create-mutation";
-import { useRouter } from "next/navigation";
+// src/features/reviews/hooks/create-review.ts
+"use client";
 
-export const useCreateReview = (productId: string) => {
-  const router = useRouter();
+export function useCreateReview(productId: string) {
+  return async (payload: {
+    rating: number;
+    review: string;
+    name: string;
+    email: string;
+    slug: string;
+  }) => {
+    const res = await fetch(`/api/reviews/${productId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      credentials: "include",
+    });
 
-  return useCreateMutation({
-    endpoint: `/api/catalog/reviews/storefront/${productId}`,
-    successMessage: "Review submitted successfully!",
-    onSuccess: () => {
-      router.refresh();
-    },
-  });
-};
+    if (!res.ok) {
+      const json = await res.json().catch(() => null);
+      throw new Error(json?.message ?? "Failed to submit review");
+    }
+
+    return res.json();
+  };
+}

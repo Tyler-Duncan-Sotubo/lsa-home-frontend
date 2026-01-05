@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/shared/ui/button";
-import { HeroSectionV1 } from "@/config/types/pages/common/hero-section.type";
 import { Stagger, StaggerItem } from "@/shared/animations/stagger";
+import { AboutHeroSectionV1 } from "@/config/types/pages/About/about-sections.types";
 
 type Align = "left" | "center" | "right";
 
@@ -25,7 +25,7 @@ function getAlign(align: Align) {
 export default function AboutHeroSection({
   config,
 }: {
-  config: HeroSectionV1;
+  config: AboutHeroSectionV1;
 }) {
   if (config.enabled === false) return null;
 

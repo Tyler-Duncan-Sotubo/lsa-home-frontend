@@ -44,7 +44,7 @@ export default function AboutValuesSection({
   return (
     <SectionReveal>
       <section className={`w-full ${bgClass} py-14 md:py-18`}>
-        <div className="mx-auto w-[95%] max-w-7xl">
+        <div className="mx-auto w-[95%]">
           {(config.title || config.subtitle) && (
             <div className="mb-10 md:mb-14 text-center flex flex-col items-center">
               {config.title ? (

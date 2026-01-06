@@ -14,8 +14,7 @@ export default function AboutSuppliesScrollerSection({
   const { content, items, layout, carousel } = config;
 
   const bgClass = layout?.backgroundClassName ?? "bg-background";
-  const containerClass =
-    layout?.containerClassName ?? "w-[95%] mx-auto max-w-7xl";
+  const containerClass = layout?.containerClassName ?? "w-[95%] mx-auto";
   const cardWidth = layout?.cardWidthClassName ?? "w-[260px] md:w-[360px]";
   const gapClass = layout?.gapClassName ?? "gap-4";
 
@@ -34,7 +33,7 @@ export default function AboutSuppliesScrollerSection({
   const bottomParagraph = content.paragraphs?.[1];
 
   return (
-    <section className={`w-full py-14 md:py-18 ${bgClass}`}>
+    <section className={`md:w-[95%] mx-auto py-14 md:py-18 ${bgClass}`}>
       <div className={containerClass}>
         {/* Header */}
         {(content.title || content.subtitle || topParagraph) && (
@@ -62,7 +61,7 @@ export default function AboutSuppliesScrollerSection({
         {/* Scroller */}
         <div
           className={[
-            "relative overflow-hidden",
+            "relative overflow-x-auto scrollbar-hide",
             pauseOnHover && variant === "marquee" ? "group" : "",
           ].join(" ")}
         >

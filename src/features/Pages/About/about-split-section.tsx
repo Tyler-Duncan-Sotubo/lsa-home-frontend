@@ -44,7 +44,7 @@ export default function AboutSplitSection({
 
   return (
     <section className={`w-full ${bgClass} ${heightClass}`}>
-      <div className="mx-auto w-[95%] max-w-7xl">
+      <div className="mx-auto w-[95%]">
         <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch gap-10">
           {/* Image column */}
           <div className={`relative ${imageColOrder}`}>

@@ -25,83 +25,73 @@ export default function TopCategories({
   };
 
   return (
-    <section className="w-full py-10">
-      <div className="w-[95%] mx-auto">
-        {/* Header row */}
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <div className="mt-10 mb-2.5">
-            <h2 className="text-2xl font-semibold">
-              {config.title ?? "Shop by Category"}
-            </h2>
-            {config.subtitle ? (
-              <p className="text-sm text-muted-foreground">{config.subtitle}</p>
-            ) : null}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handlePrev}
-              className="flex h-9 w-9 items-center justify-center bg-background/80 transition cursor-pointer"
-              aria-label="Previous category"
-            >
-              <FaChevronLeft className="h-7 w-7" />
-            </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              className="flex h-9 w-9 items-center justify-center bg-background/80 transition cursor-pointer"
-              aria-label="Next category"
-            >
-              <FaChevronRight className="h-7 w-7" />
-            </button>
-          </div>
+    <section className="w-full py-10 mx-auto">
+      {/* Header row */}
+      <div className="mb-4 flex items-center justify-between gap-4 w-[95%] mx-auto">
+        <div className="mt-10 mb-2.5">
+          <h2 className="text-2xl font-semibold">
+            {config.title ?? "Shop by Category"}
+          </h2>
+          {config.subtitle ? (
+            <p className="text-sm text-muted-foreground">{config.subtitle}</p>
+          ) : null}
         </div>
 
-        {/* Slider track */}
-        <div className="relative overflow-x-hidden">
-          <div className="flex gap-6 pb-3 w-max">
-            {items.map((cat, idx) => (
-              <Link
-                key={`${cat.href}-${idx}`}
-                href={cat.href}
-                className="
-                  group
-                  relative
-                  shrink-0
-                 w-56
-md:w-72
-lg:w-80
-aspect-4/5
-                  overflow-hidden
-                  rounded-xl
-                  bg-muted
-                  shadow-sm
-                  hover:shadow-md
-                  transition
-                "
-              >
-                <Image
-                  src={cat.src}
-                  alt={cat.alt ?? "Category"}
-                  fill
-                  sizes="(max-width: 768px) 220px, 264px"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  priority={idx === 0}
-                />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handlePrev}
+            className="flex h-9 w-9 items-center justify-center bg-background/80 transition cursor-pointer"
+            aria-label="Previous category"
+          >
+            <FaChevronLeft className="h-7 w-7" />
+          </button>
+          <button
+            type="button"
+            onClick={handleNext}
+            className="flex h-9 w-9 items-center justify-center bg-background/80 transition cursor-pointer"
+            aria-label="Next category"
+          >
+            <FaChevronRight className="h-7 w-7" />
+          </button>
+        </div>
+      </div>
 
-                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent" />
+      {/* Slider track */}
+      <div className="relative overflow-x-hidden w-[95%] mx-auto">
+        <div className="flex gap-6 pb-3 w-max pl-6 md:pl-8">
+          {items.map((cat, idx) => (
+            <Link
+              key={`${cat.href}-${idx}`}
+              href={cat.href}
+              className={`
+          group relative shrink-0
+          w-56 md:w-56 lg:w-70 aspect-square
+          overflow-hidden rounded-xl bg-muted
+          shadow-sm hover:shadow-md transition
+          ${idx === 0 ? "-ml-6 md:-ml-8" : ""}
+        `}
+            >
+              <Image
+                src={cat.src}
+                alt={cat.alt ?? "Category"}
+                fill
+                sizes="(max-width: 768px) 220px, 264px"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                priority={idx === 0}
+              />
 
-                {cat.alt ? (
-                  <div className="absolute inset-x-3 bottom-3 z-10">
-                    <p className="text-sm font-semibold underline text-white drop-shadow-sm">
-                      {cat.alt}
-                    </p>
-                  </div>
-                ) : null}
-              </Link>
-            ))}
-          </div>
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent" />
+
+              {cat.alt && (
+                <div className="absolute inset-x-3 bottom-3 z-10">
+                  <p className="text-sm font-semibold underline text-white drop-shadow-sm">
+                    {cat.alt}
+                  </p>
+                </div>
+              )}
+            </Link>
+          ))}
         </div>
       </div>
     </section>

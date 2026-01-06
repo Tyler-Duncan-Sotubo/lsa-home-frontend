@@ -83,7 +83,7 @@ export function HappyCustomersSection({
         </>
       ) : null}
 
-      <div className="relative mx-auto w-[95%] max-w-7xl">
+      <div className="relative mx-auto w-[95%]">
         {/* Title */}
         <div className="mb-10 md:mb-14 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-foreground">

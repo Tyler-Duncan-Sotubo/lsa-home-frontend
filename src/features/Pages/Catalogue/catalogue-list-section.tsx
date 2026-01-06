@@ -7,10 +7,10 @@ export function CatalogueList({ config }: { config: CatalogueListSectionV1 }) {
 
   const cols = config.layout?.columns ?? 2;
   const gap = config.layout?.gapClassName ?? "gap-4 md:gap-6";
-  const container = config.layout?.containerClassName ?? "container mx-auto";
+  const container = config.layout?.containerClassName ?? "mx-auto";
 
   return (
-    <section className="py-14 w-[90%] mx-auto">
+    <section className="py-14 w-[95%] mx-auto">
       <div className={container}>
         <SectionReveal>
           {config.title ? (

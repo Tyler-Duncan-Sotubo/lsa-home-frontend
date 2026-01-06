@@ -502,11 +502,8 @@ export function ContactSection({
     };
 
     return (
-      <section
-        className="relative w-[90%] md:w-full mx-auto py-16 md:py-20"
-        id="contact"
-      >
-        <div className={layout.containerClassName ?? "container mx-auto"}>
+      <section className="relative w-[95%] mx-auto py-16 md:py-20" id="contact">
+        <div className={layout.containerClassName ?? ""}>
           <div
             className={[
               "grid items-start",

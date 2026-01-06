@@ -204,7 +204,7 @@ export default function AboutStatsSplitSection({
 
   return (
     <section className={`w-full ${bgClass} ${heightClass} py-14 md:py-18`}>
-      <div ref={ref} className="mx-auto w-[95%] max-w-7xl">
+      <div ref={ref} className="mx-auto w-[95%]">
         <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch gap-10">
           {/* Text / Stats */}
           <RevealFromSide direction="up" className={`flex ${contentOrder}`}>

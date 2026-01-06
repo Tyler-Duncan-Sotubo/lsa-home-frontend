@@ -8,8 +8,7 @@ export default function BrandGrid({ config }: { config: BrandGridSectionV1 }) {
   if (config.enabled === false) return null;
 
   const bgClass = config.layout?.backgroundClassName ?? "bg-background";
-  const containerClass =
-    config.layout?.containerClassName ?? "w-[95%] mx-auto max-w-7xl";
+  const containerClass = config.layout?.containerClassName ?? "w-[95%] mx-auto";
   const gapClass = config.layout?.gapClassName ?? "gap-6 md:gap-10";
   const itemClass = config.layout?.itemClassName ?? "h-12 md:h-16 w-28 md:w-40";
 

@@ -169,8 +169,8 @@ export function ContactSectionCompact({
   const image = layout.image;
 
   return (
-    <section className="relative md:w-full w-[90%] mx-auto py-20">
-      <div className="container mx-auto grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+    <section className="relative w-[95%] mx-auto py-20">
+      <div className="mx-auto grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
         <div>
           {title && (
             <h2 className="text-3xl font-heading font-semibold text-foreground">

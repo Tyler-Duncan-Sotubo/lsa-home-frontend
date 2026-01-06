@@ -46,7 +46,7 @@ export default async function BlogPage({
     "Read the latest articles, insights, and guides.";
 
   return (
-    <main className="mx-auto w-[95%] max-w-6xl py-10">
+    <main className="mx-auto w-[95%] py-10">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-primary">{title}</h1>
         <p className="mt-2 text-muted-foreground">{description}</p>

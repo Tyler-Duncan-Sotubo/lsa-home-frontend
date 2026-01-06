@@ -1,6 +1,4 @@
 "use client";
-
-import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { format as fmtDate } from "date-fns";
@@ -36,7 +34,7 @@ export function BlogListOne({
   const rest = posts.slice(3, 3 + gridLimit);
 
   return (
-    <div className={className ?? ""}>
+    <div className={className ?? "w-[99%] mx-auto"}>
       {/* Top editorial row */}
       <section className="grid gap-6 lg:grid-cols-3">
         {/* Featured */}

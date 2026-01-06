@@ -138,7 +138,7 @@ function AddressForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={submit} className="space-y-6 px-3">
+      <form onSubmit={submit} className="space-y-3 px-3">
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
@@ -370,13 +370,13 @@ export function AccountAddressesClient() {
           <DialogContent
             className="
               p-3 md:p-4 gap-0
-              md:max-w-2xl w-[95%] overflow-auto
+              md:max-w-2xl w-[95%] h-[80vh] md:h-[90vh] overflow-auto
               max-w-none sm:max-w-none
               sm:rounded-sm md:rounded-md
             "
           >
-            <DialogHeader className="my-10">
-              <DialogTitle>Create new address</DialogTitle>
+            <DialogHeader className="my-4">
+              <DialogTitle></DialogTitle>
             </DialogHeader>
 
             <AddressForm

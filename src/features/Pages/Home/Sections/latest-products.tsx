@@ -22,7 +22,7 @@ export default async function LatestSlider({
       title={config?.title ?? "The Latest"}
       subtitle={config?.subtitle ?? "Just arrived and ready to ship."}
       products={products as Product[]}
-      sectionClassName="w-[90%] mx-auto py-8"
+      sectionClassName="w-[95%] mx-auto py-8"
     />
   );
 }

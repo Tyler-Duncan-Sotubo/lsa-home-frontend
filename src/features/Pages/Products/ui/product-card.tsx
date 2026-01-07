@@ -117,8 +117,8 @@ export function ProductCard({
                 absolute left-3 top-3 z-10
                 px-3 py-1
                 rounded-full
-                bg-background/90
-                text-[14px] font-medium uppercase
+                bg-background/90 text-xs
+                md:text-[9px] text-[8px] font-medium uppercase
                 text-muted-foreground
               "
             >

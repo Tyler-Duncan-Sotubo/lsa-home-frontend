@@ -110,7 +110,7 @@ export function ProductPageClient({
             title="Shop the Collection"
             subtitle="Recommended picks based on this product’s category."
             products={relatedProducts}
-            sectionClassName="w-[95%] mx-auto py-8 mt-24"
+            sectionClassName="py-8 mt-24"
           />
         )}
 

@@ -79,7 +79,7 @@ export function RecentlyViewedRail({ currentSlug }: RecentlyViewedRailProps) {
       title="Recently viewed"
       subtitle="Pick up where you left off."
       products={products}
-      sectionClassName="w-[95%] mx-auto py-8"
+      sectionClassName="py-8"
     />
   );
 }

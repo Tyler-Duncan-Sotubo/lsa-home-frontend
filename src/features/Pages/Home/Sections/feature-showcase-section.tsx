@@ -26,9 +26,11 @@ export function FeatureShowcaseSection({
   const align = config.layout?.align ?? "left";
   const overlayClass = config.overlay?.className ?? "bg-black/20";
   const imageRight = config.layout?.imagePosition === "right";
+
   const contentPaddingClass = imageRight
     ? "px-6 md:pl-10 md:pr-0"
     : "px-6 md:pl-8 md:pr-10";
+
   const contentAlignClass =
     align === "center" ? "items-center text-center" : "items-start text-left";
 
@@ -36,28 +38,31 @@ export function FeatureShowcaseSection({
 
   return (
     <section
-      className={`w-full overflow-x-hidden ${imageRight ? "" : "bg-muted"}`}
+      // clip is more reliable than hidden for transformed children on mobile
+      className={`w-full overflow-x-clip ${imageRight ? "" : "bg-muted"}`}
     >
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch gap-10">
+      <div className="w-full max-w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch gap-10 w-full max-w-full">
           {/* Image column */}
           <div
-            className={`flex min-w-0 items-center justify-center ${
+            className={`flex w-full max-w-full min-w-0 items-center justify-center ${
               imageRight ? "md:order-2" : "md:order-1"
             }`}
           >
             <RevealFromSide
               direction={imageRevealDirection}
               distance={28}
-              className="w-full h-full min-w-0"
+              // hard clamp: prevent the animated wrapper from ever exceeding viewport width
+              className="w-full max-w-[100vw] overflow-hidden"
             >
-              <div className="relative w-full h-full min-h-80 overflow-hidden">
+              <div className="relative w-full max-w-full overflow-hidden aspect-square md:min-h-80">
                 <Image
                   src={config.image.src}
                   alt={config.image.alt ?? "Section image"}
                   fill
                   className="object-cover"
                   sizes="100vw, (min-width: 768px) 50vw"
+                  // priority={Boolean(config.image?.priority)}
                 />
                 <div className={`absolute inset-0 ${overlayClass}`} />
               </div>
@@ -66,11 +71,12 @@ export function FeatureShowcaseSection({
 
           {/* Content column */}
           <div
-            className={`flex min-w-0 items-center ${
+            className={`flex w-full max-w-full min-w-0 items-center ${
               imageRight ? "md:order-1" : "md:order-2"
             }`}
           >
-            <div className="w-full max-w-2xl aspect-square flex items-center min-w-0">
+            {/* Constant on mobile: no aspect constraints. Square only on md+ if you really want it. */}
+            <div className="w-full max-w-2xl min-w-0 md:aspect-square flex items-center">
               <div
                 className={`${contentPaddingClass} w-full max-w-xl min-w-0 flex flex-col ${contentAlignClass}`}
               >
@@ -88,13 +94,13 @@ export function FeatureShowcaseSection({
 
                 {config.content.paragraphs?.length ? (
                   <Stagger
-                    className="mt-6 space-y-4"
+                    className="mt-6 space-y-4 w-full min-w-0"
                     delayChildren={0.08}
                     staggerChildren={0.08}
                   >
                     {config.content.paragraphs.map((text, idx) => (
                       <StaggerItem key={idx} y={10}>
-                        <p className="text-base text-secondary-foreground">
+                        <p className="text-base text-secondary-foreground wrap-break-word">
                           {text}
                         </p>
                       </StaggerItem>
@@ -105,11 +111,11 @@ export function FeatureShowcaseSection({
                 {!config.content.paragraphs?.length &&
                 config.content.bullets?.length ? (
                   <Stagger
-                    className="mt-8"
+                    className="mt-8 w-full min-w-0"
                     delayChildren={0.08}
                     staggerChildren={0.08}
                   >
-                    <ul className="space-y-5">
+                    <ul className="space-y-5 w-full min-w-0">
                       {config.content.bullets.map((item, idx) => {
                         const isString = typeof item === "string";
                         const text = isString ? item : item.text;
@@ -117,14 +123,14 @@ export function FeatureShowcaseSection({
 
                         return (
                           <StaggerItem key={idx} y={10}>
-                            <li className="flex items-center gap-4 min-w-0">
+                            <li className="flex items-start gap-4 min-w-0 w-full">
                               {iconKey && ICONS[iconKey] ? (
                                 <span className="shrink-0">
                                   {ICONS[iconKey]}
                                 </span>
                               ) : null}
 
-                              <span className="text-base md:text-lg text-foreground font-medium min-w-0">
+                              <span className="text-base md:text-lg text-foreground font-medium min-w-0 wrap-break-word">
                                 {text}
                               </span>
                             </li>

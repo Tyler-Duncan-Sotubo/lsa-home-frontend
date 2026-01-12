@@ -31,8 +31,12 @@ export type RuntimeConfigState = {
       showPriceInDetails: "always" | "loggedInOnly" | "never";
     };
     product: {
-      galleryVariant: "V1" | "V2" | "V3";
       showWishlistButton?: boolean;
+      productDetails: {
+        context: "CART" | "QUOTE";
+        variant: "V1" | "V2";
+      };
+      productCardVariant?: "DEFAULT" | "HOVER_ACTIONS";
     };
     account: {
       headerNav: {
@@ -49,21 +53,25 @@ export type RuntimeConfigState = {
 const initialState: RuntimeConfigState = {
   version: 1,
   store: undefined,
-
   locale: "en-NG",
   currency: { code: "NGN", locale: "en-NG", fractionDigits: 2 },
-
   features: {
     quickViewEnabled: true,
     quickViewVariant: "V1",
     quoteEnabled: false,
   },
-
   ui: {
     pricing: {
       showPriceInDetails: "always",
     },
-    product: { galleryVariant: "V1", showWishlistButton: true },
+    product: {
+      showWishlistButton: true,
+      productDetails: {
+        context: "CART",
+        variant: "V1",
+      },
+      productCardVariant: "DEFAULT",
+    },
     account: {
       headerNav: {
         showRewardIcon: false,
@@ -72,7 +80,6 @@ const initialState: RuntimeConfigState = {
       },
     },
   },
-
   meta: {},
 };
 

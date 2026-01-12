@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth/auth";
 import {
   deleteCustomerAddress,
   updateCustomerAddress,
-} from "@/features/Pages/Account/address/action/addresses";
+} from "@/features/Account/address/action/addresses";
 
 export async function PATCH(
   req: Request,

@@ -1,4 +1,4 @@
-import { AccountAddressesClient } from "@/features/Pages/Account/address/ui/account-addresses-client";
+import { AccountAddressesClient } from "@/features/Account/address/ui/account-addresses-client";
 
 export default function AccountAddressesPage() {
   return <AccountAddressesClient />;

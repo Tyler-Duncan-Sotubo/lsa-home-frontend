@@ -1,21 +1,15 @@
 import "server-only";
 
 export function getStorefrontConfig() {
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const apiKey = process.env.STOREFRONT_API_KEY;
+  // Prefer a server-only env var, fallback to existing for now
+  const baseUrl =
+    process.env.BACKEND_URL ?? process.env.NEXT_PUBLIC_BACKEND_URL;
 
   if (!baseUrl) {
-    throw new Error(
-      "Missing STOREFRONT_API_BASE_URL / NEXT_PUBLIC_BACKEND_URL"
-    );
-  }
-
-  if (!apiKey) {
-    throw new Error("Missing STOREFRONT_API_KEY");
+    throw new Error("Missing BACKEND_URL (or NEXT_PUBLIC_BACKEND_URL)");
   }
 
   return {
     baseUrl: baseUrl.replace(/\/+$/, ""),
-    apiKey,
   };
 }

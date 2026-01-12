@@ -2,7 +2,7 @@
 import * as React from "react";
 import { auth } from "@/lib/auth/auth";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
-import { AccountClient } from "@/features/Pages/Account/core/ui/account-client";
+import { AccountClient } from "@/features/Account/core/ui/account-client";
 import { Metadata } from "next";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 

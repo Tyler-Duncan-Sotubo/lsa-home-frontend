@@ -6,14 +6,13 @@ export const storefrontAxios = Axios.create({
 
 storefrontAxios.interceptors.request.use(
   (config) => {
-    const apiKey = process.env.STOREFRONT_API_KEY;
-    console.log("Using STOREFRONT_API_KEY:", apiKey);
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
 
-    if (!apiKey) {
-      throw new Error("STOREFRONT_API_KEY is not set");
+      if (host) {
+        config.headers["X-Store-Host"] = host;
+      }
     }
-
-    config.headers["X-API-Key"] = apiKey;
 
     return config;
   },

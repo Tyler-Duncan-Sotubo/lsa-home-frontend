@@ -37,8 +37,13 @@ export function RuntimeConfigHydrator({
             config.ui?.pricing?.showPriceInDetails ?? "always",
         },
         product: {
-          galleryVariant: config.ui?.product?.galleryVariant ?? "V1",
           showWishlistButton: config.ui?.product?.showWishlistButton ?? true,
+          productDetails: {
+            context: config.ui?.product?.productDetails?.context ?? "CART",
+            variant: config.ui?.product?.productDetails?.variant ?? "V1",
+          },
+          productCardVariant:
+            config.ui?.product?.productCardVariant ?? "DEFAULT",
         },
         account: {
           headerNav: {

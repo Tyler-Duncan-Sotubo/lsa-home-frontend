@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Button } from "@/shared/ui/button";
 import { Breadcrumb } from "@/shared/seo/breadcrumb";
-import { ProductCard } from "@/features/Pages/Products/ui/product-card";
+import { ProductCard } from "@/features/Products/ui/ProductCard/product-card";
 import { useWishlistController } from "@/features/wishlist/hooks/use-wishlist-controller";
 
 export function WishlistClient() {

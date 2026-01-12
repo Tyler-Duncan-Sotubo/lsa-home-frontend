@@ -1,5 +1,5 @@
-import { listCustomerProducts } from "@/features/Pages/Account/products/actions/products";
-import ProductsTabClient from "@/features/Pages/Account/products/ui/products-tab.client";
+import { listCustomerProducts } from "@/features/Account/products/actions/products";
+import ProductsTabClient from "@/features/Account/products/ui/products-tab.client";
 import { auth } from "@/lib/auth/auth";
 
 export default async function AccountProductsPage() {

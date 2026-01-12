@@ -1,0 +1,653 @@
+{
+  "version": 1,
+  "store": {
+    "id": "",
+    "name": "",
+    "locale": "en-NG",
+    "currency": {
+      "code": "NGN",
+      "locale": "en-NG",
+      "fractionDigits": 2
+    }
+  },
+  "ui": {
+    "quickView": {
+      "enabled": true,
+      "detailsVariant": "V2"
+    },
+    "pricing": { "showPriceInDetails": "always" },
+    "product": {
+      "galleryVariant": "V2",
+      "showWishlistButton": true,
+      "productDetails": {
+        "context": "CART",
+        "variant": "V1",
+        "showInfoSections": false
+      },
+      "recommendations": {
+        "variant": "TABBED",
+        "defaultTab": "collection"
+      },
+      "productCardVariant": "HOVER_ACTIONS"
+    },
+    "account": {
+      "headerNav": {
+        "showRewardIcon": false,
+        "showWishlistIcon": true,
+        "showOurStoresIcon": false
+      }
+    }
+  },
+  "theme": {
+    "assets": {
+      "logoUrl": "https://placehold.co/240x80?text=Logo"
+    },
+    "mode": { "default": "light", "strategy": "class", "darkClass": "dark" },
+    "fonts": {
+      "sans": "Montserrat, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, \"Noto Sans\"",
+      "heading": "Montserrat, ui-sans-serif, system-ui",
+      "mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    },
+    "colors": {
+      "light": {
+        "background": "oklch(1 0 0)",
+        "foreground": "oklch(0.145 0 0)",
+        "primary": "oklch(0.46 0.04 145)",
+        "primaryForeground": "oklch(0.98 0.01 145)",
+        "secondary": "oklch(0.98 0 0)",
+        "secondaryForeground": "oklch(0.205 0 0)"
+      },
+      "dark": {
+        "background": "oklch(0.145 0 0)",
+        "foreground": "oklch(0.985 0 0)",
+        "primary": "oklch(0.55 0.15 145)",
+        "primaryForeground": "oklch(0.98 0.01 145)"
+      }
+    },
+    "radius": { "base": "0.625rem" },
+    "components": {
+      "button": { "radius": "pill" },
+      "card": { "radius": "lg" }
+    }
+  },
+  "seo": {
+    "title": "Official Website",
+    "description": "Explore products, services, and information designed to help you get the most out of your experience.",
+    "siteName": "Online Store",
+    "canonicalBaseUrl": "https://example.com",
+    "favicon": {
+      "svg": "",
+      "png": "",
+      "ico": "",
+      "appleTouch": ""
+    },
+    "ogImage": {
+      "url": "/images/og.jpg",
+      "alt": "Quality Products & Thoughtful Experiences"
+    }
+  },
+  "header": {
+    "topBar": {
+      "enabled": true,
+      "autoplay": {
+        "enabled": true,
+        "intervalMs": 10000
+      },
+      "slides": [
+        {
+          "text": "Quality products and services you can trust"
+        }
+      ]
+    },
+    "nav": {
+      "variant": "V2",
+      "items": [
+        { "label": "Home", "href": "/" },
+        { "label": "Shop", "href": "/shop" },
+        { "label": "About Us", "href": "/about-us" },
+        { "label": "Contact", "href": "/contact" },
+        { "label": "Blog", "href": "/blog" }
+      ],
+      "icons": {
+        "search": true,
+        "account": true,
+        "wishlist": true,
+        "cart": true,
+        "quote": false
+      }
+    }
+  },
+  "footer": {
+    "variant": "V1",
+    "brand": {
+      "logoUrl": "https://placehold.co/240x80?text=Logo",
+      "blurb": "A modern website offering products, services, and information designed to meet everyday needs."
+    },
+    "columns": [
+      {
+        "title": "Shop",
+        "links": [
+          { "label": "Wishlist", "href": "/wishlist" },
+          { "label": "All Products", "href": "/products" },
+          { "label": "Collections", "href": "/collections" },
+          { "label": "New Arrivals", "href": "/collections/new" }
+        ]
+      },
+      {
+        "title": "Support",
+        "links": [
+          { "label": "Login", "href": "/login" },
+          { "label": "Register", "href": "/register" },
+          { "label": "Help Center", "href": "/help" },
+          { "label": "Returns", "href": "/returns" }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          { "label": "About Us", "href": "/about" },
+          { "label": "Contact", "href": "/contact" }
+        ]
+      }
+    ],
+    "contacts": {
+      "title": "Contact",
+      "lines": [
+        "+234 800 000 0000",
+        "Mon – Fri, 9am – 5pm",
+        "info@example.com",
+        "Victoria Island, Lagos, Nigeria"
+      ]
+    },
+    "newsletter": {
+      "enabled": true,
+      "title": "Subscribe to our emails",
+      "description": "Subscribe to our mailing list for insider news, product launches, and more.",
+      "placeholder": "Email",
+      "ctaLabel": "Subscribe"
+    },
+    "social": [
+      { "platform": "instagram", "href": "" },
+      { "platform": "facebook", "href": "" },
+      { "platform": "twitter", "href": "" },
+      { "platform": "youtube", "href": "" },
+      { "platform": "linkedin", "href": "" }
+    ],
+    "bottomBar": {
+      "leftText": "© {year} Serene. All rights reserved.",
+      "payments": {
+        "enabled": true,
+        "methods": {
+          "verve": true,
+          "mastercard": true,
+          "visa": true,
+          "bank_transfer": true
+        }
+      }
+    },
+    "whatsapp": {
+      "enabled": true,
+      "title": "Start a Conversation",
+      "intro": "Hi there! 👋 Need assistance? Chat with us on WhatsApp.",
+      "note": "The team typically replies in a few minutes.",
+      "agents": [
+        {
+          "name": "Customer Support",
+          "role": "Support Representative",
+          "phone": "2348000000000",
+          "prefill": "Hi! I need help with a product."
+        }
+      ],
+      "position": "bottom-right"
+    }
+  },
+  "pages": {
+    "home": {
+      "hero": {
+        "enabled": true,
+        "variant": "V2",
+        "image": {
+          "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/2150952390.webp",
+          "alt": "Modern interior space"
+        },
+        "overlay": {
+          "className": "bg-gradient-to-t from-black/50 via-black/50 to-black/10"
+        },
+        "content": {
+          "eyebrow": "Designed With Purpose",
+          "heading": "Built to Support Everyday Needs",
+          "description": "Explore thoughtfully created products and services made to deliver consistency, quality, and reliability.",
+          "cta": {
+            "label": "Get Started",
+            "href": "/"
+          }
+        },
+        "bottomStrip": {
+          "enabled": true,
+          "text": "Quality • Reliability • Thoughtful Design",
+          "className": "bg-primary text-primary-foreground"
+        },
+        "layout": {
+          "align": "center"
+        }
+      },
+      "sections": [
+        {
+          "type": "topCategories",
+          "title": "Shop by Category",
+          "subtitle": "Discover comfort by room, style, or material.",
+          "categories": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_5127_fca06526-213a-460a-88a8-fcca0b343319.jpg?v=1744127701",
+              "alt": "Mattress and Beddings",
+              "href": "/collections/all-beds"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401175_1bb95515-fbe4-40a2-b9bf-06e201ad803a.jpg?v=1739370948",
+              "alt": "Bath Linens and Accessories",
+              "href": "/collections/bedding"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/360ml-dispenser-for-bath-gel-shampoo-conditioner-3488528.jpg?v=1759751185",
+              "alt": "Amenities",
+              "href": "/collections/bundles"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401323.jpg?v=1740396658",
+              "alt": "Appliances",
+              "href": "/collections/bath"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_4083.jpg?v=1740398177",
+              "alt": "Lobby and Housekeeping",
+              "href": "/collections/pillows"
+            }
+          ]
+        },
+        {
+          "type": "productTabs",
+          "enabled": false,
+          "title": "",
+          "subtitle": "",
+          "tabs": [
+            {
+              "key": "latest",
+              "label": "Latest",
+              "limit": 6
+            },
+            {
+              "key": "bestSellers",
+              "label": "Best Sellers",
+              "limit": 6,
+              "windowDays": 30
+            },
+            {
+              "key": "onSale",
+              "label": "On Sale",
+              "limit": 6
+            }
+          ]
+        },
+        {
+          "type": "latestProducts",
+          "enabled": true,
+          "title": "The Latest",
+          "subtitle": "Just arrived and ready to ship.",
+          "categoryId": "019b4844-4547-7b8f-b6eb-db92cfd4d10e",
+          "limit": 6
+        },
+        {
+          "type": "onSaleProducts",
+          "enabled": true,
+          "title": "Deals & Discounts",
+          "subtitle": "Limited-time offers while stock lasts.",
+          "limit": 6,
+          "layout": {
+            "sectionClassName": "w-[95%] mx-auto py-8"
+          }
+        },
+        {
+          "type": "bestSellersProducts",
+          "enabled": true,
+          "title": "Best Sellers",
+          "subtitle": "Customer favorites and top performers.",
+          "limit": 6,
+          "windowDays": 30,
+          "layout": {
+            "sectionClassName": "w-[95%] mx-auto py-8"
+          }
+        }
+      ]
+    },
+    "about": {
+      "version": 1,
+      "seo": {
+        "title": "About Us",
+        "description": "Learn more about our approach, values, and commitment to delivering thoughtful products, services, and experiences.",
+        "keywords": [
+          "about us",
+          "our company",
+          "our story",
+          "our values",
+          "who we are"
+        ],
+        "ogImage": {
+          "url": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/image-happy-surprised-africanamerican-girl-receiving-gift-looking-inside-shopping-bad-with.webp",
+          "alt": "About Our Company"
+        }
+      },
+      "sections": [
+        {
+          "type": "aboutHero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://placehold.co/1600x900",
+              "alt": "About our company",
+              "overlayClassName": "bg-black/50"
+            }
+          },
+          "content": {
+            "title": "About Us",
+            "description": "We are a team focused on delivering thoughtful solutions designed to support everyday needs. Our work is guided by quality, consistency, and a commitment to creating positive experiences for the people we serve."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "aboutSplit",
+          "enabled": true,
+          "image": {
+            "src": "https://placehold.co/1200x900",
+            "alt": "Working together"
+          },
+          "content": {
+            "title": "Working Closely With You, Every Step of the Way",
+            "paragraphs": [
+              "Our approach is built on collaboration and understanding. We take time to learn about specific goals and requirements so we can deliver solutions that are practical, efficient, and well considered.",
+              "By focusing on long-term value, clear communication, and reliable execution, we aim to build partnerships that grow and evolve over time.",
+              "We believe that attention to detail and a commitment to continuous improvement make a meaningful difference in every project we take on."
+            ],
+            "cta": {
+              "label": "Get in Touch",
+              "href": "/contact"
+            }
+          },
+          "layout": {
+            "imagePosition": "left",
+            "align": "left",
+            "backgroundClassName": "bg-background"
+          },
+          "overlay": {
+            "className": "bg-black/10"
+          }
+        },
+        {
+          "type": "aboutHero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://placehold.co/1600x900",
+              "alt": "Quality and craftsmanship",
+              "overlayClassName": "bg-black/55"
+            }
+          },
+          "content": {
+            "title": "Built on Quality and Care",
+            "description": "Thoughtful solutions designed to support growth, consistency, and lasting value.",
+            "cta": {
+              "label": "Explore More",
+              "href": "/"
+            }
+          },
+          "layout": {
+            "align": "right",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-2xl",
+            "containerClassName": "w-[95%] mx-auto"
+          }
+        }
+      ]
+    },
+    "contact": {
+      "version": 1,
+      "seo": {
+        "title": "Contact Us",
+        "description": "Get in touch with us for questions, inquiries, or more information."
+      },
+      "sections": [
+        {
+          "type": "Hero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "https://placehold.co/1600x900",
+              "alt": "Contact background",
+              "overlayClassName": "bg-black/50"
+            }
+          },
+          "content": {
+            "eyebrow": "Get in Touch",
+            "title": "Contact Us",
+            "description": "We’re here to help. Reach out with any questions or inquiries."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "contact",
+          "title": "Contact Details",
+          "info": {
+            "phone": ["+234 800 000 0000"],
+            "email": ["info@example.com"],
+            "locations": [
+              {
+                "label": "LAGOS",
+                "address": "Victoria Island, Lagos, Nigeria"
+              }
+            ],
+            "social": [
+              {
+                "platform": "instagram",
+                "handle": "@yourhandle",
+                "href": ""
+              }
+            ]
+          },
+          "form": {
+            "enabled": true,
+            "fields": ["subject", "name", "email", "phone", "message"],
+            "submitLabel": "Send Message",
+            "successMessage": "Thank you — we’ll get back to you shortly."
+          },
+          "layout": {
+            "variant": "full",
+            "top": {
+              "columns": 2,
+              "order": ["details", "form"]
+            },
+            "map": {
+              "enabled": true,
+              "embedUrl": "https://www.google.com/maps?q=Lagos%20Nigeria&output=embed",
+              "heightClassName": "h-[360px]",
+              "title": "Our Location"
+            }
+          }
+        }
+      ]
+    },
+    "account": {
+      "version": 1,
+      "pages": {
+        "login": {
+          "version": 1,
+          "seo": {
+            "title": "Sign in",
+            "description": "Sign in to your account to view orders, manage your profile, and save items for later."
+          },
+          "ui": {
+            "variant": "V1",
+            "content": {
+              "header": {
+                "eyebrow": "Welcome back",
+                "heading": "Sign in to your account",
+                "description": "Manage your account and pick up where you left off."
+              },
+              "marketing": {
+                "badge": "Member access",
+                "heading": "A smoother experience, every time.",
+                "description": "Sign in to save your details, track activity, and enjoy a faster checkout across your devices.",
+                "bullets": [
+                  {
+                    "title": "Track your activity",
+                    "description": "View history, updates, and important information in one place."
+                  },
+                  {
+                    "title": "Save items for later",
+                    "description": "Keep a shortlist of favorites so you can come back anytime."
+                  },
+                  {
+                    "title": "Faster checkout",
+                    "description": "Use saved details to complete future orders more quickly."
+                  }
+                ],
+                "footerNote": "Need help signing in? Visit our support page or contact us.",
+                "media": {
+                  "image": {
+                    "src": "https://placehold.co/1200x900",
+                    "alt": "Sign in"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "register": {
+          "version": 1,
+          "seo": {
+            "title": "Create account",
+            "description": "Create an account to save your details, manage activity, and enjoy a smoother experience."
+          },
+          "ui": {
+            "variant": "V1",
+            "content": {
+              "header": {
+                "eyebrow": "Get started",
+                "heading": "Create your account",
+                "description": "Sign up in minutes and enjoy a more personalised experience."
+              },
+              "marketing": {
+                "badge": "Member access",
+                "heading": "Everything in one place.",
+                "description": "An account helps you move faster, stay organised, and pick up where you left off.",
+                "bullets": [
+                  {
+                    "title": "Manage your activity",
+                    "description": "Keep track of updates, history, and important information."
+                  },
+                  {
+                    "title": "Save items for later",
+                    "description": "Bookmark favourites so they’re easy to find anytime."
+                  },
+                  {
+                    "title": "Faster checkout",
+                    "description": "Complete future actions quickly with saved details."
+                  }
+                ],
+                "footerNote": "Already have an account? You can sign in anytime.",
+                "media": {
+                  "image": {
+                    "src": "https://placehold.co/1200x900",
+                    "alt": "Create account"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "account": {
+          "version": 1,
+          "seo": {
+            "title": "My Account"
+          },
+          "ui": {
+            "variant": "V1",
+            "greetingLines": ["Hello, how", "are you?"],
+            "userLabel": "My space",
+            "nav": [
+              { "label": "Dashboard", "href": "/account" },
+              { "label": "My orders", "href": "/account/orders" },
+              { "label": "My products", "href": "/account/products" },
+              { "label": "My credits", "href": "/account/credits" },
+              { "label": "My information", "href": "/account/information" },
+              { "label": "Address Book", "href": "/account/addresses" },
+              { "label": "Log Out", "action": "logout" }
+            ]
+          }
+        }
+      }
+    },
+    "collections": {
+      "version": 1,
+      "seo": {
+        "title": "Collections | Serene Hospitality Solutions",
+        "description": "Explore our curated collections of premium hospitality supplies—bedding, amenities, appliances, and more.",
+        "collections": {
+          "all-baths": {
+            "meta_title": "Luxury Bath Essentials for Hotels & Resorts | Serene",
+            "meta_description": "Discover premium bath essentials including towels, linens, and accessories designed for comfort, durability, and elevated guest experiences."
+          },
+          "all-bed": {
+            "meta_title": "Premium Hotel Bedding & Mattresses | Serene",
+            "meta_description": "Explore our collection of high-quality hotel bedding, mattresses, and sleep accessories crafted for ultimate comfort and durability."
+          },
+          "pillows": {
+            "meta_title": "Comfortable Hotel Pillows for Every Sleeper | Serene",
+            "meta_description": "Find the perfect hotel pillows designed to provide optimal support and comfort for all sleep styles and preferences."
+          },
+          "towels": {
+            "meta_title": "Premium Hotel Towels for Luxury Hospitality | Serene",
+            "meta_description": "Explore high-quality hotel towels crafted for superior absorbency, durability, and a refined guest experience."
+          },
+          "topper": {
+            "meta_title": "Luxury Mattress Toppers for Hotels & Resorts | Serene",
+            "meta_description": "Enhance guest comfort with premium mattress toppers designed to add softness, support, and long-lasting performance."
+          },
+          "mattress": {
+            "meta_title": "Hotel-Grade Mattresses for Ultimate Comfort | Serene",
+            "meta_description": "Discover hotel-grade mattresses engineered for exceptional comfort, durability, and restorative sleep experiences."
+          },
+          "latest": {
+            "meta_title": "Latest Hospitality Essentials & New Arrivals | Serene",
+            "meta_description": "Discover the latest additions to our hospitality collection, featuring new arrivals designed to elevate comfort, style, and performance."
+          }
+        }
+      },
+      "defaults": {
+        "description": "{{templates.descriptions.general}}",
+        "afterContentHtml": "{{templates.afterContentHtml.general}}",
+        "templates": {
+          "descriptions": {
+            "general": "Explore our {{categoryName}} collection — premium essentials built for comfort and performance."
+          },
+          "afterContentHtml": {
+            "general": "<h2>Shop {{categoryName}}</h2><p>Discover premium {{categoryName}} at {{storeName}}, thoughtfully designed for comfort, durability, and everyday performance. Whether for home or hospitality use, our {{categoryName}} collection combines quality materials with practical design, making it a trusted choice for individuals and businesses across Nigeria. <strong>Expert tip:</strong> Pair your {{categoryName}} with complementary essentials to enhance comfort, longevity, and overall experience.</p>"
+          }
+        }
+      },
+      "ui": {
+        "afterContentExpandable": true,
+        "afterContentCollapsedHeightPx": 300,
+        "exploreMoreColumns": 3
+      }
+    }
+  }
+}

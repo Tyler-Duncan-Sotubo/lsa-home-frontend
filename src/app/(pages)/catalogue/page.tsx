@@ -1,5 +1,5 @@
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
-import { CatalogueSections } from "@/features/Pages/Catalogue/catalogue-sections";
+import { CatalogueSections } from "@/features/Catalogue/catalogue-sections";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { Metadata } from "next";
 

@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth/auth";
 import {
   createCustomerAddress,
   listCustomerAddresses,
-} from "@/features/Pages/Account/address/action/addresses";
+} from "@/features/Account/address/action/addresses";
 
 export async function GET() {
   const session = await auth();

@@ -46,7 +46,17 @@ export type StorefrontConfigV1 = {
     };
     product?: {
       galleryVariant?: "V1" | "V2" | "V3"; // default "V1"
+      productDetails?: {
+        context?: "CART" | "QUOTE"; // optional if you have a default
+        variant?: "V1" | "V2"; // grows later
+        showInfoSections?: boolean;
+      };
+      recommendations?: {
+        variant?: "STACKED" | "TABBED"; // default STACKED
+        defaultTab?: "recent" | "collection";
+      };
       showWishlistButton?: boolean;
+      productCardVariant?: "DEFAULT" | "HOVER_ACTIONS";
     };
     account?: {
       headerNav: {

@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth/auth";
 import {
   getCustomerProfile,
   updateCustomerProfile,
-} from "@/features/Pages/Account/information/action/profile";
+} from "@/features/Account/information/action/profile";
 
 export async function GET() {
   const session = await auth();

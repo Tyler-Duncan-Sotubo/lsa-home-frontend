@@ -877,58 +877,6 @@
           }
         }
       },
-      "bySlug": {},
-      "exploreMore": {
-        "enabled": true,
-        "heading": "Explore more",
-        "items": [
-          {
-            "title": "Drinkware",
-            "href": "/collections/drinkware",
-            "buttonLabel": "Shop drinkware",
-            "image": {
-              "url": "https://greysteed.com/cdn/shop/files/IMG_5244_11083a03-adcb-4358-b776-01f0e9cf1c12.jpg?v=1760478922",
-              "alt": "Drinkware"
-            }
-          },
-          {
-            "title": "Notebook and Pens",
-            "href": "/collections/notebooks-and-pens",
-            "buttonLabel": "Shop stationery",
-            "image": {
-              "url": "https://greysteed.com/cdn/shop/files/IMG_5283_39b9ba13-55a4-4c9f-823e-9ae35eacc216.jpg?v=1760479917",
-              "alt": "Notebook and Pens"
-            }
-          },
-          {
-            "title": "Bags and Luggage",
-            "href": "/collections/bags-and-luggage",
-            "buttonLabel": "Shop bags",
-            "image": {
-              "url": "https://greysteed.com/cdn/shop/files/IMG_5331_b8c10bac-40c6-476f-afba-4d66291ccd3c.jpg?v=1760482477",
-              "alt": "Bags and Luggage"
-            }
-          },
-          {
-            "title": "Gift Sets",
-            "href": "/collections/gift-sets",
-            "buttonLabel": "Shop gift sets",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/IMG_5601-768x549.webp?v=1753913312",
-              "alt": "Gift Sets"
-            }
-          },
-          {
-            "title": "Tech and Gadgets",
-            "href": "/collections/tech-and-gadgets",
-            "buttonLabel": "Shop tech",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/IMG_5211.jpg?v=1754089424",
-              "alt": "Tech and Gadgets"
-            }
-          }
-        ]
-      },
       "ui": {
         "afterContentExpandable": true,
         "afterContentCollapsedHeightPx": 300,

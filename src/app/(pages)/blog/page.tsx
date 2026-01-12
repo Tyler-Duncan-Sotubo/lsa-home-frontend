@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { buildMetadata } from "@/shared/seo/build-metadata";
-import { listBlogPostsPublic } from "@/features/Pages/Blog/actions/blog";
-import { BlogListRenderer } from "@/features/Pages/Blog/ui/blog-list-renderer";
+import { listBlogPostsPublic } from "@/features/Blog/actions/blog";
+import { BlogListRenderer } from "@/features/Blog/ui/bloglist/blog-list-renderer";
 import Pagination from "@/shared/ui/pagination";
 
 export async function generateMetadata(): Promise<Metadata> {

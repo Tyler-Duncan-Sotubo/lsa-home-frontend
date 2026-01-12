@@ -1,4 +1,4 @@
-import { SearchPageClient } from "@/features/Pages/Search/ui/search-page-client";
+import { SearchPageClient } from "@/features/Search/ui/search-page-client";
 
 import type { Metadata } from "next";
 

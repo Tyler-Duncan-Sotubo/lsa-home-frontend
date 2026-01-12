@@ -1,7 +1,7 @@
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/shared/seo/build-metadata";
-import { ContactSections } from "@/features/Pages/Contact/contact-section";
+import { ContactSections } from "@/features/Contact/contact-section";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();

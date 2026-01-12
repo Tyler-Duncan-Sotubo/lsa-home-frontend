@@ -1,5 +1,5 @@
 import type { SeoConfigV1 } from "@/config/types/seo.types";
-import type { Product } from "@/features/Pages/Products/types/products";
+import type { Product } from "@/features/Products/types/products";
 
 type MetaItem = { key: string; value: unknown };
 

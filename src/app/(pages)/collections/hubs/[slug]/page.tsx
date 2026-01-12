@@ -4,18 +4,8 @@ import { notFound } from "next/navigation";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { getBaseUrl } from "@/shared/seo/baseurl";
-import { getCollectionProductsGroupedBySlug } from "@/features/Pages/Collections/actions/get-collections";
-import { CollectionsHubPageClient } from "@/features/Pages/Collections/ui/collections-hub-page-client";
-
-function titleFromSlug(slug: string) {
-  // "all-baths" -> "Baths"
-  const pretty = slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .replace(/^All\s+/i, "");
-
-  return pretty || "Collections";
-}
+import { getCollectionProductsGroupedBySlug } from "@/features/Collections/actions/get-collections";
+import { CollectionsHubPageClient } from "@/features/Collections/ui/collections-hub-page-client";
 
 export async function generateMetadata({
   params,
@@ -24,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
-  const [config, groups] = await Promise.all([
+  const [config, hub] = await Promise.all([
     getStorefrontConfig(),
     getCollectionProductsGroupedBySlug(slug, {
       perPage: 8,
@@ -33,49 +23,41 @@ export async function generateMetadata({
     }),
   ]);
 
-  const hubTitle = titleFromSlug(slug);
-  const hubKey = slug.toLowerCase();
   const storeName = config.store?.name ?? "Store";
 
-  const hubSeo =
-    config.pages?.collections?.seo?.collections?.[hubKey] ??
-    config.pages?.collections?.seo?.collections?.[hubTitle.toLowerCase()] ??
-    null;
+  const baseUrl = getBaseUrl();
+  const canonical = baseUrl
+    ? `${baseUrl}/collections/hubs/${encodeURIComponent(slug)}`
+    : `/collections/hubs/${encodeURIComponent(slug)}`;
 
-  // if hub not found, noindex it
-  if (!groups || groups.length === 0) {
-    const baseUrl = getBaseUrl();
-    const canonical = baseUrl
-      ? `${baseUrl}/collections/hubs/${encodeURIComponent(slug)}`
-      : `/collections/hubs/${encodeURIComponent(slug)}`;
+  const parent = hub?.parent ?? null;
+  const groups = hub?.groups ?? [];
 
+  if (!parent || groups.length === 0) {
     return {
-      title: `${hubTitle} | ${storeName}`,
+      title: `${slug} | ${storeName}`,
       robots: { index: false, follow: false },
       alternates: { canonical },
     };
   }
 
-  // Optional OG fallback from first product in first group
+  const title = parent.metaTitle ?? `${parent.name} | ${storeName}`;
+  const description =
+    parent.metaDescription ??
+    parent.description ??
+    `Explore our full ${parent.name.toLowerCase()} collection at ${storeName}.`;
+
   const ogFallback =
+    parent.imageUrl ??
     groups?.[0]?.products?.[0]?.images?.[0]?.src ??
     config.seo?.ogImage?.url ??
     undefined;
 
   const pageSeo = {
-    title: hubSeo?.meta_title ?? `${hubTitle} | ${storeName}`,
-
-    description:
-      hubSeo?.meta_description ??
-      `Explore our full ${hubTitle.toLowerCase()} collection at ${storeName}.`,
-
-    ogImage: hubSeo?.og_image?.url
-      ? {
-          url: hubSeo.og_image.url,
-          alt: hubSeo.og_image.alt ?? hubTitle,
-        }
-      : ogFallback
-      ? { url: ogFallback, alt: hubTitle }
+    title,
+    description,
+    ogImage: ogFallback
+      ? { url: ogFallback, alt: parent.imageAltText ?? parent.name }
       : undefined,
   };
 
@@ -83,11 +65,6 @@ export async function generateMetadata({
     globalSeo: config.seo,
     pageSeo,
   });
-
-  const baseUrl = getBaseUrl();
-  const canonical = baseUrl
-    ? `${baseUrl}/collections/hubs/${slug}`
-    : `/collections/hubs/${slug}`;
 
   return {
     ...base,
@@ -102,7 +79,7 @@ export default async function CollectionsHubPage({
 }) {
   const { slug } = await params;
 
-  const [config, groups] = await Promise.all([
+  const [config, hub] = await Promise.all([
     getStorefrontConfig(),
     getCollectionProductsGroupedBySlug(slug, {
       perPage: 8,
@@ -111,12 +88,18 @@ export default async function CollectionsHubPage({
     }),
   ]);
 
-  if (!groups || groups.length === 0) return notFound();
+  const parent = hub?.parent ?? null;
+  const groups = hub?.groups ?? [];
+  const exploreMore = hub?.exploreMore ?? [];
+
+  if (!parent || groups.length === 0) return notFound();
 
   return (
     <CollectionsHubPageClient
       slug={slug}
+      parent={parent as any}
       groups={groups as any}
+      exploreMore={exploreMore as any}
       storeName={config.store?.name ?? "Store"}
       config={config}
     />

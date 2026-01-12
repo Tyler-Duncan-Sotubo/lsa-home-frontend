@@ -1,7 +1,7 @@
 // app/api/account/profile/activity/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
-import { getCustomerActivityBundle } from "@/features/Pages/Account/core/actions/activity";
+import { getCustomerActivityBundle } from "@/features/Account/core/actions/activity";
 
 export async function GET(req: Request) {
   const session = await auth();

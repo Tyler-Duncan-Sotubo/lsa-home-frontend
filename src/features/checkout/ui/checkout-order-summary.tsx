@@ -27,7 +27,7 @@ export function CheckoutOrderSummary({
   return (
     <aside
       className={cn(
-        "w-full md:w-[450px] lg:w-[450px]",
+        "w-full md:w-112.5 lg:w-112.5",
         "md:sticky md:top-6 md:self-start"
       )}
     >
@@ -38,7 +38,7 @@ export function CheckoutOrderSummary({
         )}
       >
         {/* Items list */}
-        <div className="md:max-h-[400px] space-y-3 overflow-y-auto border-b pb-3 text-sm">
+        <div className="md:max-h-100 space-y-3 overflow-y-auto border-b pb-3 text-sm">
           {items.length === 0 ? (
             <p className="text-sm text-muted-foreground">Your cart is empty.</p>
           ) : (

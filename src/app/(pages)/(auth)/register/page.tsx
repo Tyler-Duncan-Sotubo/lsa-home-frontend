@@ -1,7 +1,7 @@
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/shared/seo/build-metadata";
-import RegisterClient from "@/features/Pages/Account/register/ui/register-client";
+import RegisterClient from "@/features/Account/register/ui/register-client";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();

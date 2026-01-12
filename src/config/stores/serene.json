@@ -16,7 +16,20 @@
       "detailsVariant": "V2"
     },
     "pricing": { "showPriceInDetails": "loggedInOnly" },
-    "product": { "galleryVariant": "V2" },
+    "product": {
+      "galleryVariant": "V2",
+      "showWishlistButton": true,
+      "productDetails": {
+        "context": "QUOTE",
+        "variant": "V2",
+        "showInfoSections": false
+      },
+      "recommendations": {
+        "variant": "TABBED",
+        "defaultTab": "collection"
+      },
+      "productCardVariant": "HOVER_ACTIONS"
+    },
     "account": {
       "headerNav": {
         "showRewardIcon": true,
@@ -77,7 +90,7 @@
     "topBar": {
       "enabled": true,
       "autoplay": {
-        "enabled": false,
+        "enabled": true,
         "intervalMs": 10000
       },
       "slides": [
@@ -92,7 +105,7 @@
         {
           "type": "mega",
           "label": "Shop",
-          "href": "/collections/hubs/amenities",
+          "href": "/shop",
           "sections": [
             {
               "title": "Linens, Amenities & In-Room",
@@ -297,27 +310,93 @@
         }
       ],
       "position": "bottom-right"
+    },
+    "appFooter": {
+      "enabled": true,
+      "includeRoutes": [
+        "/",
+        "/collections*",
+        "/pages*",
+        "/products*",
+        "/wishlist*",
+        "/cart*"
+      ],
+      "excludeRoutes": ["/checkout*"],
+      "items": [
+        { "type": "shop", "href": "/collections", "onActive": "openFilter" },
+        { "type": "category", "href": "/collections" },
+        { "type": "wishlist", "href": "/wishlist" },
+        { "type": "cart", "href": "/cart", "openDrawer": true },
+        {
+          "type": "custom",
+          "label": "Checkout",
+          "action": "checkout",
+          "href": "/checkout",
+          "showOnRoutes": ["/cart*"]
+        }
+      ]
     }
   },
   "pages": {
     "home": {
       "hero": {
-        "variant": "V2",
-        "image": {
-          "src": "/images/hero-image-serene.webp",
-          "alt": "Bedroom hero"
-        },
+        "variant": "V3",
+        "slides": [
+          {
+            "image": {
+              "src": "/images/hero-image-serene.webp",
+              "alt": "Luxury bedroom"
+            },
+            "content": {
+              "eyebrow": "Create Memorable Experiences",
+              "heading": "Tailored Solutions for Hospitality",
+              "description": "Premium bedding, amenities, and equipment for elevated guest comfort.",
+              "cta": {
+                "label": "Explore Our Range",
+                "href": "/shop"
+              }
+            }
+          },
+          {
+            "image": {
+              "src": "/images/hero-image-serene.webp",
+              "alt": "Hotel suite"
+            },
+            "content": {
+              "eyebrow": "Built for Operations",
+              "heading": "Reliable Products at Scale",
+              "description": "Consistent quality, dependable supply, and pricing designed for growing hotels.",
+              "cta": {
+                "label": "View Bulk Solutions",
+                "href": "/solutions"
+              }
+            }
+          },
+          {
+            "image": {
+              "src": "/images/hero-image-serene.webp",
+              "alt": "Luxury hospitality space"
+            },
+            "content": {
+              "eyebrow": "Design-Forward Comfort",
+              "heading": "Spaces Guests Remember",
+              "description": "Thoughtfully designed essentials that elevate your brand experience.",
+              "cta": {
+                "label": "See Inspirations",
+                "href": "/inspiration"
+              }
+            }
+          }
+        ],
         "overlay": {
           "className": "bg-gradient-to-t from-black/60 via-black/55 to-black/40"
         },
         "content": {
-          "eyebrow": "Create Memorable Experiences",
-          "heading": "Tailored Solutions for Every Hospitality Space",
-          "description": "Premium bedding, amenities, and equipment for elevated comfort and efficiency.",
-          "cta": {
-            "label": "Explore Our Range",
-            "href": "/collections/all-beds"
-          }
+          "heading": "Tailored Solutions for Every Hospitality Space"
+        },
+        "autoplay": {
+          "enabled": true,
+          "intervalMs": 6000
         },
         "bottomStrip": {
           "enabled": true,
@@ -325,41 +404,16 @@
           "className": "bg-primary text-primary-foreground"
         },
         "layout": {
-          "align": "center"
+          "align": "center",
+          "showArrows": true,
+          "showDots": true
         }
       },
       "sections": [
         {
           "type": "topCategories",
           "title": "Shop by Category",
-          "subtitle": "Discover comfort by room, style, or material.",
-          "categories": [
-            {
-              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_5127_fca06526-213a-460a-88a8-fcca0b343319.jpg?v=1744127701",
-              "alt": "Mattress and Beddings",
-              "href": "/collections/all-beds"
-            },
-            {
-              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401175_1bb95515-fbe4-40a2-b9bf-06e201ad803a.jpg?v=1739370948",
-              "alt": "Bath Linens and Accessories",
-              "href": "/collections/bedding"
-            },
-            {
-              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/360ml-dispenser-for-bath-gel-shampoo-conditioner-3488528.jpg?v=1759751185",
-              "alt": "Amenities",
-              "href": "/collections/bundles"
-            },
-            {
-              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401323.jpg?v=1740396658",
-              "alt": "Appliances",
-              "href": "/collections/bath"
-            },
-            {
-              "src": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_4083.jpg?v=1740398177",
-              "alt": "Lobby and Housekeeping",
-              "href": "/collections/pillows"
-            }
-          ]
+          "subtitle": "Discover comfort by room, style, or material."
         },
         {
           "type": "featureShowcase",
@@ -384,6 +438,30 @@
           }
         },
         {
+          "type": "productTabs",
+          "enabled": false,
+          "title": "",
+          "subtitle": "",
+          "tabs": [
+            {
+              "key": "latest",
+              "label": "Latest",
+              "limit": 6
+            },
+            {
+              "key": "bestSellers",
+              "label": "Best Sellers",
+              "limit": 6,
+              "windowDays": 30
+            },
+            {
+              "key": "onSale",
+              "label": "On Sale",
+              "limit": 6
+            }
+          ]
+        },
+        {
           "type": "latestProducts",
           "enabled": true,
           "title": "The Latest",
@@ -391,6 +469,28 @@
           "categoryId": "019b4844-4547-7b8f-b6eb-db92cfd4d10e",
           "limit": 6
         },
+        {
+          "type": "onSaleProducts",
+          "enabled": true,
+          "title": "Deals & Discounts",
+          "subtitle": "Limited-time offers while stock lasts.",
+          "limit": 6,
+          "layout": {
+            "sectionClassName": "w-[95%] mx-auto py-8"
+          }
+        },
+        {
+          "type": "bestSellersProducts",
+          "enabled": true,
+          "title": "Best Sellers",
+          "subtitle": "Customer favorites and top performers.",
+          "limit": 6,
+          "windowDays": 30,
+          "layout": {
+            "sectionClassName": "w-[95%] mx-auto py-8"
+          }
+        },
+
         {
           "type": "featureShowcase",
           "image": {
@@ -1108,77 +1208,6 @@
             "general": "<h2>Shop {{categoryName}}</h2><p>Discover premium {{categoryName}} at {{storeName}}, thoughtfully designed for comfort, durability, and everyday performance. Whether for home or hospitality use, our {{categoryName}} collection combines quality materials with practical design, making it a trusted choice for individuals and businesses across Nigeria. <strong>Expert tip:</strong> Pair your {{categoryName}} with complementary essentials to enhance comfort, longevity, and overall experience.</p>"
           }
         }
-      },
-      "bySlug": {
-        "topper": {
-          "afterContentHtml": "<h2>Find your perfect mattress topper</h2>\n\n<p>\n  Transform your bed into a cloud of comfort with our premium range of mattress toppers.\n  Designed to enhance softness, relieve pressure, and improve sleep quality, they’re the\n  perfect upgrade if your mattress feels too firm or simply needs a plush refresh.\n  Choose from down-alternative toppers for lightweight coziness, or go for gel memory foam\n  for targeted support and cooling comfort all night long.\n</p>\n\n<h3>Why shop mattress toppers at {{storeName}}</h3>\n\n<ul>\n  <li>Plush, supportive designs for every comfort preference.</li>\n  <li>Cooling and pressure-relieving options for deeper, more restorative sleep.</li>\n  <li>Breathable materials that regulate temperature and promote airflow.</li>\n  <li>Durable construction that maintains shape and loft over time.</li>\n</ul>\n\n<h3>Protect and prolong</h3>\n\n<p>\n  Pair your mattress topper with a waterproof protector to shield against spills, sweat,\n  and allergens — keeping your sleep surface clean, fresh, and long-lasting. It’s the\n  simplest way to extend the life and comfort of both your topper and your mattress.\n</p>\n\n<p>\n  <strong>Expert tip:</strong>\n  Fluff or rotate your mattress topper every few weeks to maintain even comfort and support.\n  Use a breathable fitted sheet or protector for easier care and longer durability.\n</p>"
-        },
-        "towels": {
-          "afterContentHtml": "<h2>Luxury towels for everyday indulgence</h2>\n\n<p>\n  Wrap yourself in softness with our collection of premium towels, crafted to balance\n  absorbency, durability, and a plush hand-feel. From everyday essentials to spa-inspired\n  designs, our towels are made to elevate your bathroom and your routine.\n</p>\n\n<h3>Why choose towels from {{storeName}}</h3>\n\n<ul>\n  <li>High-GSM fabrics for a luxurious, weighty feel.</li>\n  <li>Quick-drying fibres that stay fresher for longer.</li>\n  <li>Colourfast dyes to resist fading over time.</li>\n  <li>Coordinated collections for a cohesive bathroom look.</li>\n</ul>\n\n<p>\n  <strong>Care tip:</strong>\n  Wash your towels without fabric softener to maintain maximum absorbency, and tumble dry\n  on a low setting to keep fibres fluffy.\n</p>"
-        },
-        "pillows": {
-          "afterContentHtml": "<h2>Find your perfect pillow</h2>\n\n<p>\n  The right pillow can transform the way you sleep. Our range of pillows is designed to\n  support healthy alignment of your head, neck, and spine, helping to reduce tension and\n  improve sleep quality for every type of sleeper.\n</p>\n\n<h3>Pillow options for every sleeper</h3>\n\n<ul>\n  <li>Soft, medium, and firm profiles to match your comfort preference.</li>\n  <li>Side, back, and stomach-sleeper friendly designs.</li>\n  <li>Hypoallergenic fillings for a cleaner, fresher sleep environment.</li>\n  <li>Cooling and breathable options to prevent overheating at night.</li>\n</ul>\n\n<p>\n  <strong>Expert tip:</strong>\n  Replace your pillows every 1–2 years, or sooner if they lose loft or no longer spring\n  back when folded, to maintain proper support and hygiene.\n</p>"
-        },
-        "mattress": {
-          "afterContentHtml": "<h2>Find your perfect mattress</h2>\n\n<p>\n  A great night’s sleep starts with the right mattress. Our collection of premium mattresses\n  is crafted to deliver exceptional comfort, support, and long-lasting durability. Whether\n  you prefer a plush, cloud-like feel or a firmer, more supportive surface, we offer designs\n  tailored to every sleep style, body type, and comfort preference.\n</p>\n\n<p>\n  From hybrid mattresses that combine adaptive foam with responsive springs to memory foam\n  models engineered for pressure relief, each mattress is designed to promote proper spine\n  alignment and deeper, more restorative sleep. Enjoy breathable, temperature-regulating\n  materials that help prevent overheating and maintain a comfortable sleep environment all\n  night long.\n</p>\n\n<h3>Why choose a mattress from {{storeName}}</h3>\n\n<ul>\n  <li>Premium materials engineered for comfort, support, and breathability.</li>\n  <li>Hybrid and memory foam options to suit every type of sleeper.</li>\n  <li>Pressure-relieving designs that reduce tossing and turning.</li>\n  <li>Temperature-regulating layers that help keep you cool throughout the night.</li>\n  <li>Durable, long-lasting construction for consistent comfort over time.</li>\n</ul>\n\n<h3>Upgrade your sleep experience</h3>\n\n<p>\n  Pair your mattress with one of our high-quality toppers or protectors for enhanced comfort\n  and extended mattress life. A breathable topper can add plushness or extra support, while a\n  waterproof protector shields against spills, allergens, and general wear — helping your\n  mattress stay fresh, hygienic, and in peak condition for years.\n</p>\n\n<p>\n  <strong>Expert tip:</strong>\n  Rotate your mattress every 2–3 months to encourage even wear. Use a breathable mattress\n  protector to safeguard against moisture, dust mites, and allergens, improving both hygiene\n  and longevity.\n</p>"
-        },
-        "all-baths": {
-          "afterContentHtml": "<h2>Refresh your bathroom with everyday luxury</h2>\n\n<p>\n  Create a space that feels calm, clean, and effortlessly elevated with our bathroom essentials.\n  From plush towels and absorbent bath mats to practical accessories that keep everything in place,\n  this collection is designed to bring comfort and style to your daily routine.\n</p>\n\n<h3>What you’ll find in our bathroom collection</h3>\n\n<ul>\n  <li>Soft, high-absorbency towels for a spa-like dry.</li>\n  <li>Bath mats and rugs designed for comfort underfoot and dependable grip.</li>\n  <li>Coordinated sets and colourways to make styling easy.</li>\n  <li>Durable, easy-care materials made for everyday use.</li>\n</ul>\n\n<h3>Why shop bathroom essentials at {{storeName}}</h3>\n\n<ul>\n  <li>Premium fabrics chosen for softness, absorbency, and longevity.</li>\n  <li>Care-friendly designs that stay fresh and look great over time.</li>\n  <li>Thoughtful details that elevate your space without extra effort.</li>\n</ul>\n\n<p>\n  <strong>Care tip:</strong>\n  Wash towels and bath mats separately from items with zips or hooks to prevent snags.\n  Skip fabric softener on towels to maintain maximum absorbency.\n</p>"
-        },
-        "all-bed": {
-          "afterContentHtml": "<h2>Build your perfect bed, layer by layer</h2>\n\n<p>\n  Better sleep starts with the right setup. Our bedding collection helps you create a bed that looks\n  inviting and feels even better — with breathable layers, supportive essentials, and comfort upgrades\n  for every season.\n</p>\n\n<h3>Everything you need for a sleep-ready space</h3>\n\n<ul>\n  <li>Pillows in a range of feels to support your preferred sleep position.</li>\n  <li>Mattress toppers to add plushness, cooling comfort, or extra support.</li>\n  <li>Protectors to help guard against spills, allergens, and everyday wear.</li>\n  <li>Comfort-focused essentials designed to help you sleep deeper and wake up better.</li>\n</ul>\n\n<h3>Why shop bedding at {{storeName}}</h3>\n\n<ul>\n  <li>Comfort-first designs made for real, everyday sleep needs.</li>\n  <li>Quality materials chosen for breathability, durability, and easy care.</li>\n  <li>Options for every preference — from plush and cosy to cool and supportive.</li>\n</ul>\n\n<p>\n  <strong>Expert tip:</strong>\n  Refresh your sleep setup seasonally: switch to lighter, more breathable layers in warmer months,\n  and add a topper or extra pillow support when you want a cosier feel.\n</p>"
-        }
-      },
-      "exploreMore": {
-        "enabled": true,
-        "heading": "Explore more",
-        "items": [
-          {
-            "title": "Mattress and Beddings",
-            "href": "/collections/hubs/all-bed",
-            "buttonLabel": "Shop beds",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_5127_fca06526-213a-460a-88a8-fcca0b343319.jpg?v=1744127701",
-              "alt": "Mattress and Beddings"
-            }
-          },
-          {
-            "title": "Bath Linens and Accessories",
-            "href": "/collections/hubs/all-baths",
-            "buttonLabel": "Shop bath",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401175_1bb95515-fbe4-40a2-b9bf-06e201ad803a.jpg?v=1739370948",
-              "alt": "Bath Linens and Accessories"
-            }
-          },
-          {
-            "title": "Amenities",
-            "href": "/collections/hubs/bundles",
-            "buttonLabel": "Shop amenities",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/360ml-dispenser-for-bath-gel-shampoo-conditioner-3488528.jpg?v=1759751185",
-              "alt": "Amenities"
-            }
-          },
-          {
-            "title": "Appliances",
-            "href": "/collections/hubs/appliances",
-            "buttonLabel": "Shop appliances",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/LSA_HOME03-07-2401323.jpg?v=1740396658",
-              "alt": "Appliances"
-            }
-          },
-          {
-            "title": "Lobby and Housekeeping",
-            "href": "/collections/hubs/lobby-and-housekeeping",
-            "buttonLabel": "Shop collection",
-            "image": {
-              "url": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/IMG_4083.jpg?v=1740398177",
-              "alt": "Lobby and Housekeeping"
-            }
-          }
-        ]
       },
       "ui": {
         "afterContentExpandable": true,

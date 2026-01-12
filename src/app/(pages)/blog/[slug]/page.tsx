@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { getBlogPostBySlugPublic as _getBlogPostBySlugPublic } from "@/features/Pages/Blog/actions/blog";
+import { getBlogPostBySlugPublic as _getBlogPostBySlugPublic } from "@/features/Blog/actions/blog";
 import { getStorefrontConfig as _getStorefrontConfig } from "@/config/runtime/get-storefront-config";
-import { BlogPostRenderer } from "@/features/Pages/Blog/ui/blog-post-renderer";
-import { getRelatedBlogPosts } from "@/features/Pages/Blog/actions/related";
-import { RelatedPosts } from "@/features/Pages/Blog/ui/related-posts";
+import { BlogPostRenderer } from "@/features/Blog/ui/blogpost/blog-post-renderer";
+import { getRelatedBlogPosts } from "@/features/Blog/actions/related";
+import { RelatedPosts } from "@/features/Blog/ui/related-posts";
 
 // ✅ cache to avoid double hits from generateMetadata + page
 const getStorefrontConfig = cache(async () => _getStorefrontConfig());

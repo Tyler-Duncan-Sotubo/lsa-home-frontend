@@ -2,7 +2,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ProductReview } from "@/features/Pages/Products/types/products";
+import type { ProductReview } from "@/features/Products/types/products";
 import { Button } from "@/shared/ui/button";
 import {
   Select,

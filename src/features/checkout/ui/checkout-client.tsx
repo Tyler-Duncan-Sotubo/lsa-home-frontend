@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { Form } from "@/shared/ui/form";
-import LsaLoading from "@/shared/ui/lsa-loading";
-
 import { CheckoutContactSection } from "@/features/checkout/ui/checkout-contact-section";
 import { CheckoutDeliverySection } from "@/features/checkout/ui/checkout-delivery-section";
 import { CheckoutPaymentSection } from "@/features/checkout/ui/checkout-payment-section";
 import { CheckoutOrderSummary } from "@/features/checkout/ui/checkout-order-summary";
 
 import { useCheckoutController } from "@/features/checkout/hooks/use-checkout-controller";
+import { LoadingProgress } from "@/shared/ui/loading/loading-progress";
 
 export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
   const {
@@ -31,7 +30,7 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
     isSettingPickup,
   } = useCheckoutController(checkoutId);
 
-  if (isLoading) return <LsaLoading />;
+  if (isLoading) return <LoadingProgress />;
 
   return (
     <div className="min-h-screen bg-background text-foreground">

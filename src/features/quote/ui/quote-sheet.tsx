@@ -38,8 +38,8 @@ import { toast } from "sonner";
 import { useCanSeePrice } from "@/shared/hooks/use-can-see-price";
 import { usePriceDisplay } from "@/shared/hooks/use-price-display";
 import Link from "next/link";
-import { useLinkedProductsQuery } from "@/features/Pages/Products/hooks/use-upsell-products";
-import { LinkedProducts } from "@/features/Pages/Products/ui/linked-products";
+import { useLinkedProductsQuery } from "@/features/Products/hooks/use-upsell-products";
+import { LinkedProducts } from "@/features/Products/ui/ProductInfo/linked-products";
 import { LINK_COPY } from "@/shared/constants/link-copy";
 
 function StepPill({

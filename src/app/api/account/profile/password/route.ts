@@ -2,7 +2,7 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
-import { updateCustomerPassword } from "@/features/Pages/Account/information/action/profile";
+import { updateCustomerPassword } from "@/features/Account/information/action/profile";
 
 export async function PATCH(req: Request) {
   const session = await auth();

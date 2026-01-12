@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Product } from "@/features/Pages/Products/types/products";
+import type { Product } from "@/features/Products/types/products";
 
 type Collection = {
   slug: string;

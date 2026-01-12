@@ -16,14 +16,6 @@ export type CollectionsPageConfigV1 = {
       afterContentHtml?: Record<string, string>;
     };
   };
-  bySlug?: Record<
-    string,
-    {
-      description?: string; // can be plain or {{templates.descriptions.sleep}}
-      afterContentHtml?: string; // can be plain or {{templates.afterContentHtml.sleep}}
-    }
-  >;
-  exploreMore?: ExploreMoreBlockV1;
   ui?: {
     afterContentExpandable?: boolean;
     afterContentCollapsedHeightPx?: number;

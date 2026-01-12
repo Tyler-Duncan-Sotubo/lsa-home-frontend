@@ -41,7 +41,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
             absolute top-0 right-0
             translate-x-1/3 -translate-y-1/3
             inline-flex h-8 min-w-8 items-center justify-center
-            rounded-full bg-primary-foreground text-white
+            rounded-full bg-primary text-white
             text-[14px] font-bold shadow-md z-50
           "
         >

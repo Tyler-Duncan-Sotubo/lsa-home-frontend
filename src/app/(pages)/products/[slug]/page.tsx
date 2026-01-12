@@ -4,11 +4,11 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ProductJsonLd } from "@/shared/seo/product-json-ld";
 import { BreadcrumbJsonLd } from "@/shared/seo/breadcrumb-json-ld";
-import { ProductPageClient } from "@/features/Pages/Products/ui/product-page-client";
+import { ProductPageClient } from "@/features/Products/ui/product-page-client";
 import {
   getProductBySlugWithVariations as _getProductBySlugWithVariations,
   listProducts,
-} from "@/features/Pages/Products/actions/products";
+} from "@/features/Products/actions/products";
 import { getBaseUrl } from "@/shared/seo/baseurl";
 import { getProductReviews } from "@/features/reviews/actions/get-product-reviews";
 import { productToSeo } from "@/shared/seo/product-to-seo";
@@ -131,6 +131,7 @@ export default async function ProductPage({
         relatedProducts={relatedProducts}
         user={null}
         reviews={reviews}
+        config={config}
       />
     </>
   );

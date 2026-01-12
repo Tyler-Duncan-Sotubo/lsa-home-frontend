@@ -1,6 +1,6 @@
 import type { PageSeoConfigV1 } from "@/config/types/seo-page.types";
 import type { SeoConfigV1 } from "@/config/types/seo.types";
-import { WooCategory } from "@/features/Pages/Products/types/products";
+import { WooCategory } from "@/features/Products/types/products";
 
 export type CollectionCategory = {
   id: string;

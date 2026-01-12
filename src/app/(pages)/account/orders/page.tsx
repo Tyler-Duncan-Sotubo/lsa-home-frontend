@@ -1,5 +1,5 @@
-import { listCustomerOrders } from "@/features/Pages/Account/orders/actions/orders";
-import OrdersTabClient from "@/features/Pages/Account/orders/ui/orders-tab-client";
+import { listCustomerOrders } from "@/features/Account/orders/actions/orders";
+import OrdersTabClient from "@/features/Account/orders/ui/orders-tab-client";
 import { auth } from "@/lib/auth/auth";
 
 export default async function OrdersPage() {

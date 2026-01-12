@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
+import { headers as nextHeaders } from "next/headers";
 import { getStorefrontConfig } from "./storefront-config";
 
 export type StorefrontFetchOpts = {
@@ -55,6 +56,19 @@ async function readError(res: Response) {
   }
 }
 
+async function getIncomingHost(): Promise<string | null> {
+  // In Next.js App Router, this returns the headers of the incoming request
+  const h = await nextHeaders();
+
+  // Prefer forwarded host (CDN/proxy), fallback to host
+  const host = h.get("x-forwarded-host") || h.get("host") || null;
+
+  if (!host) return null;
+
+  // strip port
+  return host.split(":")[0].trim().toLowerCase();
+}
+
 export async function storefrontFetch<T>(
   path: string,
   opts?: StorefrontFetchOpts & { includeMeta?: false }
@@ -67,7 +81,7 @@ export async function storefrontFetch<T>(
   path: string,
   opts: StorefrontFetchOpts = {}
 ): Promise<T | MetaResult<T>> {
-  const { baseUrl, apiKey } = getStorefrontConfig();
+  const { baseUrl } = getStorefrontConfig();
 
   const method = opts.method ?? "GET";
   const qs = toQueryString(opts.params);
@@ -76,8 +90,12 @@ export async function storefrontFetch<T>(
   const cache =
     opts.cache ?? (opts.revalidate !== undefined ? undefined : "no-store");
 
+  const incomingHost = await getIncomingHost();
+
   const headers: Record<string, string> = {
-    "X-API-Key": apiKey,
+    // ✅ Domain-based tenancy header
+    ...(incomingHost ? { "X-Store-Host": incomingHost } : {}),
+
     ...(opts.body ? { "Content-Type": "application/json" } : {}),
 
     // ✅ for CartTokenGuard (access + refresh)
@@ -89,6 +107,7 @@ export async function storefrontFetch<T>(
     ...(opts.accessToken
       ? { Authorization: `Bearer ${opts.accessToken}` }
       : {}),
+
     ...opts.headers,
   };
 
@@ -101,7 +120,13 @@ export async function storefrontFetch<T>(
             ...(opts.revalidate !== undefined
               ? { revalidate: opts.revalidate }
               : {}),
-            ...(opts.tags?.length ? { tags: opts.tags } : {}),
+            ...(opts.tags?.length
+              ? {
+                  tags: incomingHost
+                    ? [...opts.tags, `host:${incomingHost}`]
+                    : opts.tags,
+                }
+              : {}),
           }
         : undefined,
     headers,
@@ -110,7 +135,6 @@ export async function storefrontFetch<T>(
 
   if (!res.ok) {
     const errorBody = await readError(res);
-    // Attach status for easier handling
     if (errorBody && typeof errorBody === "object") {
       (errorBody as any).status = res.status;
       (errorBody as any).statusCode ??= res.status;

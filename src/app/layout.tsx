@@ -5,14 +5,16 @@ import { AuthProvider } from "@/shared/providers/auth-provider";
 import { QueryProvider } from "@/shared/providers/query-provider";
 import { Suspense } from "react";
 import ScrollToTop from "@/shared/ui/scroll-to-top";
-import { SiteFooter } from "@/features/Footer/site-footer";
+import { SiteFooter } from "@/features/layout/Footer/site-footer";
 import { AnalyticsTagLoader } from "@/shared/analytics/analytics-tag-loader";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { ThemeProvider } from "@/config/theme/ThemeProvider";
-import { HeaderComposition } from "@/features/Header/composition/header-composition";
+import { HeaderComposition } from "@/features/layout/Header/composition/header-composition";
 import { QuoteSheet } from "@/features/quote/ui/quote-sheet";
 import { Toaster } from "@/shared/ui/sonner";
 import { RuntimeConfigHydrator } from "@/config/runtime/RuntimeConfigHydrator";
+import { getStorefrontAnalyticsIntegrations } from "@/features/integrations/actions/get-analytics-integrations";
+import AnalyticsScripts from "@/features/integrations/ui/analytics-scripts";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -34,26 +36,29 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const config = await getStorefrontConfig();
+  const integrations = await getStorefrontAnalyticsIntegrations();
+
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${dosis.variable} antialiased`}>
         <ThemeProvider theme={config.theme} />
-        <Suspense fallback={<div>Loading...</div>}>
-          <ScrollToTop />
-          <AuthProvider>
-            <AppProviders>
-              <QueryProvider>
-                <AnalyticsTagLoader token={ANALYTICS_TAG_TOKEN} />
-                <QuoteSheet />
-                <HeaderComposition config={config} />
-                <RuntimeConfigHydrator config={config} />
-                <main className="min-h-dvh">{children}</main>
-                <SiteFooter config={config} />
-                <Toaster position="top-right" />
-              </QueryProvider>
-            </AppProviders>
-          </AuthProvider>
-        </Suspense>
+        <ScrollToTop />
+        <AuthProvider>
+          <AppProviders>
+            <QueryProvider>
+              <AnalyticsTagLoader token={ANALYTICS_TAG_TOKEN} />
+              <AnalyticsScripts integrations={integrations} />
+              <QuoteSheet />
+              <HeaderComposition config={config} />
+              <RuntimeConfigHydrator config={config} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <main className="min-h-dvh  md:pb-0">{children}</main>
+              </Suspense>
+              <SiteFooter config={config} />
+              <Toaster position="top-right" />
+            </QueryProvider>
+          </AppProviders>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -13,10 +13,14 @@ export type HomeSectionV1 =
   | ProductCategoryGridSectionV1
   | FeatureShowcaseSectionV1
   | BrandCarouselSectionV1
-  | LatestProductsSectionV1
   | TestimonialsSectionV1
   | HappyCustomersSectionV1
-  | FeaturedProductSectionV1;
+  | FeaturedProductSectionV1
+  | ProductTabsSectionV1
+  | BrandCarouselSectionV1
+  | LatestProductsSectionV1
+  | OnSaleProductsSectionV1
+  | BestSellersProductsSectionV1;
 
 export type TopCategoriesSectionV1 = {
   type: "topCategories";
@@ -128,15 +132,6 @@ export type BrandCarouselSectionV1 = {
   };
 };
 
-export type LatestProductsSectionV1 = {
-  type: "latestProducts";
-  enabled?: boolean; // default true
-  title?: string;
-  subtitle?: string;
-  categoryId?: string;
-  limit?: number;
-};
-
 export type TestimonialItemV1 = {
   name: string;
   quote: string;
@@ -199,4 +194,51 @@ export type HappyCustomersSectionV1 = {
   decorations?: {
     enabled?: boolean; // default true
   };
+};
+
+export type ProductTabsSectionV1 = {
+  type: "productTabs";
+  enabled?: boolean; // default true
+  title?: string;
+  subtitle?: string;
+  tabs: {
+    key: "latest" | "onSale" | "bestSellers";
+    label: string;
+    limit?: number;
+    categoryId?: string;
+    windowDays?: number; // default 30
+  }[];
+  layout?: {
+    sectionClassName?: string; // e.g. "w-[95%] mx-auto py-8"
+    tabsAlignment?: "left" | "center" | "right"; // default: right
+  };
+};
+
+export type LatestProductsSectionV1 = {
+  type: "latestProducts";
+  enabled?: boolean;
+  title?: string;
+  subtitle?: string;
+  categoryId?: string;
+  limit?: number;
+  layout?: { sectionClassName?: string };
+};
+
+export type OnSaleProductsSectionV1 = {
+  type: "onSaleProducts";
+  enabled?: boolean;
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+  layout?: { sectionClassName?: string };
+};
+
+export type BestSellersProductsSectionV1 = {
+  type: "bestSellersProducts";
+  enabled?: boolean;
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+  windowDays?: number;
+  layout?: { sectionClassName?: string };
 };

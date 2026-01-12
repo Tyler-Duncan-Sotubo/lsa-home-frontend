@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { Montserrat, Dosis } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/shared/providers/app-providers";

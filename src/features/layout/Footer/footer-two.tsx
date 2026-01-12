@@ -26,7 +26,7 @@ export function FooterTwo({ config, footer }: Props) {
 
   const year = new Date().getFullYear();
   const leftText = footer.bottomBar?.leftText?.replace("{year}", String(year));
-  const rightText = footer.bottomBar?.rightText;
+  const paymentOptions = footer.bottomBar?.payments;
 
   async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
@@ -132,7 +132,7 @@ export function FooterTwo({ config, footer }: Props) {
 
       <CopyrightBar
         leftText={leftText}
-        rightText={rightText}
+        payments={paymentOptions}
         year={year}
         config={config}
       />

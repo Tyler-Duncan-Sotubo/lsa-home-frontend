@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PaymentMethod } from "@/config/types/footer.types";
 import {
   FaCcVisa,
@@ -46,7 +47,7 @@ interface CopyrightBarProps {
   leftText?: string;
   payments?: {
     enabled: boolean;
-    methods: PaymentMethod[]; // selected in admin
+    methods: any;
   };
   year?: number;
   config: {

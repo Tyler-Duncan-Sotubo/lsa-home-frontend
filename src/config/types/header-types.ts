@@ -23,6 +23,7 @@ export type HeaderConfigV1 = {
      * V1: Centered nav with mega menus (DTC / retail)
      * V2: Simple nav, corporate / B2B
      */
+    enabled: boolean;
     variant: "V1" | "V2";
     items: NavItem[];
     icons?: {

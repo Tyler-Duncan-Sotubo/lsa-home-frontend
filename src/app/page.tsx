@@ -4,9 +4,22 @@ import { Metadata } from "next";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { HomeSections } from "@/features/Home/Sections/home-sections";
 import { ContactSectionCompact } from "@/features/Contact/contact-section-compact";
+import { SystemPageClient } from "@/features/not-found/store-not-found-client";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();
+
+  // ✅ System page metadata
+  if (config.ui?.systemPage?.kind === "store-not-found") {
+    return buildMetadata({
+      globalSeo: {
+        title: config.ui.systemPage.title ?? "Store not found",
+        description:
+          config.ui.systemPage.description ??
+          "We couldn’t find a storefront for this domain.",
+      },
+    });
+  }
 
   return buildMetadata({
     globalSeo: config.seo,
@@ -16,6 +29,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const config = await getStorefrontConfig();
+
+  if (config.ui?.systemPage) {
+    return <SystemPageClient config={config} />;
+  }
+
   return (
     <div>
       {/* Config-driven hero */}

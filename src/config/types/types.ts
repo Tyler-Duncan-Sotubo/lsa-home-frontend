@@ -37,6 +37,15 @@ export type StorefrontConfigV1 = {
   /* ---------------------------------- */
   seo?: SeoConfigV1;
   ui?: {
+    systemPage?: {
+      kind: "store-not-found" | "maintenance";
+      title?: string;
+      description?: string;
+      image?: {
+        src: string;
+        alt?: string;
+      };
+    };
     quickView?: {
       enabled?: boolean;
       detailsVariant?: "V1" | "V2";

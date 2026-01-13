@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "store": {
+    "id": "",
+    "name": "Store not found",
+    "locale": "en-NG",
+    "currency": {
+      "code": "NGN",
+      "locale": "en-NG",
+      "fractionDigits": 2
+    }
+  },
+  "ui": {
+    "systemPage": {
+      "kind": "store-not-found",
+      "title": "Not Found",
+      "description": "We couldn’t find a storefront for this domain.",
+      "image": {
+        "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/Group.png",
+        "alt": "Store not found"
+      }
+    },
+    "quickView": { "enabled": false, "detailsVariant": "V1" },
+    "pricing": { "showPriceInDetails": "always" },
+    "product": {
+      "galleryVariant": "V1",
+      "showWishlistButton": false,
+      "productDetails": {
+        "context": "CART",
+        "variant": "V1",
+        "showInfoSections": false
+      },
+      "recommendations": { "variant": "TABBED", "defaultTab": "collection" },
+      "productCardVariant": "HOVER_ACTIONS"
+    },
+    "account": {
+      "headerNav": {
+        "showRewardIcon": false,
+        "showWishlistIcon": false,
+        "showOurStoresIcon": false
+      }
+    }
+  },
+  "theme": {
+    "assets": {
+      "logoUrl": "https://placehold.co/240x80?text=Store"
+    },
+    "mode": { "default": "light", "strategy": "class", "darkClass": "dark" },
+    "fonts": {
+      "sans": "Montserrat, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, \"Noto Sans\"",
+      "heading": "Montserrat, ui-sans-serif, system-ui",
+      "mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    },
+    "colors": {
+      "light": {
+        "background": "oklch(1 0 0)",
+        "foreground": "oklch(0.145 0 0)",
+        "primary": "oklch(0.46 0.04 145)",
+        "primaryForeground": "oklch(0.98 0.01 145)",
+        "secondary": "oklch(0.98 0 0)",
+        "secondaryForeground": "oklch(0.205 0 0)"
+      },
+      "dark": {
+        "background": "oklch(0.145 0 0)",
+        "foreground": "oklch(0.985 0 0)",
+        "primary": "oklch(0.55 0.15 145)",
+        "primaryForeground": "oklch(0.98 0.01 145)"
+      }
+    },
+    "radius": { "base": "0.625rem" },
+    "components": {
+      "button": { "radius": "pill" },
+      "card": { "radius": "lg" }
+    }
+  },
+  "seo": {
+    "title": "Store not found",
+    "description": "We couldn’t find a store for this domain.",
+    "siteName": "Storefront",
+    "canonicalBaseUrl": "",
+    "favicon": { "svg": "", "png": "", "ico": "", "appleTouch": "" },
+    "ogImage": {
+      "url": "https://placehold.co/1200x630?text=Store+Not+Found",
+      "alt": "Store not found"
+    }
+  },
+  "header": {
+    "topBar": {
+      "enabled": false,
+      "autoplay": { "enabled": false, "intervalMs": 10000 },
+      "slides": []
+    },
+    "nav": {
+      "enabled": false,
+      "variant": "V2",
+      "items": [],
+      "icons": {
+        "search": false,
+        "account": false,
+        "wishlist": false,
+        "cart": false,
+        "quote": false
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "hero": {
+        "enabled": false,
+        "variant": "V2",
+        "image": {
+          "src": "https://placehold.co/1600x900?text=Store+Not+Found",
+          "alt": "Store not found"
+        },
+        "overlay": {
+          "className": "bg-gradient-to-t from-black/70 via-black/55 to-black/20"
+        },
+        "content": {
+          "eyebrow": "404",
+          "heading": "Store not found",
+          "description": "We couldn’t find a storefront for this domain. Check the URL or contact the store owner.",
+          "cta": { "label": "Go to homepage", "href": "/" }
+        },
+        "bottomStrip": { "enabled": false, "text": "", "className": "" },
+        "layout": { "align": "center" }
+      },
+      "sections": []
+    },
+    "about": {
+      "version": 1,
+      "seo": { "title": "", "description": "" },
+      "sections": []
+    },
+    "contact": {
+      "version": 1,
+      "seo": { "title": "", "description": "" },
+      "sections": []
+    },
+    "account": { "version": 1, "pages": {} },
+    "collections": {
+      "version": 1,
+      "seo": { "title": "", "description": "", "collections": {} },
+      "defaults": {
+        "description": "",
+        "afterContentHtml": "",
+        "templates": { "descriptions": {}, "afterContentHtml": {} }
+      },
+      "ui": {
+        "afterContentExpandable": false,
+        "afterContentCollapsedHeightPx": 0,
+        "exploreMoreColumns": 0
+      }
+    }
+  }
+}

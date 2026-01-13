@@ -100,6 +100,7 @@
       ]
     },
     "nav": {
+      "enabled": true,
       "variant": "V2",
       "items": [
         { "label": "Home", "href": "/" },

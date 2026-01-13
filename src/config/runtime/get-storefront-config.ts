@@ -1,36 +1,47 @@
 import type { StorefrontConfigV1 } from "../types/types";
-import { fetchRemoteStorefrontConfig } from "./runtime-config";
+import {
+  fetchRemoteStorefrontConfig,
+  StorefrontConfigErrorCode,
+} from "./runtime-config";
 
 export async function getStorefrontConfig(): Promise<StorefrontConfigV1> {
   const forceLocal = process.env.STOREFRONT_CONFIG_FORCE_LOCAL === "true";
-  if (forceLocal) return loadLocalStorefrontConfig();
+  if (forceLocal) return loadLocalStorefrontConfig("default");
 
-  try {
-    return await fetchRemoteStorefrontConfig();
-  } catch (e) {
-    // You can log this on server (Next.js server-only)
-    console.warn(
-      "[storefront-config] remote fetch failed, falling back to local:",
-      e
-    );
-    return loadLocalStorefrontConfig();
+  const result = await fetchRemoteStorefrontConfig();
+
+  if (result.ok) {
+    return result.data;
+  }
+
+  switch (result.code) {
+    case StorefrontConfigErrorCode.DOMAIN_NOT_FOUND:
+      return loadLocalStorefrontConfig("not-found");
+
+    case StorefrontConfigErrorCode.CONFIG_NOT_PUBLISHED:
+    case StorefrontConfigErrorCode.THEME_NOT_READY:
+      return loadLocalStorefrontConfig("maintenance");
+
+    case StorefrontConfigErrorCode.LOCALHOST_BLOCKED:
+      return loadLocalStorefrontConfig("not-found");
+
+    default:
+      return loadLocalStorefrontConfig("default");
   }
 }
 
-export async function loadLocalStorefrontConfig(): Promise<StorefrontConfigV1> {
-  const store = process.env.STORE_ID;
+type LocalPreset = "default" | "maintenance" | "not-found";
 
-  switch (store) {
-    case "default": {
-      const mod = await import("../stores/default.json");
+export async function loadLocalStorefrontConfig(
+  preset: LocalPreset
+): Promise<StorefrontConfigV1> {
+  switch (preset) {
+    case "maintenance": {
+      const mod = await import("../stores/maintenance.json");
       return mod.default as StorefrontConfigV1;
     }
-    case "serene": {
-      const mod = await import("../stores/serene.json");
-      return mod.default as StorefrontConfigV1;
-    }
-    case "greysteed": {
-      const mod = await import("../stores/greysteed.json");
+    case "not-found": {
+      const mod = await import("../stores/not-found.json");
       return mod.default as StorefrontConfigV1;
     }
     default: {

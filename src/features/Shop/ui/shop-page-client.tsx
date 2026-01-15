@@ -176,7 +176,7 @@ async function fetchProductsPage({
 
 export function ShopPageClient({
   initialProducts,
-  pageSize = 12,
+  pageSize = 24,
 }: {
   initialProducts: Product[];
   pageSize?: number;
@@ -201,9 +201,12 @@ export function ShopPageClient({
       queryFn: async ({ pageParam }) =>
         fetchProductsPage({ limit: pageSize, offset: pageParam }),
       getNextPageParam: (lastPage, allPages) => {
-        if (!lastPage || lastPage.length < pageSize) return undefined;
-        return allPages.length * pageSize;
+        if (!lastPage || lastPage.length === 0) return undefined;
+        const loaded = allPages.reduce((sum, page) => sum + page.length, 0);
+        if (lastPage.length < pageSize) return undefined;
+        return loaded;
       },
+
       // ✅ hydrate the first page from the server
       initialData: {
         pages: [initialProducts],

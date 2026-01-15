@@ -160,7 +160,11 @@ export function ProductCard({
             </span>
           )}
 
-          <Link href={href} onClick={handleMarkRecentlyViewed}>
+          <Link
+            href={href}
+            onClick={handleMarkRecentlyViewed}
+            className="relative block aspect-square overflow-hidden"
+          >
             <Image
               src={
                 imageSrc ??
@@ -168,7 +172,7 @@ export function ProductCard({
               }
               alt={name}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105 "
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 

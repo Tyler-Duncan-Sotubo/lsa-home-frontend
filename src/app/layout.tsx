@@ -18,6 +18,7 @@ import { Toaster } from "@/shared/ui/sonner";
 import { RuntimeConfigHydrator } from "@/config/runtime/RuntimeConfigHydrator";
 import { getStorefrontAnalyticsIntegrations } from "@/features/integrations/actions/get-analytics-integrations";
 import AnalyticsScripts from "@/features/integrations/ui/analytics-scripts";
+import { SystemPageClient } from "@/features/not-found/store-not-found-client";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -35,29 +36,46 @@ const ANALYTICS_TAG_TOKEN = process.env.NEXT_PUBLIC_ANALYTICS_TAG_TOKEN ?? null;
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const config = await getStorefrontConfig();
   const integrations = await getStorefrontAnalyticsIntegrations();
+
+  const isSystemPage = !!config.ui?.systemPage;
 
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${dosis.variable} antialiased`}>
         <ThemeProvider theme={config.theme} />
         <ScrollToTop />
+
         <AuthProvider>
           <AppProviders>
             <QueryProvider>
-              <AnalyticsTagLoader token={ANALYTICS_TAG_TOKEN} />
-              <AnalyticsScripts integrations={integrations} />
-              <QuoteSheet />
-              <HeaderComposition config={config} />
+              {/* You can decide if you want analytics on system pages */}
+              {!isSystemPage && (
+                <AnalyticsTagLoader token={ANALYTICS_TAG_TOKEN} />
+              )}
+              {!isSystemPage && (
+                <AnalyticsScripts integrations={integrations} />
+              )}
+
+              {!isSystemPage && <QuoteSheet />}
+              {!isSystemPage && <HeaderComposition config={config} />}
               <RuntimeConfigHydrator config={config} />
+
               <Suspense fallback={<div>Loading...</div>}>
-                <main className="min-h-dvh  md:pb-0">{children}</main>
+                <main className="min-h-dvh md:pb-0">
+                  {isSystemPage ? (
+                    <SystemPageClient config={config} />
+                  ) : (
+                    children
+                  )}
+                </main>
               </Suspense>
-              <SiteFooter config={config} />
+
+              {!isSystemPage && <SiteFooter config={config} />}
               <Toaster position="top-right" />
             </QueryProvider>
           </AppProviders>

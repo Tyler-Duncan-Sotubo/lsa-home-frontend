@@ -37,16 +37,10 @@ export type CollectionSeoConfig = {
 };
 
 export type ExploreMoreItemV1 = {
-  title: string;
+  name: string;
   href: string; // where the button goes (collection page)
   buttonLabel?: string; // defaults to "Shop now" or similar
-
-  image?: {
-    url: string;
-    alt?: string;
-  };
-
-  // optional flags for future flexibility
+  imageUrl?: string; // deprecated
   badge?: string; // e.g. "Best seller"
   newTab?: boolean;
 };

@@ -36,6 +36,7 @@ type HubGroup = { category: HubCategory; products: any[] };
 type ExploreMoreItem = {
   id: string;
   name: string;
+  slug: string;
   imageUrl: string | null;
 };
 
@@ -75,6 +76,7 @@ export function CollectionsHubPageClient({
     () => (groups ?? []).flatMap((g) => g.products ?? []),
     [groups]
   );
+
   return (
     <div className="w-[95%] mx-auto py-10 space-y-10">
       <header>
@@ -143,9 +145,7 @@ export function CollectionsHubPageClient({
                     id: item.id,
                     name: item.name,
                     imageUrl: item.imageUrl,
-                    href: `/collections/${item.name
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`, // if your card expects href, better to return slug from API
+                    href: `/collections/${item.slug}`,
                   } as any
                 }
               />

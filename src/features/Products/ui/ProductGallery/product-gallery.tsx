@@ -37,11 +37,9 @@ function getVariationColor(v: any) {
 }
 
 function productHasAnyColor(product: any) {
-  // check product-level attributes
   const pAttrs: any[] = product?.attributes ?? [];
   if (pAttrs.some((a) => isColorAttrName(a?.name))) return true;
 
-  // check variation-level attributes
   const vars: any[] = product?.variations ?? [];
   return vars.some((v) =>
     (v?.attributes ?? []).some((a: any) => isColorAttrName(a?.name))
@@ -59,8 +57,6 @@ export function ProductGallery({
   const hasColor = useMemo(() => productHasAnyColor(product), [product]);
 
   const galleryImages = useMemo(() => {
-    const hero = product.images?.[0]?.src ?? null;
-
     const srcSet = new Set<string>();
     const out: string[] = [];
 
@@ -72,34 +68,35 @@ export function ProductGallery({
       }
     };
 
-    // 1) always include hero first
-    pushSrc(hero);
+    // ✅ 1) include ALL product images first (ordered from API; hero should already be first)
+    const pImgs: any[] = product?.images ?? [];
+    for (const img of pImgs) pushSrc(img?.src);
 
-    const variations: any[] = product.variations ?? [];
+    // ✅ fallback hero safety (in case product.images is empty but someone still sets hero elsewhere)
+    if (!out.length) pushSrc(product?.images?.[0]?.src ?? null);
+
+    // ✅ 2) include variation images (color logic)
+    const variations: any[] = product?.variations ?? [];
 
     if (hasColor) {
-      // ✅ Color-based products: keep ONE image per color (avoid duplicates across sizes)
+      // keep ONE image per color
       const colorToSrc = new Map<string, string>();
 
       for (const v of variations) {
         const color = norm(getVariationColor(v));
         const src = v?.image?.src ?? null;
         if (!color || !src) continue;
-
         if (!colorToSrc.has(color)) colorToSrc.set(color, src);
       }
 
       for (const src of colorToSrc.values()) pushSrc(src);
     } else {
-      // ✅ No color attribute (e.g. Size-only): include variation images anyway
-      for (const v of variations) {
-        const src = v?.image?.src ?? null;
-        pushSrc(src);
-      }
+      // size-only etc: include any variation images
+      for (const v of variations) pushSrc(v?.image?.src ?? null);
     }
 
     return out.length ? out : ["/placeholder.png"];
-  }, [product.images, product.variations, hasColor]);
+  }, [product, hasColor]);
 
   const clampActiveImage = useEffectEvent((len: number) => {
     setActiveImage((i) => Math.max(0, Math.min(i, len - 1)));
@@ -109,7 +106,7 @@ export function ProductGallery({
     clampActiveImage(galleryImages.length);
   }, [galleryImages.length]);
 
-  // ✅ Only try to sync by selectedColor when the product actually has color
+  // ✅ Only sync by selectedColor when product actually has color
   const syncSelectedColor = useEffectEvent((color?: string | null) => {
     if (!hasColor) return;
     if (!color) return;
@@ -118,7 +115,7 @@ export function ProductGallery({
     if (lastColorRef.current === normalized) return;
     lastColorRef.current = normalized;
 
-    const match = (product.variations ?? []).find((v: any) => {
+    const match = (product?.variations ?? []).find((v: any) => {
       const vColor = norm(getVariationColor(v));
       return vColor === normalized && !!v?.image?.src;
     });

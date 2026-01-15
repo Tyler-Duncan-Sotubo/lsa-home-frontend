@@ -11,8 +11,8 @@ export function ExploreMoreCard({ item }: { item: ExploreMoreItemV1 }) {
       <Link href={item.href} className="block">
         <div className="relative md:aspect-11/10 w-full aspect-square">
           <Image
-            src={item.image?.url ?? ""}
-            alt={item.image?.alt ?? ""}
+            src={item.imageUrl ?? ""}
+            alt={item.name ?? ""}
             fill
             className="object-cover"
           />
@@ -20,7 +20,7 @@ export function ExploreMoreCard({ item }: { item: ExploreMoreItemV1 }) {
       </Link>
 
       <div className="p-4 space-y-3">
-        <h3 className="text-lg font-semibold text-center">{item.title}</h3>
+        <h3 className="text-lg font-semibold text-center">{item.name}</h3>
 
         <div className="w-1/2 mx-auto my-6">
           <Button asChild className="w-full" variant={"clean"}>

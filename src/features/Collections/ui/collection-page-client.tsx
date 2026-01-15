@@ -69,6 +69,11 @@ export function CollectionPageClient({
   const jsonLdImage =
     category?.imageUrl ?? products?.[0]?.images?.[0]?.src ?? undefined;
 
+  const hasFilters =
+    (meta.allColors?.length ?? 0) > 0 ||
+    (meta.allSizes?.length ?? 0) > 0 ||
+    (meta.allTags?.length ?? 0) > 0;
+
   return (
     <section className="mx-auto w-[95%] space-y-6 py-8">
       <header className="flex flex-col gap-2 px-5">
@@ -90,18 +95,29 @@ export function CollectionPageClient({
           </h1>
 
           {description ? (
-            <p className="text-primary text-base font-medium">{description}</p>
+            <div className="md:w-1/2">
+              <p className="text-primary text-base font-medium">
+                {description}
+              </p>
+            </div>
           ) : null}
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-16 md:grid-cols-[260px_minmax(0,1fr)]">
-        <CollectionFiltersSidebar
-          meta={meta}
-          filters={filters}
-          onChange={setFilters}
-        />
-
+      {hasFilters ? (
+        <div className="grid grid-cols-1 gap-16 md:grid-cols-[260px_minmax(0,1fr)]">
+          <CollectionFiltersSidebar
+            meta={meta}
+            filters={filters}
+            onChange={setFilters}
+          />
+          <ProductRail
+            products={filteredProducts}
+            sectionClassName="py-8"
+            // layout="wrap"
+          />
+        </div>
+      ) : (
         <div>
           <ProductRail
             products={filteredProducts}
@@ -109,7 +125,7 @@ export function CollectionPageClient({
             layout="wrap"
           />
         </div>
-      </div>
+      )}
 
       {afterHtml ? (
         <div className="border-t">

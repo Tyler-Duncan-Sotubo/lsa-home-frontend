@@ -87,7 +87,7 @@ function QuoteSheetFooter({
   const effectiveStep = step === 2 ? 2 : 1;
 
   return (
-    <div className="sticky bottom-0 z-20 border-t bg-background/90 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/70">
+    <div className="sticky bottom-0 z-20 border-t bg-white px-4 py-3 backdrop-blur supports-backdrop-filter:bg-white">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           {hasAnyPrice ? (
@@ -527,7 +527,7 @@ export function QuoteSheet() {
           )}
 
           {/* Shared sticky footer */}
-          <SheetFooter className="sticky bottom-0 bg-background/90 backdrop-blur">
+          <SheetFooter className="sticky bottom-0 bg-white backdrop-blur">
             <QuoteSheetFooter
               step={step}
               canContinue={canContinue}

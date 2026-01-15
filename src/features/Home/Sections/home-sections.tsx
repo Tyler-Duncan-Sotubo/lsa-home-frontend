@@ -5,12 +5,12 @@ import BrandCarousel from "./brand-carousel";
 import { FeatureShowcaseSection } from "./feature-showcase-section";
 import { TestimonialsSection } from "./testimonials-section";
 import { HappyCustomersSection } from "./happy-customers-section";
-import { ProductCategoryGridSection } from "./product-category-grid-section";
 import { FeaturedProductSection } from "./featured-product-section";
 import ProductTabsRailSection from "./product-tabs-rail-section"; // ✅ NEW
 import LatestProductsSection from "./latest-products-section";
 import OnSaleProductsSection from "./on-sale-products-section";
 import BestSellersProductsSection from "./best-sellers-products-section";
+import ProductCategoryGridSection from "./product-category-grid-section";
 
 export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
   if (!sections?.length) return null;

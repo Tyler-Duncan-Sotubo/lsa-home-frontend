@@ -95,7 +95,7 @@ export function ProductRail({
         {isWrap ? (
           <div
             className="
-              flex flex-wrap gap-8
+              flex flex-wrap gap-3
               sm:gap-5
               md:gap-6
             "
@@ -104,11 +104,7 @@ export function ProductRail({
               return (
                 <div
                   key={createStableKey("product", product.id, "wrap", idx)}
-                  className="
-        w-[calc(33.333%-0.67rem)]
-        sm:w-[calc(33.333%-0.84rem)]
-        md:w-[calc(33.333%-1rem)]
-      "
+                  className="w-[calc(50%-0.4rem)] sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-1rem)]"
                 >
                   <ProductCardSwitch
                     id={product.id}

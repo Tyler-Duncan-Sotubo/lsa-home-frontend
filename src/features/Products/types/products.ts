@@ -10,6 +10,8 @@ export type WooCategory = {
   id: number;
   name: string;
   slug: string;
+  parentId: string | null;
+  isHub: boolean; // ✅ required now
 };
 
 export type WooAttribute = {

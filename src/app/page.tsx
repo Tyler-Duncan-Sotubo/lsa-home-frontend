@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { HomeSections } from "@/features/Home/Sections/home-sections";
 import { ContactSectionCompact } from "@/features/Contact/contact-section-compact";
-import { SystemPageClient } from "@/features/not-found/store-not-found-client";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();
@@ -29,10 +28,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const config = await getStorefrontConfig();
-
-  if (config.ui?.systemPage) {
-    return <SystemPageClient config={config} />;
-  }
 
   return (
     <div>

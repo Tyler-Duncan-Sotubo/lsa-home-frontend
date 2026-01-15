@@ -10,6 +10,7 @@ import { RevealFromSide } from "@/shared/animations/reveal-from-side";
 import { SectionReveal } from "@/shared/animations/section-reveal";
 import { Stagger, StaggerItem } from "@/shared/animations/stagger";
 import ProductDetails from "@/features/Products/ui/ProductDetails/product-details";
+import { useAppSelector } from "@/store/hooks";
 
 export function FeaturedProductSection({
   config,
@@ -18,6 +19,7 @@ export function FeaturedProductSection({
 }) {
   const enabled = config?.enabled !== false;
   const slug = config?.slug ?? null;
+  const { product: productConfig } = useAppSelector((s) => s.runtimeConfig.ui);
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [previousSlug, setPreviousSlug] = useState<string | null>(slug);
@@ -108,6 +110,7 @@ export function FeaturedProductSection({
         >
           <RevealFromSide direction={detailsDir} distance={22}>
             <ProductDetails
+              config={productConfig}
               product={product}
               selectedColor={selectedColor}
               setSelectedColor={setSelectedColor}

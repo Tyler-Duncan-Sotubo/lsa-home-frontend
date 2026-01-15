@@ -73,8 +73,8 @@ export function ProductCard({
     size === "compact"
       ? "text-xs md:text-sm"
       : size === "large"
-      ? "text-sm md:text-sm"
-      : "text-sm md:text-sm";
+      ? "text-[15px] md:text-lg"
+      : "text-sm md:text-lg";
 
   const handleMarkRecentlyViewed = useCallback(() => {
     dispatch(
@@ -122,10 +122,11 @@ export function ProductCard({
           group
           flex flex-col
           w-full
-          bg-background
           overflow-hidden
           transition
           hover:-translate-y-1
+          mt-10
+          
         "
       >
         {/* Image */}
@@ -137,12 +138,10 @@ export function ProductCard({
                 px-3 py-1
                 rounded-full
                 bg-background/90 text-xs
-                md:text-[9px] text-[8px] font-medium uppercase
+                md:text-[9px] text-[7px] font-medium uppercase
                 text-muted-foreground
               "
-            >
-              {tagLabel}
-            </span>
+            ></span>
           )}
 
           {discountPercent && discountPercent > 0 && (
@@ -163,10 +162,13 @@ export function ProductCard({
 
           <Link href={href} onClick={handleMarkRecentlyViewed}>
             <Image
-              src={imageSrc ?? "/placeholder.png"}
+              src={
+                imageSrc ??
+                "https://centa-hr.s3.amazonaws.com/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/no-image.jpeg"
+              }
               alt={name}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-300 group-hover:scale-105 "
             />
           </Link>
 
@@ -183,18 +185,16 @@ export function ProductCard({
                 className="
                   pointer-events-auto
                   w-full
-                  bg-secondary
-                  text-primary
-                  hover:bg-secondary
-                  hover:text-primary
+                  bg-white
                   p-5
                   text-sm font-bold
                   text-center
                   rounded-none
                   cursor-pointer
                   gap-2
+                  border-none
                 "
-                variant="outline"
+                variant="clean"
                 type="button"
                 onClick={() => setQuickViewOpen(true)}
               >
@@ -274,10 +274,10 @@ export function ProductCard({
                 </p>
               ) : (
                 <div>
-                  <p className="text-[14px] font-medium text-foreground">
+                  {/* <p className="text-[14px] font-medium text-foreground">
                     Pricing
-                  </p>
-                  <p className="text-[14px] text-muted-foreground">
+                  </p> */}
+                  <p className="text-[11px] text-muted-foreground">
                     Pricing is provided via quote based on your selections and
                     quantity.
                   </p>

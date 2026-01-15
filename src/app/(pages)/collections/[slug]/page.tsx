@@ -15,10 +15,9 @@ type PageProps = {
 async function loadCollectionPage(slug: string) {
   const config = await getStorefrontConfig();
   const data = await listCollectionProducts(slug, {
-    perPage: 24,
+    perPage: 50,
     includeChildren: true,
   });
-
   return { config, data };
 }
 
@@ -95,7 +94,7 @@ export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params;
   const { config, data } = await loadCollectionPage(slug);
 
-  if (!data || data.products.length === 0) return notFound();
+  if (!data?.category) return notFound();
 
   return (
     <CollectionPageClient

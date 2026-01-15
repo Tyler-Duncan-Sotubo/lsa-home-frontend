@@ -47,12 +47,6 @@ export async function listCollectionProducts(
   );
 
   if (!res.ok) {
-    console.error("listCollectionProducts failed", {
-      statusCode: res.statusCode,
-      error: res.error,
-      slug,
-      opts,
-    });
     return { category: null as any, products: [] };
   }
 
@@ -146,6 +140,8 @@ export type StorefrontCategory = {
   slug: string;
   imageUrl?: string | null;
   imageAltText?: string | null;
+  parentId?: string | null;
+  hasChildren: boolean;
 };
 
 export async function listStorefrontCategories(params?: { limit?: number }) {
@@ -165,11 +161,6 @@ export async function listStorefrontCategories(params?: { limit?: number }) {
   });
 
   if (!res.ok) {
-    console.error("listStorefrontCategories failed", {
-      statusCode: res.statusCode,
-      error: res.error,
-      params,
-    });
     return [];
   }
 

@@ -129,7 +129,7 @@ export function ProductCardHoverActions({
       <article
         className="
           group flex flex-col w-full bg-background overflow-hidden transition
-          hover:-translate-y-1
+          hover:-translate-y-1 mt-10
         "
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -162,7 +162,10 @@ export function ProductCardHoverActions({
 
           <Link href={href} onClick={handleMarkRecentlyViewed}>
             <Image
-              src={imageSrc ?? "/placeholder.png"}
+              src={
+                imageSrc ??
+                "https://centa-hr.s3.amazonaws.com/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/no-image.jpeg"
+              }
               alt={name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"

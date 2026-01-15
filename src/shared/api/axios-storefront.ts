@@ -7,7 +7,7 @@ export const storefrontAxios = Axios.create({
 storefrontAxios.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
-      const host = window.location.hostname;
+      const host = window.location.host;
 
       if (host) {
         config.headers["X-Store-Host"] = host;

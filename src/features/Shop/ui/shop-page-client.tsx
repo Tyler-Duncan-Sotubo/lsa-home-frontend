@@ -37,6 +37,7 @@ import {
   BsGrid,
   BsGrid3X2Gap,
 } from "react-icons/bs";
+import { getStoreHostHeader } from "@/shared/api/storefront-headers";
 
 function asNumberPrice(p: Product): number | null {
   const anyP: any = p as any;
@@ -170,8 +171,17 @@ async function fetchProductsPage({
 }): Promise<Product[]> {
   const res = await storefrontAxios.get("/api/catalog/products/storefront", {
     params: { limit, offset },
+    headers: { ...(await getStoreHostHeader()) },
   });
-  return (res.data.data ?? res.data) as Product[];
+
+  const d = res.data;
+  const items =
+    (Array.isArray(d?.data) && d.data) ||
+    (Array.isArray(d?.data?.data) && d.data.data) ||
+    (Array.isArray(d) && d) ||
+    [];
+
+  return items as Product[];
 }
 
 export function ShopPageClient({

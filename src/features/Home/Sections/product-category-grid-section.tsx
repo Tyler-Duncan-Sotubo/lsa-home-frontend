@@ -12,7 +12,5 @@ export default async function ProductCategoryGridSection({
   const limit = 6; // if you have it, else hardcode
   const categories = await listStorefrontCategories({ limit });
 
-  console.log("Fetched categories for ProductCategoryGridSection:", categories);
-
   return <ProductCategoryGridClient config={config} categories={categories} />;
 }

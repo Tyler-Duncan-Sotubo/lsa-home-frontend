@@ -32,8 +32,6 @@ const dosis = Dosis({
   variable: "--font-dosis",
 });
 
-const ANALYTICS_TAG_TOKEN = process.env.NEXT_PUBLIC_ANALYTICS_TAG_TOKEN ?? null;
-
 export default async function RootLayout({
   children,
 }: {
@@ -54,9 +52,7 @@ export default async function RootLayout({
           <AppProviders>
             <QueryProvider>
               {/* You can decide if you want analytics on system pages */}
-              {!isSystemPage && (
-                <AnalyticsTagLoader token={ANALYTICS_TAG_TOKEN} />
-              )}
+              {!isSystemPage && <AnalyticsTagLoader />}
               {!isSystemPage && (
                 <AnalyticsScripts integrations={integrations} />
               )}

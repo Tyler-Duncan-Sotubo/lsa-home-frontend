@@ -74,6 +74,11 @@ export type StorefrontConfigV1 = {
         showOurStoresIcon?: boolean;
       };
     };
+    headerMenu?: {
+      blog?: boolean;
+      about?: boolean;
+      contact?: boolean;
+    };
   };
 
   /* ---------------------------------- */

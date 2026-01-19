@@ -5,6 +5,35 @@ import { cookies } from "next/headers";
 import { storefrontFetch } from "@/shared/api/fetch";
 import { auth } from "@/lib/auth/auth";
 
+function errorResponse(statusCode: number, message: string, extra?: any) {
+  return NextResponse.json(
+    {
+      statusCode,
+      error: { message },
+      ...(extra ? { extra } : {}),
+    },
+    { status: statusCode, headers: { "Cache-Control": "no-store" } },
+  );
+}
+
+function extractErrorMessage(e: any) {
+  // storefrontFetch might throw either:
+  // - { status, error: { message }, statusCode }
+  // - { message }
+  // - axios-like shapes
+  return (
+    e?.error?.message ||
+    e?.response?.data?.error?.message ||
+    e?.response?.data?.message ||
+    e?.message ||
+    "Request failed"
+  );
+}
+
+function extractStatusCode(e: any) {
+  return e?.statusCode || e?.status || e?.response?.status || 500;
+}
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -57,7 +86,7 @@ function sameAttrs(a: any, b: any) {
   const A = a ?? {};
   const B = b ?? {};
   const keys = Array.from(
-    new Set([...Object.keys(A), ...Object.keys(B)])
+    new Set([...Object.keys(A), ...Object.keys(B)]),
   ).sort();
   return keys.every((k) => String(A[k] ?? "") === String(B[k] ?? ""));
 }
@@ -65,7 +94,7 @@ function sameAttrs(a: any, b: any) {
 function findCartItemId(
   cart: any,
   productOrVariantId: string | number,
-  attributes?: any
+  attributes?: any,
 ) {
   const items = cart?.items ?? [];
   const targetId = String(productOrVariantId);
@@ -88,7 +117,7 @@ function maybeUpdateAccessTokenCookie(res: NextResponse, headers: Headers) {
 
 function attachSessionCookies(
   res: NextResponse,
-  s: { cartId: string; cartToken: string; cartRefresh: string }
+  s: { cartId: string; cartToken: string; cartRefresh: string },
 ) {
   res.cookies.set(CART_ID_COOKIE, s.cartId, cookieOpts);
   res.cookies.set(CART_TOKEN_COOKIE, s.cartToken, cookieOpts);
@@ -102,7 +131,7 @@ export async function GET() {
   if (!cartId || !cartToken || !cartRefresh) {
     return NextResponse.json(
       { cartId: null, items: [], subtotal: 0 },
-      { headers: { "Cache-Control": "no-store" } }
+      { headers: { "Cache-Control": "no-store" } },
     );
   }
 
@@ -114,7 +143,7 @@ export async function GET() {
       cartRefreshToken: cartRefresh,
       includeMeta: true,
       cache: "no-store",
-    }
+    },
   );
 
   const subtotal = Array.isArray(items)
@@ -123,7 +152,7 @@ export async function GET() {
 
   const res = NextResponse.json(
     { cartId, items: Array.isArray(items) ? items : [], subtotal },
-    { headers: { "Cache-Control": "no-store" } }
+    { headers: { "Cache-Control": "no-store" } },
   );
 
   maybeUpdateAccessTokenCookie(res, headers);
@@ -132,106 +161,107 @@ export async function GET() {
 
 // POST /api/cart (add)
 export async function POST(req: Request) {
-  const input = await req.json();
-  if (!input?.slug) {
-    return NextResponse.json({ error: "Missing slug" }, { status: 400 });
-  }
+  try {
+    const input = await req.json();
 
-  const session = await ensureCartSession();
-  if (!session.cartId || !session.cartToken || !session.cartRefresh) {
-    return NextResponse.json(
-      { error: "Unable to create cart" },
-      { status: 500 }
-    );
-  }
-
-  const { data: cart, headers } = await storefrontFetch<any>(
-    `/api/storefront/carts/${session.cartId}/items`,
-    {
-      method: "POST",
-      cartToken: session.cartToken,
-      cartRefreshToken: session.cartRefresh,
-      includeMeta: true,
-      cache: "no-store",
-      body: {
-        slug: input.slug,
-        variantId: input.variantId ?? null,
-        quantity: input.quantity ?? 1,
-      },
+    if (!input?.slug) {
+      return errorResponse(400, "Missing slug");
     }
-  );
 
-  const res = NextResponse.json(cart, {
-    headers: { "Cache-Control": "no-store" },
-  });
+    const session = await ensureCartSession();
+    if (!session.cartId || !session.cartToken || !session.cartRefresh) {
+      return errorResponse(500, "Unable to create cart");
+    }
 
-  // Ensure cookies exist for future calls
-  attachSessionCookies(res, {
-    cartId: session.cartId,
-    cartToken: session.cartToken,
-    cartRefresh: session.cartRefresh,
-  });
+    const { data: cart, headers } = await storefrontFetch<any>(
+      `/api/storefront/carts/${session.cartId}/items`,
+      {
+        method: "POST",
+        cartToken: session.cartToken,
+        cartRefreshToken: session.cartRefresh,
+        includeMeta: true,
+        cache: "no-store",
+        body: {
+          slug: input.slug,
+          variantId: input.variantId ?? null,
+          quantity: input.quantity ?? 1,
+        },
+      },
+    );
 
-  // Update access token if guard refreshed it during request
-  maybeUpdateAccessTokenCookie(res, headers);
+    const res = NextResponse.json(cart, {
+      headers: { "Cache-Control": "no-store" },
+    });
 
-  return res;
+    attachSessionCookies(res, {
+      cartId: session.cartId,
+      cartToken: session.cartToken,
+      cartRefresh: session.cartRefresh,
+    });
+
+    maybeUpdateAccessTokenCookie(res, headers);
+    return res;
+  } catch (e: any) {
+    const status = extractStatusCode(e);
+    const msg = extractErrorMessage(e);
+    return errorResponse(status, msg);
+  }
 }
 
 // PATCH /api/cart
 export async function PATCH(req: Request) {
-  const { productOrVariantId, quantity, attributes } = await req.json();
+  try {
+    const { productOrVariantId, quantity, attributes } = await req.json();
 
-  const session = await readSession();
-  if (!session.cartId || !session.cartToken || !session.cartRefresh) {
-    return NextResponse.json({ error: "No cart session" }, { status: 401 });
-  }
-
-  // Fetch items (guard may refresh during this call)
-  const { data: items, headers: itemsHeaders } = await storefrontFetch<any[]>(
-    `/api/storefront/carts/${session.cartId}/items`,
-    {
-      method: "GET",
-      cartToken: session.cartToken,
-      cartRefreshToken: session.cartRefresh,
-      includeMeta: true,
-      cache: "no-store",
+    const session = await readSession();
+    if (!session.cartId || !session.cartToken || !session.cartRefresh) {
+      return errorResponse(401, "No cart session");
     }
-  );
 
-  const cartItemId = findCartItemId({ items }, productOrVariantId, attributes);
-  if (!cartItemId) {
-    const res = NextResponse.json(
-      { error: "Cart item not found" },
-      { status: 404 }
+    const { data: items, headers: itemsHeaders } = await storefrontFetch<any[]>(
+      `/api/storefront/carts/${session.cartId}/items`,
+      {
+        method: "GET",
+        cartToken: session.cartToken,
+        cartRefreshToken: session.cartRefresh,
+        includeMeta: true,
+        cache: "no-store",
+      },
     );
-    // Still persist any rotated token from the items call
-    maybeUpdateAccessTokenCookie(res, itemsHeaders);
-    return res;
-  }
 
-  // Update qty (guard may refresh during this call)
-  const { data: updated, headers: updHeaders } = await storefrontFetch<any>(
-    `/api/storefront/carts/${session.cartId}/items/${cartItemId}`,
-    {
-      method: "PATCH",
-      cartToken: session.cartToken,
-      cartRefreshToken: session.cartRefresh,
-      includeMeta: true,
-      cache: "no-store",
-      body: { quantity },
+    const cartItemId = findCartItemId(
+      { items },
+      productOrVariantId,
+      attributes,
+    );
+    if (!cartItemId) {
+      const res = errorResponse(404, "Cart item not found");
+      maybeUpdateAccessTokenCookie(res, itemsHeaders);
+      return res;
     }
-  );
 
-  const res = NextResponse.json(updated, {
-    headers: { "Cache-Control": "no-store" },
-  });
+    const { data: updated, headers: updHeaders } = await storefrontFetch<any>(
+      `/api/storefront/carts/${session.cartId}/items/${cartItemId}`,
+      {
+        method: "PATCH",
+        cartToken: session.cartToken,
+        cartRefreshToken: session.cartRefresh,
+        includeMeta: true,
+        cache: "no-store",
+        body: { quantity },
+      },
+    );
 
-  // Persist rotated token from either call
-  maybeUpdateAccessTokenCookie(res, itemsHeaders);
-  maybeUpdateAccessTokenCookie(res, updHeaders);
+    const res = NextResponse.json(updated, {
+      headers: { "Cache-Control": "no-store" },
+    });
 
-  return res;
+    maybeUpdateAccessTokenCookie(res, itemsHeaders);
+    maybeUpdateAccessTokenCookie(res, updHeaders);
+    return res;
+  } catch (e: any) {
+    return errorResponse(extractStatusCode(e), extractErrorMessage(e));
+  }
 }
 
 // DELETE /api/cart
@@ -252,14 +282,14 @@ export async function DELETE(req: Request) {
       cartRefreshToken: session.cartRefresh,
       includeMeta: true,
       cache: "no-store",
-    }
+    },
   );
 
   const cartItemId = findCartItemId({ items }, productOrVariantId, attributes);
   if (!cartItemId) {
     const res = NextResponse.json(
       { error: "Cart item not found" },
-      { status: 404 }
+      { status: 404 },
     );
     maybeUpdateAccessTokenCookie(res, itemsHeaders);
     return res;
@@ -274,7 +304,7 @@ export async function DELETE(req: Request) {
       cartRefreshToken: session.cartRefresh,
       includeMeta: true,
       cache: "no-store",
-    }
+    },
   );
 
   const res = NextResponse.json(updated, {

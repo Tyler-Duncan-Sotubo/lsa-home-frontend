@@ -19,8 +19,8 @@ export async function listLatestProducts(params?: {
   });
 
   const res = await storefrontFetchSafe<WooProduct[]>(
-    `/api/catalog/products/storefront/latest?${qs.toString()}`,
-    { revalidate: 60, tags: ["products:latest"] }
+    `/api/storefront-products/latest?${qs.toString()}`,
+    { revalidate: 60, tags: ["products:latest"] },
   );
 
   if (!res.ok) {
@@ -50,8 +50,8 @@ export async function listOnSaleProducts(params?: {
   });
 
   const res = await storefrontFetchSafe<WooProduct[]>(
-    `/api/catalog/products/storefront/on-sale?${qs.toString()}`,
-    { revalidate: 60, tags: ["products:on-sale"] }
+    `/api/storefront-products/on-sale?${qs.toString()}`,
+    { revalidate: 60, tags: ["products:on-sale"] },
   );
 
   if (!res.ok) {
@@ -81,8 +81,8 @@ export async function listBestSellerProducts(params?: {
   });
 
   const res = await storefrontFetchSafe<WooProduct[]>(
-    `/api/catalog/products/storefront/best-sellers?${qs.toString()}`,
-    { revalidate: 300, tags: ["products:best-sellers"] } // best-sellers can be cached longer
+    `/api/storefront-products/best-sellers?${qs.toString()}`,
+    { revalidate: 300, tags: ["products:best-sellers"] }, // best-sellers can be cached longer
   );
 
   if (!res.ok) {

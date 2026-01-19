@@ -36,6 +36,11 @@
         "showWishlistIcon": true,
         "showOurStoresIcon": false
       }
+    },
+    "headerMenu": {
+      "blog": false,
+      "about": true,
+      "contact": true
     }
   },
   "theme": {
@@ -146,7 +151,7 @@
       {
         "title": "Company",
         "links": [
-          { "label": "About Us", "href": "/about" },
+          { "label": "About Us", "href": "/about-us" },
           { "label": "Contact", "href": "/contact" }
         ]
       }
@@ -175,7 +180,7 @@
       { "platform": "linkedin", "href": "" }
     ],
     "bottomBar": {
-      "leftText": "© {year} Serene. All rights reserved.",
+      "leftText": "Theme Powered by Centa",
       "payments": {
         "enabled": true,
         "methods": {
@@ -215,7 +220,7 @@
           "className": "bg-gradient-to-t from-black/50 via-black/50 to-black/10"
         },
         "content": {
-          "eyebrow": "Designed With Purpose",
+          "eyebrow": "",
           "heading": "Built to Support Everyday Needs",
           "description": "Explore thoughtfully created products and services made to deliver consistency, quality, and reliability.",
           "cta": {
@@ -343,7 +348,7 @@
           "enabled": true,
           "background": {
             "image": {
-              "src": "https://placehold.co/1600x900",
+              "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019baf5e-501c-7a28-899d-2570d6eac1d3/stores/019bb776-bc7b-76e1-8820-44bb5a0a9874/media/files/tmp/019bc8a0-1057-755c-b9b6-ffd0e4ca94aa-2148657638.webp",
               "alt": "About our company",
               "overlayClassName": "bg-black/50"
             }
@@ -386,31 +391,6 @@
           "overlay": {
             "className": "bg-black/10"
           }
-        },
-        {
-          "type": "aboutHero",
-          "enabled": true,
-          "background": {
-            "image": {
-              "src": "https://placehold.co/1600x900",
-              "alt": "Quality and craftsmanship",
-              "overlayClassName": "bg-black/55"
-            }
-          },
-          "content": {
-            "title": "Built on Quality and Care",
-            "description": "Thoughtful solutions designed to support growth, consistency, and lasting value.",
-            "cta": {
-              "label": "Explore More",
-              "href": "/"
-            }
-          },
-          "layout": {
-            "align": "right",
-            "heightClass": "min-h-[55svh]",
-            "maxWidthClassName": "max-w-2xl",
-            "containerClassName": "w-[95%] mx-auto"
-          }
         }
       ]
     },
@@ -426,7 +406,7 @@
           "enabled": true,
           "background": {
             "image": {
-              "src": "https://placehold.co/1600x900",
+              "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019baf5e-501c-7a28-899d-2570d6eac1d3/stores/019bb776-bc7b-76e1-8820-44bb5a0a9874/media/files/tmp/019bc8b2-7a8e-74d2-bbb5-d941e388b603-impressed-fascinated-stylish-slim-african-american-curlyhaired-woman-striped-tshirt-dropping-jaw-from-amazement-holding-.webp",
               "alt": "Contact background",
               "overlayClassName": "bg-black/50"
             }

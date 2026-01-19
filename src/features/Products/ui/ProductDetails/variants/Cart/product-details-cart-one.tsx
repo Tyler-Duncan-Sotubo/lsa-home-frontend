@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Rating } from "../../../../../reviews/ui/rating";
 import { VariantSelectors } from "../../../ProductInfo/variant-selectors";
@@ -17,13 +17,12 @@ import { LINK_COPY } from "@/shared/constants/link-copy";
 export interface ProductDetailsPanelProps {
   product: Product;
   selectedColor?: string | null;
-  onSelectColor?: (color: string) => void; // sync with gallery
-  isModal?: boolean; // if used in a modal/dialog
+  onSelectColor?: (color: string) => void;
+  isModal?: boolean;
   onAddedToCart?: () => void;
   showInfoSections?: boolean;
 }
 
-// normalize helper for comparisons
 const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
 
 export function ProductDetailsCartOne({
@@ -35,7 +34,10 @@ export function ProductDetailsCartOne({
   showInfoSections = true,
 }: ProductDetailsPanelProps) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
   const formatMoney = useMoney();
+
   const { colorAttributes, sizeAttributes } = useMemo(() => {
     const attrs = product?.attributes ?? [];
     const color = attrs.filter((a) => a.name.toLowerCase().includes("color"));
@@ -43,7 +45,7 @@ export function ProductDetailsCartOne({
     const other = attrs.filter(
       (a) =>
         !a.name.toLowerCase().includes("color") &&
-        !a.name.toLowerCase().includes("size")
+        !a.name.toLowerCase().includes("size"),
     );
     return {
       colorAttributes: color,
@@ -58,18 +60,9 @@ export function ProductDetailsCartOne({
   const firstSize = sizeAttributes[0]?.options?.[0] ?? null;
   const firstColor = colorAttributes[0]?.options?.[0] ?? null;
 
-  // user-chosen size (can be null initially)
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-
-  // the size we actually use
   const effectiveSize = selectedSize ?? firstSize;
-
-  // IMPORTANT:
-  // - ProductPageClient now initializes selectedColor on first render
-  // - so this should already be stable from the start
   const effectiveColor = selectedColor ?? firstColor ?? null;
 
-  // Resolve active variation based on selected size + color
   const activeVariation = useMemo(() => {
     const variations = product.variations ?? [];
     if (variations.length === 0) return null;
@@ -81,13 +74,12 @@ export function ProductDetailsCartOne({
       const attrs = v.attributes ?? [];
       const sizeAttr = attrs.find((a) => a.name.toLowerCase().includes("size"));
       const colorAttr = attrs.find((a) =>
-        a.name.toLowerCase().includes("color")
+        a.name.toLowerCase().includes("color"),
       );
 
       const sizeMatch = targetSize
         ? norm(sizeAttr?.option) === targetSize
         : true;
-
       const colorMatch = targetColor
         ? norm(colorAttr?.option) === targetColor
         : true;
@@ -98,16 +90,45 @@ export function ProductDetailsCartOne({
     return match ?? variations[0] ?? null;
   }, [product.variations, effectiveColor, effectiveSize]);
 
+  // ✅ STOCK: derive max qty from active variation stock (fallback: 10)
+  const maxQty = useMemo(() => {
+    const vAny = activeVariation as any | null;
+    const pAny = product as any;
+
+    if (vAny?.manage_stock) return Number(vAny.stock_quantity ?? 0);
+    if (pAny?.manage_stock) return Number(pAny.stock_quantity ?? 0);
+
+    return 10;
+  }, [activeVariation, product]);
+
   const isInStock = useMemo(() => {
     const vAny = activeVariation as any | null;
     const pAny = product as any;
 
+    // prefer quantity rules when manage_stock is true
+    if (vAny?.manage_stock) return Number(vAny.stock_quantity ?? 0) > 0;
+    if (pAny?.manage_stock) return Number(pAny.stock_quantity ?? 0) > 0;
+
     if (vAny?.stock_status) return vAny.stock_status === "instock";
     if (pAny?.stock_status) return pAny.stock_status === "instock";
+
     return true;
   }, [activeVariation, product]);
 
-  // Choose the image for the active variation, fallback to product image
+  // ✅ clamp quantity whenever variant changes / stock changes
+  useEffect(() => {
+    const cap = Math.min(10, Math.max(1, maxQty || 0));
+    if (!isInStock || cap <= 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setQuantity(1);
+      return;
+    }
+    setQuantity((q) => Math.min(Math.max(1, q), cap));
+  }, [maxQty, isInStock, activeVariation?.id]);
+
+  const canAddToCart =
+    isInStock && quantity <= Math.min(10, Math.max(1, maxQty || 0));
+
   const variationImageSrc = useMemo(() => {
     const hero = product.images?.[0]?.src ?? null;
     if (!activeVariation) return hero;
@@ -119,7 +140,6 @@ export function ProductDetailsCartOne({
     return singleImageSrc ?? galleryImageSrc ?? hero;
   }, [activeVariation, product.images]);
 
-  // Normalize price info: regular / sale / onSale from variation or product
   const { regularPrice, salePrice, onSale } = useMemo(() => {
     const vAny = activeVariation as any | null;
     const pAny = product as any;
@@ -154,16 +174,16 @@ export function ProductDetailsCartOne({
   const formattedSale =
     salePrice != null ? formatMoney(Number(salePrice)) : null;
 
-  // Wrap onSelectColor so VariantSelectors always gets a function with correct type
   const handleSelectColor = (c: string) => onSelectColor?.(c);
 
   const { data: crossSells = [], isLoading: crossSellsLoading } =
     useLinkedProductsQuery(product.id, "cross_sell", true);
   const copy = LINK_COPY["cross_sell"];
 
+  const qtyOptionsCount = Math.min(10, Math.max(1, maxQty || 0));
+
   return (
     <div className="flex flex-col h-full overflow-y-auto p-4">
-      {/* Header */}
       <header className="text-left mb-3">
         <h1 className="text-lg md:text-2xl font-semibold">{product.name}</h1>
         <div
@@ -187,7 +207,6 @@ export function ProductDetailsCartOne({
       <div className="flex flex-col gap-4 pb-6">
         <Rating rating={rating} reviews={reviews} />
 
-        {/* Size + Colour selectors */}
         <VariantSelectors
           colorAttributes={colorAttributes}
           sizeAttributes={sizeAttributes}
@@ -198,7 +217,6 @@ export function ProductDetailsCartOne({
           variations={product.variations}
         />
 
-        {/* Price */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-col">
             {onSale && formattedSale && formattedRegular ? (
@@ -222,27 +240,28 @@ export function ProductDetailsCartOne({
           </div>
         </div>
 
-        {/* Add to cart row */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <AddToCartButton
               slug={product.slug}
               quantity={quantity}
               onAddedToCart={onAddedToCart}
-              disabled={!isInStock}
+              disabled={!canAddToCart}
               variantId={activeVariation?.id as unknown as string}
               name={product.name}
               image={variationImageSrc}
               unitPrice={Number(salePrice ?? regularPrice ?? 0) ?? 0}
+              maxQty={maxQty}
             />
 
             <div className="relative">
               <select
                 className="h-10 rounded-md border bg-background px-3 pr-8 text-xs font-medium"
                 value={quantity}
+                disabled={!isInStock}
                 onChange={(e) => setQuantity(Number(e.target.value) || 1)}
               >
-                {Array.from({ length: 10 }).map((_, i) => (
+                {Array.from({ length: qtyOptionsCount }).map((_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {i + 1}
                   </option>
@@ -263,13 +282,17 @@ export function ProductDetailsCartOne({
             />
           </div>
 
-          {!isInStock && (
+          {/* ✅ stock messaging */}
+          {!isInStock ? (
             <p className="text-xs text-destructive mt-1">
               This variant is currently out of stock.
             </p>
-          )}
+          ) : maxQty > 0 && maxQty <= 10 ? (
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Only {maxQty} left
+            </p>
+          ) : null}
 
-          {/* Rewards / loyalty block */}
           <div className="flex items-start gap-3 rounded-lg bg-muted/60 px-3 py-2">
             <div className="mt-0.75 h-6 w-6 rounded-full bg-primary/10" />
             <div className="space-y-1">
@@ -290,7 +313,6 @@ export function ProductDetailsCartOne({
           </div>
         </div>
 
-        {/* Mobile full-page link */}
         <div className="mt-2 flex md:hidden">
           <Link
             href={`/products/${product.slug}`}

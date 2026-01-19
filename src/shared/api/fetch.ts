@@ -34,7 +34,7 @@ export type StorefrontFetchOpts = {
 type MetaResult<T> = { data: T; headers: Headers; status: number };
 
 function toQueryString(
-  params?: Record<string, string | number | boolean | null | undefined>
+  params?: Record<string, string | number | boolean | null | undefined>,
 ) {
   if (!params) return "";
   const sp = new URLSearchParams();
@@ -71,15 +71,15 @@ async function getIncomingHost(): Promise<string | null> {
 
 export async function storefrontFetch<T>(
   path: string,
-  opts?: StorefrontFetchOpts & { includeMeta?: false }
+  opts?: StorefrontFetchOpts & { includeMeta?: false },
 ): Promise<T>;
 export async function storefrontFetch<T>(
   path: string,
-  opts: StorefrontFetchOpts & { includeMeta: true }
+  opts: StorefrontFetchOpts & { includeMeta: true },
 ): Promise<MetaResult<T>>;
 export async function storefrontFetch<T>(
   path: string,
-  opts: StorefrontFetchOpts = {}
+  opts: StorefrontFetchOpts = {},
 ): Promise<T | MetaResult<T>> {
   const { baseUrl } = getStorefrontConfig();
 
@@ -180,7 +180,7 @@ function getStatusCode(e: any): number {
 
 export async function storefrontFetchSafe<T>(
   path: string,
-  opts: StorefrontFetchOpts = {}
+  opts: StorefrontFetchOpts = {},
 ): Promise<Result<T>> {
   try {
     const data = (await storefrontFetch<T>(path, opts as any)) as T;

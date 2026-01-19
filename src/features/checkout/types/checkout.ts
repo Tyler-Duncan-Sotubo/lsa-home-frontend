@@ -3,34 +3,6 @@
 import { z } from "zod";
 import type { UseFormReturn } from "react-hook-form";
 
-// export const checkoutSchema = z.object({
-//   // contact
-//   email: z.email("Please enter a valid email address"),
-//   marketingOptIn: z.boolean(),
-
-//   // pickup
-//   pickupState: z.string(),
-//   pickupLocationId: z.string().optional(),
-
-//   // shipping
-//   firstName: z.string().min(1, "First name is required"),
-//   lastName: z.string().min(1, "Last name is required"),
-//   address1: z.string().min(1, "Address is required"),
-//   address2: z.string().optional(),
-//   city: z.string().min(1, "City is required"),
-//   state: z.string().min(1, "State is required"),
-//   postalCode: z.string().optional(),
-//   phone: z
-//     .string()
-//     .min(7, "Phone is required")
-//     .regex(/^[0-9+\-\s]+$/, "Enter a valid phone number"),
-//   country: z.string().min(1, "Country is required"),
-
-//   // choices
-//   deliveryMethod: z.enum(["shipping", "pickup"]),
-//   paymentMethod: z.enum(["paystack", "bank", "pos"]),
-// });
-
 export const checkoutSchema = z
   .object({
     // contact
@@ -51,7 +23,12 @@ export const checkoutSchema = z
     pickupState: z.string(),
     pickupLocationId: z.string().optional(),
 
-    paymentMethod: z.enum(["paystack", "bank", "pos"]),
+    paymentMethod: z.union([
+      z.literal("bank"),
+      z.literal("cash"),
+      z.literal("pos"),
+      z.string().regex(/^gateway:[a-z0-9_-]+$/i, "Invalid gateway method"),
+    ]),
     deliveryMethod: z.enum(["shipping", "pickup"]),
   })
   .superRefine((v, ctx) => {

@@ -19,6 +19,7 @@ export function FooterOne({ config, footer }: Props) {
   const year = new Date().getFullYear();
   const leftText = footer.bottomBar?.leftText?.replace("{year}", String(year));
   const paymentOptions = footer.bottomBar?.payments;
+  const logoUrl = config?.theme?.assets?.logoUrl;
 
   return (
     <footer className="border-t bg-primary text-secondary">
@@ -30,7 +31,7 @@ export function FooterOne({ config, footer }: Props) {
             <Link href="/" className="inline-flex items-center">
               {footer.brand?.logoUrl ? (
                 <Image
-                  src={footer.brand.logoUrl}
+                  src={logoUrl || footer.brand.logoUrl}
                   alt={config.store.name}
                   width={90}
                   height={58}

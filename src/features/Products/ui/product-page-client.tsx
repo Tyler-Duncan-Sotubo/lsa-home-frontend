@@ -32,7 +32,7 @@ interface ProductPageClientProps {
 
 function getFirstColor(product: Product): string | null {
   const colorAttr = product.attributes?.find((a) =>
-    a.name.toLowerCase().includes("color")
+    a.name.toLowerCase().includes("color"),
   );
   return colorAttr?.options?.[0] ?? null;
 }
@@ -45,10 +45,9 @@ export function ProductPageClient({
   config,
 }: ProductPageClientProps) {
   const router = useRouter();
-
   // ✅ set default color on FIRST render (prevents hero -> variant flicker)
   const [selectedColor, setSelectedColor] = useState<string | null>(() =>
-    getFirstColor(product)
+    getFirstColor(product),
   );
 
   // eventized setter (always sees latest product)

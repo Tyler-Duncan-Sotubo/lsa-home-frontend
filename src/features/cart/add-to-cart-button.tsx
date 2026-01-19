@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/shared/ui/button";
 import { addToCartAndSync } from "@/store/cart-sync-thunk";
 import { useAppDispatch } from "@/store/hooks";
+import { toast } from "sonner";
 
 export interface AddToCartButtonProps {
   slug: string;
@@ -13,6 +15,7 @@ export interface AddToCartButtonProps {
   name: string;
   image?: string | null;
   unitPrice: number;
+  maxQty?: number | null;
 
   className?: string;
   size?: "sm" | "lg" | "default";
@@ -31,11 +34,12 @@ export function AddToCartButton({
   size = "lg",
   onAddedToCart,
   disabled = false,
+  maxQty,
 }: AddToCartButtonProps) {
   const dispatch = useAppDispatch();
 
-  const handleAddToCart = () => {
-    dispatch(
+  const handleAddToCart = async () => {
+    const action = await dispatch(
       addToCartAndSync({
         slug,
         variantId,
@@ -43,10 +47,22 @@ export function AddToCartButton({
         name,
         image,
         unitPrice,
-      })
+        maxQty,
+      }),
     );
 
+    if (addToCartAndSync.rejected.match(action)) {
+      const msg =
+        (action.payload as any)?.message ??
+        action.error?.message ??
+        "Unable to add item to cart";
+
+      toast.error(msg);
+      return;
+    }
+
     onAddedToCart?.();
+    toast.success("Added to cart");
   };
 
   return (

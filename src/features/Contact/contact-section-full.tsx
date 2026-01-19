@@ -60,9 +60,11 @@ function defaultValues(fields: FieldKey[]) {
   return vals;
 }
 
-function normalizePhone(p?: string) {
+function normalizePhone(p?: string | string[]) {
   if (!p) return "";
-  return p.replace(/\s+/g, "");
+
+  const value = Array.isArray(p) ? p[0] : p;
+  return typeof value === "string" ? value.replace(/\s+/g, "") : "";
 }
 
 function titleCase(s: string) {

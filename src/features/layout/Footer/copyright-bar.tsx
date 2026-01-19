@@ -70,13 +70,11 @@ export const CopyrightBar = ({
   const defaultLeft = `© ${computedYear} ${config.store.name}. All rights reserved.`;
   const hasContent = Boolean(leftText || showPayments);
 
-  console.log("payments", payments?.methods);
-
   return (
-    <section className="w-full border-t border-secondary/20 p-4 text-center text-xs text-secondary">
+    <section className="w-full border-t border-secondary/20 py-2 text-center text-xs text-secondary">
       {hasContent && (
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p>{leftText ?? defaultLeft}</p>
+          <p className="text-sm font-bold">{leftText ?? defaultLeft}</p>
 
           {showPayments && (
             <div className="flex flex-wrap items-center justify-center gap-2">

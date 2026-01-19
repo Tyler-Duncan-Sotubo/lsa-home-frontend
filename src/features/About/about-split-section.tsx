@@ -43,7 +43,7 @@ export default function AboutSplitSection({
     imagePosition === "right" ? "md:order-1" : "md:order-2";
 
   return (
-    <section className={`w-full ${bgClass} ${heightClass}`}>
+    <section className={`w-full ${bgClass} ${heightClass} mb-10`}>
       <div className="mx-auto w-[95%]">
         <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch gap-10">
           {/* Image column */}

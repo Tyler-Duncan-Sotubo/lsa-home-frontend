@@ -12,6 +12,7 @@ export type CartUIPayload = {
   name: string;
   image?: string | null;
   unitPrice: number;
+  maxQty?: number | null;
   priceHtml?: string | null;
   attributes?: Record<string, any>;
   weightKg?: number;
@@ -24,53 +25,92 @@ async function callApi(method: "POST" | "PATCH" | "DELETE", body: any) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  console.log("callApi response:", res);
-  if (!res.ok) throw new Error("Cart sync failed");
-  return res.json(); // if your API returns cart, great
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw {
+      status: res.status,
+      message: data?.error?.message ?? "Cart sync failed",
+      data,
+    };
+  }
+
+  return data;
 }
 
 export const addToCartAndSync = createAsyncThunk(
   "cart/addToCartAndSync",
-  async (input: CartUIPayload, { dispatch }) => {
-    dispatch(addToCart(input)); // ✅ instant UI
+  async (input: CartUIPayload, { dispatch, rejectWithValue }) => {
+    // 1️⃣ optimistic add
+    dispatch(addToCart(input));
 
-    await callApi("POST", {
-      slug: input.slug,
-      variantId: input.variantId ?? null,
-      quantity: input.quantity,
-    });
+    try {
+      await callApi("POST", {
+        slug: input.slug,
+        variantId: input.variantId ?? null,
+        quantity: input.quantity,
+      });
 
-    // ✅ reconcile once (Shopify-style)
-    dispatch(refreshCartAndHydrate());
-  }
+      // 2️⃣ reconcile once on success
+      dispatch(refreshCartAndHydrate());
+
+      return { ok: true };
+    } catch (err: any) {
+      // 🔴 rollback optimistic add
+      dispatch(
+        removeFromCart({
+          slug: input.slug,
+          variantId: input.variantId ?? null,
+        }),
+      );
+
+      return rejectWithValue({
+        status: err?.status,
+        message: err?.message ?? "Unable to add item to cart",
+      });
+    }
+  },
 );
 
 export const setQtyAndSync = createAsyncThunk(
   "cart/setQtyAndSync",
   async (
     input: { slug: string; variantId?: string | null; quantity: number },
-    { dispatch }
+    { dispatch, rejectWithValue },
   ) => {
-    const qty = Number(input.quantity);
-    const variantId = input.variantId ?? null;
+    try {
+      const qty = Number(input.quantity);
+      const variantId = input.variantId ?? null;
 
-    // ✅ instant UI
-    if (qty <= 0) {
-      dispatch(removeFromCart({ slug: input.slug, variantId }));
-      await callApi("DELETE", { productOrVariantId: variantId ?? input.slug });
-    } else {
-      dispatch(
-        updateCartQuantity({ slug: input.slug, variantId, quantity: qty })
-      );
-      await callApi("PATCH", {
-        productOrVariantId: variantId ?? input.slug,
-        quantity: qty,
+      // ✅ instant UI
+      if (qty <= 0) {
+        dispatch(removeFromCart({ slug: input.slug, variantId }));
+        await callApi("DELETE", {
+          productOrVariantId: variantId ?? input.slug,
+        });
+      } else {
+        dispatch(
+          updateCartQuantity({ slug: input.slug, variantId, quantity: qty }),
+        );
+        await callApi("PATCH", {
+          productOrVariantId: variantId ?? input.slug,
+          quantity: qty,
+        });
+      }
+
+      dispatch(refreshCartAndHydrate());
+      return { ok: true };
+    } catch (err: any) {
+      // ✅ rollback immediately
+      dispatch(refreshCartAndHydrate());
+
+      return rejectWithValue({
+        message: err?.message ?? "Unable to update quantity",
+        status: err?.status ?? 500,
       });
     }
-
-    // ✅ reconcile once
-    dispatch(refreshCartAndHydrate());
-  }
+  },
 );
 
 export const removeItemAndSync = createAsyncThunk(
@@ -82,5 +122,5 @@ export const removeItemAndSync = createAsyncThunk(
     await callApi("DELETE", { productOrVariantId: variantId ?? input.slug });
 
     dispatch(refreshCartAndHydrate()); // ✅ reconcile once
-  }
+  },
 );

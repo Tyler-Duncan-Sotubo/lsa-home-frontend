@@ -12,7 +12,7 @@ import { Button } from "@/shared/ui/button";
 import { BsCart3 } from "react-icons/bs";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   closeCart,
@@ -24,11 +24,17 @@ import {
 import { removeItemAndSync, setQtyAndSync } from "@/store/cart-sync-thunk";
 import { refreshCartAndHydrate } from "@/store/cart-refresh-thunk";
 import { prepareForCheckout } from "@/store/cart-commands";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "sonner";
+
+const clamp = (n: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, n));
 
 export function CartDrawer() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const pathname = usePathname();
   const isOpen = useAppSelector(selectCartIsOpen);
   const items = useAppSelector(selectCartItems);
   const cartCount = useAppSelector(selectCartCount);
@@ -38,7 +44,7 @@ export function CartDrawer() {
     return items.reduce(
       (sum: number, it: any) =>
         sum + Number(it.unitPrice ?? 0) * Number(it.quantity ?? 0),
-      0
+      0,
     );
   }, [items]);
 
@@ -49,8 +55,34 @@ export function CartDrawer() {
         currency: "NGN",
         minimumFractionDigits: 2,
       }),
-    []
+    [],
   );
+
+  const checkoutId = useMemo(() => {
+    const m = pathname?.match(/^\/checkout\/([^/]+)$/);
+    return m?.[1] ?? null;
+  }, [pathname]);
+
+  function useSyncCheckout() {
+    const qc = useQueryClient();
+
+    return useMutation({
+      mutationFn: async (checkoutId: string) => {
+        const { data } = await axios.post(`/api/checkout/${checkoutId}/sync`);
+        return data;
+      },
+      onSuccess: (updatedCheckout, checkoutId) => {
+        qc.setQueryData(["checkout", checkoutId], updatedCheckout);
+      },
+    });
+  }
+
+  const syncCheckoutMutation = useSyncCheckout();
+
+  const refreshCheckoutIfOnCheckout = async () => {
+    if (!checkoutId) return;
+    await syncCheckoutMutation.mutateAsync(checkoutId);
+  };
 
   return (
     <Sheet
@@ -62,9 +94,9 @@ export function CartDrawer() {
         variant={"ghost"}
         className="relative flex h-10 w-10 items-center justify-center rounded-md hover:bg-muted"
         aria-label="Cart"
-        onClick={(open) => {
-          dispatch(open ? openCart() : closeCart());
-          if (open) dispatch(refreshCartAndHydrate());
+        onClick={() => {
+          dispatch(openCart());
+          dispatch(refreshCartAndHydrate());
         }}
       >
         <BsCart3 className="size-6" />
@@ -97,11 +129,11 @@ export function CartDrawer() {
             <div className="flex flex-col items-center justify-center text-center text-sm text-muted-foreground mt-20">
               <h3 className="text-3xl font-semibold">Your cart is empty.</h3>
               <Link href="/" onClick={() => dispatch(closeCart())}>
-                <Button variant={"outline"} className="w-96 my-6">
+                <Button variant={"clean"} className="w-96 my-6">
                   Go to Homepage
                 </Button>
               </Link>
-              <Button variant={"outline"} className="w-96">
+              <Button variant={"clean"} className="w-96">
                 Shop Best Sellers
               </Button>
             </div>
@@ -111,6 +143,26 @@ export function CartDrawer() {
                 {items.map((item: any) => {
                   const lineTotal =
                     Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0);
+
+                  // ✅ NO FALLBACKS: stock must exist to allow changing qty
+                  const rawMax =
+                    typeof item.maxQty === "number"
+                      ? Number(item.maxQty)
+                      : null;
+
+                  const isUnknownStock = rawMax == null;
+                  const isOutOfStock = rawMax != null && rawMax <= 0;
+
+                  // only allow selecting up to min(rawMax, 10)
+                  const qtyOptions =
+                    rawMax != null ? Math.max(0, Math.min(10, rawMax)) : 0;
+
+                  // clamp displayed qty when stock is known
+                  const currentQty = Number(item.quantity ?? 1);
+                  const safeQty =
+                    rawMax == null
+                      ? currentQty
+                      : clamp(currentQty, 1, Math.max(1, rawMax));
 
                   return (
                     <li
@@ -151,6 +203,20 @@ export function CartDrawer() {
                             <div className="mt-2 text-base font-semibold">
                               <span>{currencyFormatter.format(lineTotal)}</span>
                             </div>
+
+                            {isOutOfStock ? (
+                              <p className="mt-2 text-xs text-destructive">
+                                Out of stock
+                              </p>
+                            ) : !isUnknownStock && rawMax! <= 10 ? (
+                              <p className="mt-2 text-[11px] text-muted-foreground">
+                                Only {rawMax} left
+                              </p>
+                            ) : isUnknownStock ? (
+                              <p className="mt-2 text-[11px] text-muted-foreground">
+                                Stock unavailable for this item (refresh cart).
+                              </p>
+                            ) : null}
                           </div>
                         </div>
                       </section>
@@ -160,14 +226,26 @@ export function CartDrawer() {
                           type="button"
                           variant="link"
                           className="text-muted-foreground p-0"
-                          onClick={() =>
-                            dispatch(
+                          onClick={async () => {
+                            const action = await dispatch(
                               removeItemAndSync({
                                 slug: item.slug,
                                 variantId: item.variantId ?? null,
-                              })
-                            )
-                          }
+                              }),
+                            );
+
+                            if (removeItemAndSync.rejected.match(action)) {
+                              const msg =
+                                (action.payload as any)?.message ??
+                                (action.error as any)?.message ??
+                                "Unable to remove item";
+                              console.log("removeItemAndSync failed:", action);
+                              toast.error(msg);
+                              return;
+                            }
+
+                            await refreshCheckoutIfOnCheckout();
+                          }}
                         >
                           Remove
                         </Button>
@@ -176,30 +254,71 @@ export function CartDrawer() {
                           <span className="text-xs text-muted-foreground">
                             Qty:
                           </span>
-                          <div className="relative">
-                            <select
-                              className="
-                                h-8 rounded-md border bg-background px-2 pr-6
-                                text-xs font-medium
-                              "
-                              value={Number(item.quantity ?? 1)}
-                              onChange={(e) =>
-                                dispatch(
-                                  setQtyAndSync({
-                                    slug: item.slug,
-                                    variantId: item.variantId ?? null,
-                                    quantity: Number(e.target.value) || 1,
-                                  })
-                                )
-                              }
-                            >
-                              {Array.from({ length: 10 }).map((_, i) => (
-                                <option key={i + 1} value={i + 1}>
-                                  {i + 1}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+
+                          {isUnknownStock ? (
+                            // ✅ unknown stock => no selector (prevents random 10/1)
+                            <div className="h-8 rounded-md border bg-background px-2 flex items-center text-xs font-medium">
+                              {safeQty}
+                            </div>
+                          ) : (
+                            <div className="relative">
+                              <select
+                                className="
+    h-8 rounded-md border bg-background px-2 pr-6
+    text-xs font-medium
+  "
+                                value={safeQty}
+                                disabled={isOutOfStock || qtyOptions <= 0}
+                                onChange={async (e) => {
+                                  const picked = Number(e.target.value) || 1;
+                                  const nextQty = clamp(
+                                    picked,
+                                    1,
+                                    Math.max(1, rawMax!),
+                                  );
+
+                                  // 🛑 no-op guard (prevents useless API + toast)
+                                  if (nextQty === item.quantity) return;
+
+                                  const action = await dispatch(
+                                    setQtyAndSync({
+                                      slug: item.slug,
+                                      variantId: item.variantId ?? null,
+                                      quantity: nextQty,
+                                    }),
+                                  );
+
+                                  // ❌ error toast
+                                  if (setQtyAndSync.rejected.match(action)) {
+                                    const msg =
+                                      (action.payload as any)?.message ??
+                                      (action.error as any)?.message ??
+                                      "Unable to update quantity";
+
+                                    toast.error(msg);
+                                    return;
+                                  }
+
+                                  // ✅ success toast
+                                  toast.success(
+                                    nextQty === 1
+                                      ? "Quantity updated"
+                                      : `Quantity updated to ${nextQty}`,
+                                  );
+
+                                  await refreshCheckoutIfOnCheckout();
+                                }}
+                              >
+                                {Array.from({ length: qtyOptions }).map(
+                                  (_, i) => (
+                                    <option key={i + 1} value={i + 1}>
+                                      {i + 1}
+                                    </option>
+                                  ),
+                                )}
+                              </select>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </li>
@@ -225,16 +344,24 @@ export function CartDrawer() {
                 onClick={async (e) => {
                   e.preventDefault();
                   const action = await dispatch(prepareForCheckout());
-                  if (prepareForCheckout.fulfilled.match(action)) {
-                    const checkoutId = action.payload?.id;
-                    if (checkoutId) {
-                      dispatch(closeCart());
-                      const qc = queryClient;
-                      qc.removeQueries({ queryKey: ["checkout"] });
-                      qc.removeQueries({ queryKey: ["cart"] });
-                      router.push(`/checkout/${checkoutId}`);
-                    }
+
+                  if (prepareForCheckout.rejected.match(action)) {
+                    const msg =
+                      (action.payload as any)?.message ??
+                      (action.error as any)?.message ??
+                      "Unable to start checkout";
+                    console.log("prepareForCheckout failed:", action);
+                    toast.error(msg);
+                    return;
                   }
+
+                  const checkoutId = (action as any).payload?.id;
+                  if (!checkoutId) return;
+
+                  dispatch(closeCart());
+                  queryClient.removeQueries({ queryKey: ["checkout"] });
+                  queryClient.removeQueries({ queryKey: ["cart"] });
+                  router.push(`/checkout/${checkoutId}`);
                 }}
               >
                 Checkout

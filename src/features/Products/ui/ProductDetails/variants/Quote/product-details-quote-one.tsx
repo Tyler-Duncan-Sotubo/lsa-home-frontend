@@ -42,7 +42,7 @@ export function ProductDetailsQuoteOne({
   const { canSee, rule, isLoggedIn } = useCanSeePrice();
   const formatMoney = useMoney();
   const showWishListButton = useAppSelector(
-    (s) => s.runtimeConfig.ui.product.showWishlistButton
+    (s) => s.runtimeConfig.ui.product.showWishlistButton,
   );
 
   const [quantity, setQuantity] = useState(1);
@@ -54,7 +54,7 @@ export function ProductDetailsQuoteOne({
     const other = attrs.filter(
       (a) =>
         !a.name.toLowerCase().includes("color") &&
-        !a.name.toLowerCase().includes("size")
+        !a.name.toLowerCase().includes("size"),
     );
     return {
       colorAttributes: color,
@@ -81,10 +81,10 @@ export function ProductDetailsQuoteOne({
     for (const v of vars as any[]) {
       const attrs: any[] = v.attributes ?? [];
       const size = norm(
-        attrs.find((a) => a.name?.toLowerCase().includes("size"))?.option
+        attrs.find((a) => a.name?.toLowerCase().includes("size"))?.option,
       );
       const color = norm(
-        attrs.find((a) => a.name?.toLowerCase().includes("color"))?.option
+        attrs.find((a) => a.name?.toLowerCase().includes("color"))?.option,
       );
       map.set(`${size}|${color}`, v);
     }
@@ -214,7 +214,7 @@ export function ProductDetailsQuoteOne({
             ? Number((activeVariation as any).price)
             : null
           : null,
-      })
+      }),
     );
 
     gaEvent("add_to_cart", {
@@ -351,7 +351,6 @@ export function ProductDetailsQuoteOne({
           <div className="flex items-center gap-2">
             <Button
               onClick={handleRequestQuote}
-              disabled={!isInStock}
               className="flex-1"
               type="button"
             >
@@ -389,12 +388,6 @@ export function ProductDetailsQuoteOne({
               />
             )}
           </div>
-
-          {!isInStock && (
-            <p className="text-xs text-destructive mt-1">
-              This selection is currently unavailable.
-            </p>
-          )}
 
           <div className="flex items-start gap-3 rounded-lg bg-muted/60 px-3 py-2">
             <div className="mt-0.75 h-6 w-6 rounded-full bg-primary/10" />

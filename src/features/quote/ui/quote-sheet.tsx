@@ -41,6 +41,7 @@ import Link from "next/link";
 import { useLinkedProductsQuery } from "@/features/Products/hooks/use-upsell-products";
 import { LinkedProducts } from "@/features/Products/ui/ProductInfo/linked-products";
 import { LINK_COPY } from "@/shared/constants/link-copy";
+import { X } from "lucide-react";
 
 function StepPill({
   active,
@@ -285,7 +286,7 @@ export function QuoteSheet() {
                 </Button>
               </div>
 
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 space-y-2">
                 {items.map((it) => {
                   const minQty = Math.max(1, it.moq ?? 1);
                   const safeQty = Math.max(minQty, it.quantity ?? minQty);
@@ -295,7 +296,7 @@ export function QuoteSheet() {
                       key={`${it.slug}__${it.variantId ?? ""}`}
                       className="group flex items-center gap-3 transition"
                     >
-                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                      <div className="relative md:h-20 md:w-20 h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-muted">
                         <Image
                           src={it.image ?? "/placeholder.png"}
                           alt={it.name}
@@ -306,7 +307,7 @@ export function QuoteSheet() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">
+                        <p className="truncate md:text-sm text-xs font-semibold">
                           {it.name}
                         </p>
 
@@ -317,8 +318,8 @@ export function QuoteSheet() {
                         ) : null}
 
                         {canSee && parsePrice(it.price) != null ? (
-                          <div className="mt-2 space-y-0.5">
-                            <p className="text-sm font-semibold text-foreground">
+                          <div className="mt-1 space-y-0.5">
+                            <p className="md:text-sm text-xs font-semibold text-foreground">
                               {priceRange ? "From " : ""}
                               {formatPrice(String(it.price))}{" "}
                               {priceRange ? "per unit " : ""}
@@ -401,9 +402,9 @@ export function QuoteSheet() {
                       />
 
                       <Button
-                        variant="link"
-                        size="sm"
-                        className="text-muted-foreground hover:text-foreground"
+                        variant="ghost"
+                        size="icon"
+                        className="transition text-muted-foreground hover:text-destructive"
                         onClick={() =>
                           dispatch(
                             removeFromQuote({
@@ -412,8 +413,9 @@ export function QuoteSheet() {
                             }),
                           )
                         }
+                        aria-label={`Remove ${it.name}`}
                       >
-                        Remove
+                        <X className="h-4 w-4" />
                       </Button>
                     </div>
                   );

@@ -144,6 +144,13 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px;
+  }
 }
 
 /* e.g. in globals.css or spin-wheel.css */

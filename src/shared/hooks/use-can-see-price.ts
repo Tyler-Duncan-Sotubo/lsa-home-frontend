@@ -8,7 +8,11 @@ export function useCanSeePrice() {
   const isLoggedIn = session?.user !== undefined;
 
   const rule = useAppSelector(
-    (s) => s.runtimeConfig.ui.pricing.showPriceInDetails
+    (s) => s.runtimeConfig.ui.pricing.showPriceInDetails,
+  );
+
+  const priceRange = useAppSelector(
+    (s) => s.runtimeConfig.ui.pricing.priceRange,
   );
 
   const canSee = rule === "always" || (rule === "loggedInOnly" && isLoggedIn);
@@ -17,5 +21,6 @@ export function useCanSeePrice() {
     canSee,
     rule,
     isLoggedIn,
+    priceRange,
   };
 }

@@ -18,9 +18,9 @@ import { useCanSeePrice } from "@/shared/hooks/use-can-see-price";
 const WishlistButton = dynamic(
   () =>
     import("@/features/Products/ui/ProductInfo/wishlist-button").then(
-      (m) => m.WishlistButton
+      (m) => m.WishlistButton,
     ),
-  { ssr: false }
+  { ssr: false },
 );
 
 export interface ProductCardProps {
@@ -59,22 +59,24 @@ export function ProductCard({
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const dispatch = useAppDispatch();
   const formatPrice = usePriceDisplay();
-  const { canSee, rule, isLoggedIn } = useCanSeePrice();
+  const { canSee, rule, isLoggedIn, priceRange } = useCanSeePrice();
   const hasQuickView = Boolean(quickViewProduct);
   const priceHtmlFormatted = formatPrice(priceHtml);
   const regularFormatted = formatPrice(regularPrice);
   const saleFormatted = formatPrice(salePrice);
 
   const showWishListButton = useAppSelector(
-    (s) => s.runtimeConfig.ui.product.showWishlistButton
+    (s) => s.runtimeConfig.ui.product.showWishlistButton,
   );
+
+  const pricePrefix = priceRange ? "From " : "";
 
   const priceClass =
     size === "compact"
       ? "text-xs md:text-sm"
       : size === "large"
-      ? "text-[15px] md:text-lg"
-      : "text-sm md:text-lg";
+        ? "text-[15px] md:text-lg"
+        : "text-sm md:text-lg";
 
   const handleMarkRecentlyViewed = useCallback(() => {
     dispatch(
@@ -89,7 +91,7 @@ export function ProductCard({
         priceHtml: priceHtml ?? null,
         averageRating: averageRating,
         ratingCount: ratingCount,
-      })
+      }),
     );
   }, [
     dispatch,
@@ -111,7 +113,7 @@ export function ProductCard({
     onSale && regularPrice && salePrice
       ? Math.round(
           ((Number(regularPrice) - Number(salePrice)) / Number(regularPrice)) *
-            100
+            100,
         )
       : null;
 
@@ -246,19 +248,22 @@ export function ProductCard({
             /* ================= PRICE VISIBLE ================= */
             priceHtmlFormatted ? (
               <p className={`${priceClass} font-semibold text-foreground`}>
+                {pricePrefix}
                 {priceHtmlFormatted}
               </p>
             ) : saleFormatted && regularFormatted ? (
-              <div className={`flex items-center gap-2 text-lg ${priceClass} `}>
+              <div className={`flex items-center gap-2 text-lg ${priceClass}`}>
                 <span className="line-through text-muted-foreground">
                   {regularFormatted}
                 </span>
                 <span className="text-primary font-semibold">
+                  {pricePrefix}
                   {saleFormatted}
                 </span>
               </div>
             ) : regularFormatted ? (
               <p className="text-xs md:text-lg font-semibold text-foreground">
+                {pricePrefix}
                 {regularFormatted}
               </p>
             ) : (
@@ -278,9 +283,6 @@ export function ProductCard({
                 </p>
               ) : (
                 <div>
-                  {/* <p className="text-[14px] font-medium text-foreground">
-                    Pricing
-                  </p> */}
                   <p className="text-[11px] text-muted-foreground">
                     Pricing is provided via quote based on your selections and
                     quantity.

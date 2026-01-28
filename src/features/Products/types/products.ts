@@ -27,7 +27,6 @@ export type WooVariation = {
   regular_price: string;
   sale_price: string;
   on_sale: boolean;
-
   image?: { src: string; alt?: string };
   images?: { src: string; alt?: string }[];
 
@@ -57,6 +56,7 @@ export type WooProductApi = {
   regular_price: string;
   sale_price: string;
   on_sale: boolean;
+  moq?: number; // minimum order quantity
 
   price_html: string;
 

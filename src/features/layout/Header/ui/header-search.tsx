@@ -38,7 +38,7 @@ export function HeaderSearch({
   const router = useRouter();
 
   // ✅ pricing visibility + formatter
-  const { canSee, rule, isLoggedIn } = useCanSeePrice();
+  const { canSee, rule, isLoggedIn, priceRange } = useCanSeePrice();
   const formatPrice = usePriceDisplay();
 
   const [q, setQ] = React.useState("");
@@ -164,8 +164,12 @@ export function HeaderSearch({
     const regularFormatted = formatPrice(regularPrice);
     const saleFormatted = formatPrice(salePrice);
 
+    // ✅ add prefix when price range exists
+    const pricePrefix = priceRange ? "From " : "";
+
     return priceHtmlFormatted ? (
       <p className="text-xs font-semibold text-foreground">
+        {pricePrefix}
         {priceHtmlFormatted}
       </p>
     ) : saleFormatted && regularFormatted ? (
@@ -173,10 +177,14 @@ export function HeaderSearch({
         <span className="line-through text-muted-foreground">
           {regularFormatted}
         </span>
-        <span className="text-primary font-semibold">{saleFormatted}</span>
+        <span className="text-primary font-semibold">
+          {pricePrefix}
+          {saleFormatted}
+        </span>
       </div>
     ) : regularFormatted ? (
       <p className="text-xs font-semibold text-foreground">
+        {pricePrefix}
         {regularFormatted}
       </p>
     ) : null;

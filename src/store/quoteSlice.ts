@@ -6,13 +6,16 @@ import type { RootState } from "./store";
 export type QuoteItem = {
   slug: string;
   variantId?: string | null;
-  name: string; // Product name (clean)
-  variantLabel?: string; // e.g. "Size: Twin · Color: Blue"
+  name: string;
+  variantLabel?: string;
   image?: string | null;
   quantity: number;
   attributes?: Record<string, string | null>;
   price?: number | null;
   productId?: string | null;
+
+  // ✅ MOQ
+  moq?: number | null;
 };
 
 export type QuoteCustomer = {
@@ -23,10 +26,7 @@ export type QuoteCustomer = {
 export type QuoteState = {
   items: QuoteItem[];
   isOpen: boolean;
-
-  // 1 = add items / review, 2 = customer details
   step: 1 | 2;
-
   customer: QuoteCustomer;
 };
 
@@ -39,25 +39,35 @@ function buildKey(slug: string, variantId?: string | null) {
   return `${slug}__${variantId ?? ""}`;
 }
 
+// ✅ clamp quantity to MOQ (and basic integer safety)
+function clampQtyToMoq(qty: number, moq?: number | null) {
+  const minQty = Math.max(1, Number(moq ?? 1) || 1);
+  const n = Number(qty);
+  if (!Number.isFinite(n)) return minQty;
+  return Math.max(minQty, Math.trunc(n));
+}
+
 const initialState: QuoteState = {
   items: [],
   isOpen: false,
   step: 1,
-  customer: {
-    email: "",
-    note: "",
-  },
+  customer: { email: "", note: "" },
 };
 
 const quoteSlice = createSlice({
   name: "quote",
   initialState,
   reducers: {
-    // optional localStorage hydration
     hydrateQuote(state, action: PayloadAction<QuoteStateFromStorage>) {
-      state.items = Array.isArray(action.payload.items)
+      const incoming = Array.isArray(action.payload.items)
         ? action.payload.items
         : [];
+
+      state.items = incoming.map((it) => ({
+        ...it,
+        quantity: clampQtyToMoq(it.quantity ?? 1, (it as any).moq ?? null),
+      }));
+
       state.customer = {
         email: action.payload.customer?.email ?? "",
         note: action.payload.customer?.note ?? "",
@@ -73,10 +83,11 @@ const quoteSlice = createSlice({
         variantLabel?: string;
         name: string;
         image?: string | null;
-        productId?: string | null; // ✅ already in payload
+        productId?: string | null;
         attributes?: Record<string, any>;
         price?: number | null;
-      }>
+        moq?: number | null;
+      }>,
     ) {
       const {
         slug,
@@ -88,39 +99,54 @@ const quoteSlice = createSlice({
         image = null,
         attributes,
         price = null,
+        moq = null,
       } = action.payload;
 
       const key = buildKey(slug, variantId);
       const index = state.items.findIndex(
-        (it) => buildKey(it.slug, it.variantId) === key
+        (it) => buildKey(it.slug, it.variantId) === key,
       );
+
+      // normalize incoming qty relative to MOQ
+      const incomingQty = clampQtyToMoq(quantity, moq);
 
       if (index !== -1) {
         const existing = state.items[index];
-        existing.quantity += quantity;
-        existing.variantLabel = variantLabel;
-        existing.name = name;
-        existing.image = image;
-        existing.attributes = attributes;
-        existing.price = price;
 
-        // ✅ NEW
-        existing.productId = productId;
+        // keep latest moq if provided (or fallback to existing)
+        const effectiveMoq = moq ?? existing.moq ?? 1;
 
-        // move to front (newest-first)
+        // existing quantity + incoming quantity, then clamp to MOQ
+        const nextQty = clampQtyToMoq(
+          (existing.quantity ?? 0) + incomingQty,
+          effectiveMoq,
+        );
+
+        existing.quantity = nextQty;
+        existing.variantLabel = variantLabel ?? existing.variantLabel;
+        existing.name = name ?? existing.name;
+        existing.image = image ?? existing.image;
+        existing.attributes = attributes ?? existing.attributes;
+        existing.price = price ?? existing.price;
+
+        existing.productId = productId ?? existing.productId ?? null;
+        existing.moq = effectiveMoq as any;
+
+        // move to front
         state.items.splice(index, 1);
         state.items.unshift(existing);
       } else {
         state.items.unshift({
           slug,
-          productId, // ✅ NEW
+          productId,
           variantId,
           variantLabel,
-          quantity,
+          quantity: incomingQty, // ✅ MOQ enforced here
           name,
           image,
           attributes,
           price,
+          moq,
         });
       }
 
@@ -130,14 +156,14 @@ const quoteSlice = createSlice({
 
     removeFromQuote(
       state,
-      action: PayloadAction<{ slug: string; variantId?: string | null }>
+      action: PayloadAction<{ slug: string; variantId?: string | null }>,
     ) {
       const key = buildKey(
         action.payload.slug,
-        action.payload.variantId ?? null
+        action.payload.variantId ?? null,
       );
       state.items = state.items.filter(
-        (it) => buildKey(it.slug, it.variantId) !== key
+        (it) => buildKey(it.slug, it.variantId) !== key,
       );
       if (state.items.length === 0) state.step = 1;
     },
@@ -148,23 +174,28 @@ const quoteSlice = createSlice({
         slug: string;
         variantId?: string | null;
         quantity: number;
-      }>
+      }>,
     ) {
       const { slug, variantId = null, quantity } = action.payload;
       const key = buildKey(slug, variantId);
 
       const existing = state.items.find(
-        (it) => buildKey(it.slug, it.variantId) === key
+        (it) => buildKey(it.slug, it.variantId) === key,
       );
       if (!existing) return;
 
+      // allow remove if <= 0 (keep your behavior)
       if (quantity <= 0) {
         state.items = state.items.filter(
-          (it) => buildKey(it.slug, it.variantId) !== key
+          (it) => buildKey(it.slug, it.variantId) !== key,
         );
-      } else {
-        existing.quantity = quantity;
+        if (state.items.length === 0) state.step = 1;
+        return;
       }
+
+      // ✅ clamp to MOQ
+      existing.quantity = clampQtyToMoq(quantity, existing.moq);
+
       if (state.items.length === 0) state.step = 1;
     },
 
@@ -184,18 +215,17 @@ const quoteSlice = createSlice({
     },
 
     goToStep(state, action: PayloadAction<1 | 2>) {
-      // do not allow step 2 if no items
       if (action.payload === 2 && state.items.length === 0) return;
       state.step = action.payload;
     },
 
     nextStep(state) {
       if (state.items.length === 0) return;
-      state.step = state.step === 1 ? 2 : 2;
+      state.step = 2;
     },
 
     prevStep(state) {
-      state.step = state.step === 2 ? 1 : 1;
+      state.step = 1;
     },
 
     setCustomerEmail(state, action: PayloadAction<string>) {
@@ -232,4 +262,4 @@ export const selectQuoteStep = (state: RootState) => state.quote.step;
 export const selectQuoteCustomer = (state: RootState) => state.quote.customer;
 
 export const selectQuoteCount = (state: RootState) =>
-  state.quote.items.reduce((sum, item) => sum + item.quantity, 0);
+  state.quote.items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);

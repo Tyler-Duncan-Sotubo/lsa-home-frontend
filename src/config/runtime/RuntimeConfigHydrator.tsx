@@ -35,6 +35,7 @@ export function RuntimeConfigHydrator({
         pricing: {
           showPriceInDetails:
             config.ui?.pricing?.showPriceInDetails ?? "always",
+          priceRange: config.ui?.pricing?.priceRange ?? false,
         },
         product: {
           showWishlistButton: config.ui?.product?.showWishlistButton ?? true,

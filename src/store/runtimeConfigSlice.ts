@@ -29,6 +29,7 @@ export type RuntimeConfigState = {
   ui: {
     pricing: {
       showPriceInDetails: "always" | "loggedInOnly" | "never";
+      priceRange?: boolean;
     };
     product: {
       showWishlistButton?: boolean;
@@ -63,6 +64,7 @@ const initialState: RuntimeConfigState = {
   ui: {
     pricing: {
       showPriceInDetails: "always",
+      priceRange: false,
     },
     product: {
       showWishlistButton: true,
@@ -85,7 +87,7 @@ const initialState: RuntimeConfigState = {
 
 function deepMerge<T extends Record<string, any>>(
   base: T,
-  patch: Partial<T>
+  patch: Partial<T>,
 ): T {
   const out: any = { ...base };
   for (const k of Object.keys(patch)) {
@@ -105,7 +107,7 @@ const runtimeConfigSlice = createSlice({
   reducers: {
     hydrateRuntimeConfig(
       state,
-      action: PayloadAction<Partial<RuntimeConfigState>>
+      action: PayloadAction<Partial<RuntimeConfigState>>,
     ) {
       const merged = deepMerge(state as any, action.payload as any);
       Object.assign(state, merged);
@@ -126,7 +128,7 @@ const runtimeConfigSlice = createSlice({
       action: PayloadAction<{
         key: keyof RuntimeConfigState["features"];
         value: RuntimeConfigState["features"][keyof RuntimeConfigState["features"]];
-      }>
+      }>,
     ) {
       const { key, value } = action.payload;
       (state.features as Record<string, any>)[key] = value;

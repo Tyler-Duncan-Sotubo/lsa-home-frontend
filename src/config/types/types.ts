@@ -52,6 +52,7 @@ export type StorefrontConfigV1 = {
     };
     pricing?: {
       showPriceInDetails?: "always" | "loggedInOnly" | "never"; // default "always"
+      priceRange?: boolean;
     };
     product?: {
       galleryVariant?: "V1" | "V2" | "V3"; // default "V1"

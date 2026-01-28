@@ -39,11 +39,13 @@ export function ProductDetailsQuoteOne({
   showInfoSections,
 }: ProductDetailsTwoProps) {
   const dispatch = useAppDispatch();
-  const { canSee, rule, isLoggedIn } = useCanSeePrice();
+  const { canSee, rule, isLoggedIn, priceRange } = useCanSeePrice();
   const formatMoney = useMoney();
   const showWishListButton = useAppSelector(
     (s) => s.runtimeConfig.ui.product.showWishlistButton,
   );
+
+  const pricePrefix = priceRange ? "From " : "";
 
   const [quantity, setQuantity] = useState(1);
 
@@ -206,6 +208,7 @@ export function ProductDetailsQuoteOne({
           : null,
         quantity,
         name: product.name,
+        moq: product.moq,
         variantLabel: buildVariantLabel(),
         image: variationImageSrc ?? null,
         attributes: buildAttributes(),
@@ -279,6 +282,7 @@ export function ProductDetailsQuoteOne({
                         </span>
 
                         <span className="text-base md:text-lg font-semibold text-primary">
+                          {pricePrefix}
                           {formattedSale}
                         </span>
 
@@ -290,6 +294,7 @@ export function ProductDetailsQuoteOne({
                       </div>
                     ) : formattedRegular ? (
                       <span className="text-base md:text-lg font-semibold">
+                        {pricePrefix}
                         {formattedRegular}
                       </span>
                     ) : null /* if eligible but somehow no prices, show nothing */
@@ -357,7 +362,7 @@ export function ProductDetailsQuoteOne({
               Request Quote
             </Button>
 
-            <div className="relative">
+            {/* <div className="relative">
               <select
                 className="sm:h-13.5 2xl:h-15 rounded-md border bg-background px-3 pr-8 text-lg font-medium"
                 value={quantity}
@@ -369,7 +374,7 @@ export function ProductDetailsQuoteOne({
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
             {showWishListButton && (
               <WishlistButton

@@ -67,9 +67,6 @@ function QuoteSheetFooter({
   onContinue,
   onSubmit,
   onContinueShopping,
-  subtotalLabel,
-  hasAnyPrice,
-  hasMissingPrice,
   isSubmitting,
 }: {
   step: number;
@@ -89,24 +86,6 @@ function QuoteSheetFooter({
   return (
     <div className="sticky bottom-0 z-20 border-t bg-white px-4 py-3 backdrop-blur supports-backdrop-filter:bg-white">
       <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          {hasAnyPrice ? (
-            <div className="flex flex-col">
-              <p className="text-xs text-muted-foreground">Estimated total</p>
-              <p className="truncate text-sm font-semibold">{subtotalLabel}</p>
-              {hasMissingPrice ? (
-                <p className="text-[11px] text-muted-foreground">
-                  Some items don’t have pricing yet.
-                </p>
-              ) : null}
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Prices will be provided in your quote.
-            </p>
-          )}
-        </div>
-
         {effectiveStep === 1 ? (
           <div className="flex items-center gap-2">
             <Button variant="clean" onClick={onContinueShopping}>
@@ -138,7 +117,7 @@ function QuoteSheetFooter({
 const normalizeNumber = (value: string) => value.replace(/[₦,\s]/g, "").trim();
 
 export function parsePrice(
-  value: number | string | null | undefined
+  value: number | string | null | undefined,
 ): number | null {
   if (value == null || value === "") return null;
   if (typeof value === "number") return Number.isFinite(value) ? value : null;
@@ -149,7 +128,7 @@ export function parsePrice(
 
 export function lineTotal(
   price: number | string | null | undefined,
-  qty: number
+  qty: number,
 ): number | null {
   const p = parsePrice(price);
   if (p == null) return null;
@@ -168,10 +147,8 @@ export function QuoteSheet() {
   const customer = useAppSelector(selectQuoteCustomer);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { canSee, rule, isLoggedIn } = useCanSeePrice();
+  const { canSee, rule, isLoggedIn, priceRange } = useCanSeePrice();
   const formatPrice = usePriceDisplay();
-
-  const canContinue = items.length > 0;
 
   const email = customer.email.trim();
   const canSubmit = items.length > 0 && email.length > 3 && email.includes("@");
@@ -186,11 +163,13 @@ export function QuoteSheet() {
 
     if (!emailToUse || emailToUse.length < 4 || !emailToUse.includes("@")) {
       setSubmitError("Please enter a valid email.");
+      setIsSubmitting(false);
       return;
     }
 
     if (!items.length) {
       setSubmitError("Please add at least one item.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -225,7 +204,7 @@ export function QuoteSheet() {
           setSubmitError(message);
           setIsSubmitting(false);
         },
-      }
+      },
     );
   };
 
@@ -244,7 +223,6 @@ export function QuoteSheet() {
       sum += p * (it.quantity ?? 0);
     }
 
-    // if user can't see prices, behave like no prices exist
     if (!canSee) {
       return { subtotal: null, hasAnyPrice: false, hasMissingPrice: false };
     }
@@ -273,7 +251,6 @@ export function QuoteSheet() {
         side="right"
         className="w-full sm:max-w-150 p-0 flex h-dvh flex-col"
       >
-        {/* Header */}
         <SheetHeader className="border-b px-4 py-10">
           <SheetTitle className="text-base font-semibold leading-none">
             Request a Quote
@@ -287,9 +264,7 @@ export function QuoteSheet() {
           <Progress value={progress} className="h-2" />
         </SheetHeader>
 
-        {/* Body + Sticky Footer wrapper */}
         <div className="flex flex-1 flex-col min-h-0">
-          {/* Step 1 */}
           {step === 1 ? (
             <div className="flex-1 overflow-auto p-4">
               <div className="flex items-center justify-between gap-3">
@@ -309,106 +284,140 @@ export function QuoteSheet() {
                   Clear
                 </Button>
               </div>
+
               <div className="mt-4 space-y-3">
-                {items.map((it) => (
-                  <div
-                    key={`${it.slug}__${it.variantId ?? ""}`}
-                    className="group flex items-center gap-3 transition"
-                  >
-                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                      <Image
-                        src={it.image ?? "/placeholder.png"}
-                        alt={it.name}
-                        fill
-                        className="object-cover"
-                        sizes="80px"
-                      />
-                    </div>
+                {items.map((it) => {
+                  const minQty = Math.max(1, it.moq ?? 1);
+                  const safeQty = Math.max(minQty, it.quantity ?? minQty);
 
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">
-                        {it.name}
-                      </p>
-                      {it.variantLabel ? (
-                        <p className="truncate text-xs text-muted-foreground">
-                          {it.variantLabel}
+                  return (
+                    <div
+                      key={`${it.slug}__${it.variantId ?? ""}`}
+                      className="group flex items-center gap-3 transition"
+                    >
+                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                        <Image
+                          src={it.image ?? "/placeholder.png"}
+                          alt={it.name}
+                          fill
+                          className="object-cover"
+                          sizes="80px"
+                        />
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold">
+                          {it.name}
                         </p>
-                      ) : null}
-                      {canSee && parsePrice(it.price) != null ? (
-                        <div className="mt-2 space-y-0.5">
-                          <p className="text-sm font-semibold text-foreground">
-                            {formatPrice(String(it.price))}
-                          </p>
 
-                          {it.quantity > 1 ? (
-                            <p className="text-xs text-muted-foreground font-semibold">
-                              {it.quantity} × {formatPrice(String(it.price))} ={" "}
-                              {formatPrice(
-                                String(lineTotal(it.price, it.quantity) ?? "")
-                              )}
-                            </p>
-                          ) : null}
-                        </div>
-                      ) : (
-                        <div className="mt-2 space-y-1">
-                          <p className="text-xs text-muted-foreground">
-                            Price will be confirmed in your quote.
+                        {it.variantLabel ? (
+                          <p className="truncate text-xs text-muted-foreground">
+                            {it.variantLabel}
                           </p>
+                        ) : null}
 
-                          {/* only show CTA when hidden due to login */}
-                          {rule === "loggedInOnly" && !isLoggedIn ? (
-                            <p className="text-[11px] text-muted-foreground">
-                              <Link
-                                href="/account/login"
-                                className="underline font-medium"
-                              >
-                                Sign in
-                              </Link>{" "}
-                              to view pricing.
+                        {canSee && parsePrice(it.price) != null ? (
+                          <div className="mt-2 space-y-0.5">
+                            <p className="text-sm font-semibold text-foreground">
+                              {priceRange ? "From " : ""}
+                              {formatPrice(String(it.price))}{" "}
+                              {priceRange ? "per unit " : ""}
                             </p>
-                          ) : null}
-                        </div>
-                      )}
+
+                            {/* {safeQty > 1 ? (
+                              <p className="text-xs text-muted-foreground font-semibold">
+                                {safeQty} × {priceRange ? "From " : ""}
+                                {formatPrice(String(it.price))} ={" "}
+                                {formatPrice(
+                                  String(lineTotal(it.price, safeQty) ?? ""),
+                                )}
+                              </p>
+                            ) : null} */}
+                          </div>
+                        ) : (
+                          <div className="mt-2 space-y-1">
+                            <p className="text-xs text-muted-foreground">
+                              Price will be confirmed in your quote.
+                            </p>
+
+                            {rule === "loggedInOnly" && !isLoggedIn ? (
+                              <p className="text-[11px] text-muted-foreground">
+                                <Link
+                                  href="/account/login"
+                                  className="underline font-medium"
+                                >
+                                  Sign in
+                                </Link>{" "}
+                                to view pricing.
+                              </p>
+                            ) : null}
+                          </div>
+                        )}
+
+                        {minQty > 1 ? (
+                          <p className="mt-1 text-[11px] text-muted-foreground">
+                            Minimum order: {minQty}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        className="h-9 w-20 rounded-md bg-background px-2 text-xs shadow-sm ring-1 ring-border focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        min={minQty}
+                        step={1}
+                        value={safeQty}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          const next = Number(raw);
+                          if (raw === "" || Number.isNaN(next)) return;
+
+                          dispatch(
+                            updateQuoteQuantity({
+                              slug: it.slug,
+                              variantId: it.variantId ?? null,
+                              quantity: next,
+                            }),
+                          );
+                        }}
+                        onBlur={(e) => {
+                          const next = Number(e.target.value);
+                          const clamped = Number.isFinite(next)
+                            ? Math.max(minQty, next)
+                            : minQty;
+
+                          if ((it.quantity ?? minQty) !== clamped) {
+                            dispatch(
+                              updateQuoteQuantity({
+                                slug: it.slug,
+                                variantId: it.variantId ?? null,
+                                quantity: clamped,
+                              }),
+                            );
+                          }
+                        }}
+                        aria-label={`Quantity for ${it.name}`}
+                      />
+
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="text-muted-foreground hover:text-foreground"
+                        onClick={() =>
+                          dispatch(
+                            removeFromQuote({
+                              slug: it.slug,
+                              variantId: it.variantId ?? null,
+                            }),
+                          )
+                        }
+                      >
+                        Remove
+                      </Button>
                     </div>
-
-                    <select
-                      className="h-9 rounded-md bg-background px-2 text-xs shadow-sm ring-1 ring-border focus:outline-none focus:ring-2 focus:ring-primary/40"
-                      value={it.quantity}
-                      onChange={(e) =>
-                        dispatch(
-                          updateQuoteQuantity({
-                            slug: it.slug,
-                            variantId: it.variantId ?? null,
-                            quantity: Number(e.target.value) || 1,
-                          })
-                        )
-                      }
-                      aria-label={`Quantity for ${it.name}`}
-                    >
-                      {Array.from({ length: 20 }).map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      ))}
-                    </select>
-
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="text-muted-foreground hover:text-foreground"
-                      onClick={() =>
-                        dispatch(
-                          removeFromQuote({
-                            slug: it.slug,
-                            variantId: it.variantId ?? null,
-                          })
-                        )
-                      }
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                ))}
+                  );
+                })}
 
                 {items.length === 0 ? (
                   <div className="rounded-xl bg-muted/40 p-8 text-center">
@@ -419,7 +428,7 @@ export function QuoteSheet() {
                   </div>
                 ) : null}
               </div>
-              {/* Upsell products */}
+
               <LinkedProducts
                 products={upsells}
                 loading={upsellsLoading}
@@ -429,10 +438,8 @@ export function QuoteSheet() {
               />
             </div>
           ) : (
-            /* Step 2 */
             <div className="flex-1 overflow-auto p-4">
               <div className="grid grid-cols-1 gap-6">
-                {/* Items summary */}
                 <div>
                   <div className="mb-3">
                     <p className="text-sm font-semibold">Items</p>
@@ -475,7 +482,6 @@ export function QuoteSheet() {
                   </div>
                 </div>
 
-                {/* Customer form */}
                 <div>
                   <p className="mb-1 text-sm font-semibold">Your details</p>
                   <p className="mb-3 text-xs text-muted-foreground">
@@ -526,11 +532,10 @@ export function QuoteSheet() {
             </div>
           )}
 
-          {/* Shared sticky footer */}
           <SheetFooter className="sticky bottom-0 bg-white backdrop-blur">
             <QuoteSheetFooter
               step={step}
-              canContinue={canContinue}
+              canContinue={items.length > 0}
               canSubmit={canSubmit}
               onBack={() => dispatch(prevStep())}
               onContinue={() => dispatch(nextStep())}

@@ -9,27 +9,9 @@ type ContactBody = {
   company?: string;
   message: string;
   subject?: string;
-  website?: string; // honeypot
+  // Optional honeypot (spam protection later)
+  website?: string;
 };
-
-function getRequestHost(req: Request) {
-  // Prefer forwarded host (Vercel/Cloudflare/proxies)
-  const forwardedHost = req.headers.get("x-forwarded-host");
-  if (forwardedHost) return forwardedHost.split(",")[0].trim();
-
-  const host = req.headers.get("host");
-  if (host) return host;
-
-  // fallback: try origin hostname
-  const origin = req.headers.get("origin");
-  if (origin) {
-    try {
-      return new URL(origin).host;
-    } catch {}
-  }
-
-  return "";
-}
 
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as ContactBody | null;
@@ -48,20 +30,13 @@ export async function POST(req: Request) {
     );
   }
 
-  // honeypot
+  // Optional: honeypot check (if you add it in the form)
   if (body.website && body.website.trim().length > 0) {
+    // Pretend success so bots don't learn
     return NextResponse.json({ ok: true }, { status: 200 });
   }
 
-  const storeHost = getRequestHost(req);
-  if (!storeHost) {
-    return NextResponse.json(
-      { ok: false, message: "Missing host" },
-      { status: 400 },
-    );
-  }
-
-  const origin = req.headers.get("origin") ?? undefined;
+  const pageUrl = req.headers.get("origin") ?? undefined;
   const referrer = req.headers.get("referer") ?? undefined;
   const userAgent = req.headers.get("user-agent") ?? undefined;
 
@@ -76,10 +51,7 @@ export async function POST(req: Request) {
       subject: body.subject,
     },
     headers: {
-      // ✅ this is what your backend expects (same as Axios interceptor)
-      "X-Store-Host": storeHost,
-
-      ...(origin ? { "X-Page-Url": origin } : {}),
+      ...(pageUrl ? { "X-Page-Url": pageUrl } : {}),
       ...(referrer ? { "X-Referrer": referrer } : {}),
       ...(userAgent ? { "X-User-Agent": userAgent } : {}),
     },

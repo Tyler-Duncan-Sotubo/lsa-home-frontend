@@ -350,7 +350,6 @@ export function CartDrawer() {
                       (action.payload as any)?.message ??
                       (action.error as any)?.message ??
                       "Unable to start checkout";
-                    console.log("prepareForCheckout failed:", action);
                     toast.error(msg);
                     return;
                   }

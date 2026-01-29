@@ -1,12 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
+import React, { useRef, useState } from "react";
 import type { StorefrontConfigV1 } from "@/config/types/types";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
 import { SocialIcon } from "./social-icons";
 import CopyrightBar from "./copyright-bar";
+import { toast } from "sonner";
+
+import { storefrontAxios } from "@/shared/api/axios-storefront";
+import { getStoreHostHeader } from "@/shared/api/storefront-headers";
 
 type Props = {
   config: StorefrontConfigV1;
@@ -14,12 +20,69 @@ type Props = {
 };
 
 export function FooterOne({ config, footer }: Props) {
-  if (!footer) return null;
-
   const year = new Date().getFullYear();
   const leftText = footer.bottomBar?.leftText?.replace("{year}", String(year));
   const paymentOptions = footer.bottomBar?.payments;
   const logoUrl = config?.theme?.assets?.logoUrl;
+
+  // ----------------------------
+  // Newsletter subscribe state
+  // ----------------------------
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const websiteRef = useRef<HTMLInputElement | null>(null); // honeypot
+
+  if (!footer) return null;
+
+  async function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email || submitting || submitted) return;
+
+    // Honeypot: if bot fills hidden field, pretend success
+    const website = websiteRef.current?.value?.trim();
+    if (website) {
+      setSubmitted(true);
+      setEmail("");
+      toast.success("Thanks for subscribing!");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await storefrontAxios.post(
+        "/api/mail/subscribe",
+        {
+          email,
+          source: "footer",
+          website: websiteRef.current?.value ?? "",
+        },
+        {
+          headers: { ...(await getStoreHostHeader()) },
+        },
+      );
+
+      const json = res.data;
+
+      // If backend uses { ok: true/false }
+      if (json?.ok === false) {
+        throw new Error(json?.message || "Subscription failed");
+      }
+
+      setSubmitted(true);
+      setEmail("");
+      toast.success("Thanks for subscribing!");
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ??
+        err?.response?.data?.error ??
+        err?.message ??
+        "Something went wrong. Please try again.";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <footer className="border-t bg-primary text-secondary">
@@ -64,19 +127,38 @@ export function FooterOne({ config, footer }: Props) {
 
                 <form
                   className="flex gap-2 max-w-sm"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    // v1: UI only (wire to API later)
-                  }}
+                  onSubmit={handleSubscribe}
                 >
+                  {/* honeypot */}
+                  <input
+                    ref={websiteRef}
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="hidden"
+                    aria-hidden="true"
+                  />
+
                   <Input
                     type="email"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder={footer.newsletter.placeholder ?? "Email"}
                     className="bg-white/10 border-white/20 text-slate-100 placeholder:text-slate-200/60"
+                    disabled={submitting || submitted}
                   />
-                  <Button type="submit" variant="secondary">
-                    {footer.newsletter.ctaLabel ?? "Subscribe"}
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    disabled={submitting || submitted || !email}
+                  >
+                    {submitted
+                      ? "Subscribed"
+                      : submitting
+                        ? "Subscribing…"
+                        : (footer.newsletter.ctaLabel ?? "Subscribe")}
                   </Button>
                 </form>
 

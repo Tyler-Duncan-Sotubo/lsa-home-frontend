@@ -9,6 +9,8 @@ import { Input } from "@/shared/ui/input";
 import Link from "next/link";
 import { SocialIcon } from "./social-icons";
 import CopyrightBar from "./copyright-bar";
+import { storefrontAxios } from "@/shared/api/axios-storefront";
+import { getStoreHostHeader } from "@/shared/api/storefront-headers";
 
 type Props = {
   config: StorefrontConfigV1;
@@ -44,19 +46,20 @@ export function FooterTwo({ config, footer }: Props) {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const res = await storefrontAxios.post(
+        "/api/mail/subscribe",
+        {
           email,
           source: "footer",
-          website: websiteRef.current?.value ?? "", // pass honeypot (optional)
-        }),
-      });
+          website: websiteRef.current?.value ?? "", // optional honeypot
+        },
+        {
+          headers: { ...(await getStoreHostHeader()) },
+        },
+      );
 
-      const json = await res.json().catch(() => null);
-
-      if (!res.ok || !json?.ok) {
+      const json = res.data;
+      if (json?.ok === false) {
         throw new Error(json?.message || "Subscription failed");
       }
 
@@ -64,7 +67,13 @@ export function FooterTwo({ config, footer }: Props) {
       setEmail("");
       toast.success("Thanks for subscribing!");
     } catch (err: any) {
-      toast.error(err?.message ?? "Something went wrong. Please try again.");
+      const msg =
+        err?.response?.data?.message ??
+        err?.response?.data?.error ??
+        err?.message ??
+        "Something went wrong. Please try again.";
+
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -109,8 +118,8 @@ export function FooterTwo({ config, footer }: Props) {
             {submitted
               ? "Subscribed"
               : loading
-              ? "Subscribing..."
-              : footer.newsletter.ctaLabel ?? "Subscribe"}
+                ? "Subscribing..."
+                : (footer.newsletter.ctaLabel ?? "Subscribe")}
           </Button>
         </form>
 

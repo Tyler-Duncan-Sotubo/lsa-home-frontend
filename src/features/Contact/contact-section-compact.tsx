@@ -19,6 +19,8 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import type { ContactSectionV1 } from "@/config/types/contact.types";
+import { storefrontAxios } from "@/shared/api/axios-storefront";
+import { getStoreHostHeader } from "@/shared/api/storefront-headers";
 
 type FieldKey = "name" | "email" | "phone" | "company" | "subject" | "message";
 
@@ -116,7 +118,7 @@ export function ContactSectionCompact({
       setSubmitted(true);
       form.reset(defaultValues(fields) as any);
       toast.success(
-        compact?.form?.successMessage ?? "Thanks — we’ll reach out shortly."
+        compact?.form?.successMessage ?? "Thanks — we’ll reach out shortly.",
       );
       return;
     }
@@ -126,20 +128,24 @@ export function ContactSectionCompact({
         await onSubmitContact(values as Record<string, any>);
       } else {
         // ✅ default: call internal Next API route
-        const res = await fetch("/api/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const res = await storefrontAxios.post(
+          "/api/mail/contact",
+          {
             ...values,
-            subject: (values as any)?.subject ?? "", // ✅ ensure included
+            subject: (values as any)?.subject ?? "",
             website: websiteRef.current?.value ?? "",
-          }),
-        });
+          },
+          {
+            // ✅ critical: matches your shop page pattern
+            headers: { ...(await getStoreHostHeader()) },
+          },
+        );
 
-        const json = await res.json().catch(() => null);
-        if (!res.ok || !json?.ok) {
+        const json = res.data;
+        // if backend returns { ok: true/false }
+        if (json?.ok === false) {
           throw new Error(
-            json?.message ?? "Something went wrong. Please try again."
+            json?.message ?? "Something went wrong. Please try again.",
           );
         }
       }
@@ -148,7 +154,7 @@ export function ContactSectionCompact({
       form.reset(defaultValues(fields) as any);
 
       toast.success(
-        compact?.form?.successMessage ?? "Thanks — we’ll reach out shortly."
+        compact?.form?.successMessage ?? "Thanks — we’ll reach out shortly.",
       );
     } catch (e: any) {
       console.error(e);
@@ -362,8 +368,8 @@ export function ContactSectionCompact({
                     {submitted
                       ? "Sent"
                       : form.formState.isSubmitting
-                      ? "Sending..."
-                      : formCfg?.submitLabel ?? "Send Request"}
+                        ? "Sending..."
+                        : (formCfg?.submitLabel ?? "Send Request")}
                   </Button>
 
                   {formCfg?.privacyNote && (

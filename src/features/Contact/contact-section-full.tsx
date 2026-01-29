@@ -17,7 +17,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-
+import { storefrontAxios } from "@/shared/api/axios-storefront";
+import { getStoreHostHeader } from "@/shared/api/storefront-headers";
 import type { ContactSectionV1 } from "@/config/types/contact.types";
 
 type FieldKey = "name" | "email" | "phone" | "company" | "subject" | "message";
@@ -114,13 +115,12 @@ export function ContactSection({
   async function handleSubmit(values: Values) {
     if (submitted) return;
 
-    // Honeypot: if bot fills hidden field, pretend success
     const website = websiteRef.current?.value?.trim();
     if (website) {
       setSubmitted(true);
       form.reset(defaultValues(fields) as any);
       toast.success(
-        cfg?.form?.successMessage ?? "Thanks — we’ll reach out shortly."
+        cfg?.form?.successMessage ?? "Thanks — we’ll reach out shortly.",
       );
       return;
     }
@@ -129,20 +129,24 @@ export function ContactSection({
       if (onSubmitContact) {
         await onSubmitContact(values as Record<string, any>);
       } else {
-        const res = await fetch("/api/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const res = await storefrontAxios.post(
+          "/api/mail/contact",
+          {
             ...values,
             subject: (values as any)?.subject ?? "",
             website: websiteRef.current?.value ?? "",
-          }),
-        });
+          },
+          {
+            // ✅ critical: matches your shop page pattern
+            headers: { ...(await getStoreHostHeader()) },
+          },
+        );
 
-        const json = await res.json().catch(() => null);
-        if (!res.ok || !json?.ok) {
+        const json = res.data;
+        // if backend returns { ok: true/false }
+        if (json?.ok === false) {
           throw new Error(
-            json?.message ?? "Something went wrong. Please try again."
+            json?.message ?? "Something went wrong. Please try again.",
           );
         }
       }
@@ -151,15 +155,20 @@ export function ContactSection({
       form.reset(defaultValues(fields) as any);
 
       toast.success(
-        cfg?.form?.successMessage ?? "Thanks — we’ll reach out shortly."
+        cfg?.form?.successMessage ?? "Thanks — we’ll reach out shortly.",
       );
     } catch (e: any) {
       console.error(e);
-      toast.error(e?.message ?? "Something went wrong. Please try again.");
-      form.setError("root" as any, {
-        type: "server",
-        message: "Something went wrong. Please try again.",
-      });
+
+      // Axios error message extraction
+      const msg =
+        e?.response?.data?.message ??
+        e?.response?.data?.error ??
+        e?.message ??
+        "Something went wrong. Please try again.";
+
+      toast.error(msg);
+      form.setError("root" as any, { type: "server", message: msg });
     }
   }
 
@@ -459,8 +468,8 @@ export function ContactSection({
               {submitted
                 ? "Sent"
                 : form.formState.isSubmitting
-                ? "Sending..."
-                : formCfg?.submitLabel ?? "Send Message"}
+                  ? "Sending..."
+                  : (formCfg?.submitLabel ?? "Send Message")}
             </Button>
 
             {formCfg?.privacyNote && (

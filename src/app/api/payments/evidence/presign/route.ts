@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   if (!paymentId || !fileName || !mimeType) {
     return NextResponse.json(
       { error: "paymentId, fileName and mimeType are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -23,10 +23,8 @@ export async function POST(req: Request) {
       cache: "no-store",
       headers: { "Content-Type": "application/json" },
       body: { fileName, mimeType },
-    }
+    },
   );
-
-  console.log("Presign response:", data);
 
   return NextResponse.json(data, {
     headers: { "Cache-Control": "no-store" },

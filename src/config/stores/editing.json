@@ -1,0 +1,758 @@
+{
+  "blog": {
+    "seo": {
+      "title": "Blog | Greysteed",
+      "description": "Insights, guides, and ideas on corporate gifting, branded merchandise, and promotional items."
+    },
+    "post": {
+      "ui": {
+        "showShare": true,
+        "showCoverImage": true
+      },
+      "variant": "V2",
+      "version": 1
+    },
+    "version": 1,
+    "sections": [
+      {
+        "type": "blog-list",
+        "title": "Latest Articles",
+        "variant": "featured",
+        "description": "News, insights, and gifting ideas from Greysteed.",
+        "showHeroPost": true,
+        "featuredCount": 1
+      },
+      {
+        "type": "blog-list",
+        "title": "All Posts",
+        "columns": 3,
+        "variant": "grid",
+        "showExcerpt": true
+      }
+    ],
+    "listVariant": "V2"
+  },
+  "home": {
+    "hero": {
+      "image": {
+        "alt": "Corporate gifts hero",
+        "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/greysteed-hero.webp"
+      },
+      "layout": {
+        "align": "center"
+      },
+      "content": {
+        "cta": {
+          "href": "/collections/all-bed",
+          "label": "Explore the Collection"
+        },
+        "heading": "Unique Gifts, Lasting Impressions",
+        "description": "Premium corporate and promotional gifts designed to reflect your brand and create meaningful connections."
+      },
+      "overlay": {
+        "className": "bg-gradient-to-t from-black/60 via-black/45 to-black/30"
+      },
+      "variant": "V2",
+      "bottomStrip": {
+        "text": "Great Pricing with Customizable Options and Timely Delivery ",
+        "enabled": true,
+        "className": "bg-primary text-primary-foreground"
+      }
+    },
+    "contact": {
+      "form": {
+        "fields": ["subject", "name", "email", "company", "phone", "message"],
+        "enabled": true,
+        "privacyNote": "By submitting this form, you agree to be contacted by Greysteed regarding your request.",
+        "submitLabel": "Send Request",
+        "successMessage": "Thanks — we’ll reach out shortly."
+      },
+      "info": {
+        "email": ["info@greysteed.com"],
+        "phone": ["+234 816 529 5314"],
+        "address": "Plot 8, Omorinre Johnson Street, Lekki Phase 1, Lagos"
+      },
+      "type": "contact",
+      "title": "Request a Quote",
+      "layout": {
+        "image": {
+          "alt": "Greysteed corporate gifting essentials",
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b7b-5db5-7afe-89c1-a8298717bdb9-IMG_5189_1.webp"
+        },
+        "variant": "compact"
+      },
+      "subtitle": "Premium corporate & promotional gifts with customization, great pricing, and timely delivery. Tell us what you need and we’ll respond ASAP."
+    },
+    "sections": [
+      {
+        "type": "productCategoryGrid",
+        "items": [
+          {
+            "alt": "Drinkware",
+            "src": "https://greysteed.com/cdn/shop/files/IMG_5244_11083a03-adcb-4358-b776-01f0e9cf1c12.jpg?v=1760478922",
+            "href": "/collections/drinkware"
+          },
+          {
+            "alt": "Notebook and Pens",
+            "src": "https://greysteed.com/cdn/shop/files/IMG_5283_39b9ba13-55a4-4c9f-823e-9ae35eacc216.jpg?v=1760479917",
+            "href": "/collections/notebooks-and-pens"
+          },
+          {
+            "alt": "Bags and Luggage",
+            "src": "https://greysteed.com/cdn/shop/files/IMG_5331_b8c10bac-40c6-476f-afba-4d66291ccd3c.jpg?v=1760482477",
+            "href": "/collections/bags-and-luggage"
+          },
+          {
+            "alt": "Gift Sets",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/IMG_5601-768x549.webp?v=1753913312",
+            "href": "/collections/gift-sets"
+          },
+          {
+            "alt": "Tech and Gadgets",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/IMG_5211.jpg?v=1754089424",
+            "href": "/collections/tech-and-gadgets"
+          },
+          {
+            "alt": "Lifestyle Accessories",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/IMG_5783.jpg?v=1754091005",
+            "href": "/collections/lifestyle-accessories"
+          }
+        ],
+        "title": "Product Categories",
+        "layout": {
+          "columns": 3,
+          "pattern": ["tall", "taller", "short", "short", "short", "tall"],
+          "gapClassName": "gap-4 md:gap-6"
+        },
+        "subtitle": ""
+      },
+      {
+        "type": "featureShowcase",
+        "image": {
+          "alt": "Greysteed hospitality solutions",
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b93-f535-7ac8-ab23-b7cb23b4b1ec-IMG_5204_a7125ac9-ae9d-43d4-aa57-a5d3eb134afb.webp"
+        },
+        "content": {
+          "title": "Why Greysteed?",
+          "bullets": [
+            {
+              "icon": "bolt",
+              "text": "Quick turnaround time"
+            },
+            {
+              "icon": "check",
+              "text": "Cost efficient solutions"
+            },
+            {
+              "icon": "factory",
+              "text": "Partnerships with established factories"
+            },
+            {
+              "icon": "customize",
+              "text": "Customisation possibilities"
+            },
+            {
+              "icon": "oneStop",
+              "text": "One stop source"
+            }
+          ],
+          "subtitle": "Our commitment to excellence sets us apart — with Greysteed, your business stands out."
+        },
+        "enabled": true,
+        "background": {
+          "className": "bg-white"
+        }
+      },
+      {
+        "slug": "round-neck-cotton-t-shirts",
+        "type": "featuredProduct",
+        "title": "Featured",
+        "layout": {
+          "imagePosition": "left",
+          "sectionClassName": "w-[95%] mx-auto py-12"
+        },
+        "enabled": true,
+        "subtitle": "A standout pick from our collection."
+      },
+      {
+        "type": "featureShowcase",
+        "image": {
+          "alt": "Greysteed Corporate Gifting and Procurement",
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b84-244a-70dc-b154-e7d41e74ea96-3pcTowelSetinGiftBox.webp"
+        },
+        "layout": {
+          "align": "left",
+          "heightClass": "h-[85vh]",
+          "imagePosition": "right"
+        },
+        "content": {
+          "cta": {
+            "href": "/about",
+            "label": "Learn More"
+          },
+          "title": "About Greysteed",
+          "paragraphs": [
+            "Greysteed is a leading corporate gift and procurement company dedicated to helping businesses build meaningful relationships and elevate their brand presence. Our extensive range of premium gifts, expert customization options, and streamlined procurement processes ensure seamless execution of your gifting and sourcing needs.",
+            "At Greysteed, we understand the importance of thoughtful gift-giving in business. Our team of experts curates unique, high-quality products that reflect your brand’s values and style. With years of experience in procurement and logistics, we guarantee efficient delivery and exceptional customer service."
+          ]
+        }
+      },
+      {
+        "type": "brandCarousel",
+        "title": "Trusted By Leading Companies",
+        "brands": [
+          {
+            "alt": "Brand 1",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/Screenshot_2025-11-03_231645-removebg-preview.png?v=1762208260",
+            "href": "/"
+          },
+          {
+            "alt": "Brand 2",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/Screenshot_2025-11-03_224432-removebg-preview.png?v=1762206325"
+          },
+          {
+            "alt": "Brand 3",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/Screenshot_2025-11-03_223015-removebg-preview.png?v=1762206039"
+          },
+          {
+            "alt": "Brand 4",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/cropped-RC-Logo.png?v=1760559111"
+          },
+          {
+            "alt": "Brand 5",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/National-Single-Window-System.webp?v=1760563668"
+          },
+          {
+            "alt": "Brand 6",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/transparent-bg-min-1024x648.png.bv_resized_mobile.png.bv.webp?v=1760558899"
+          },
+          {
+            "alt": "Brand 7",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/fbnholdings.png?v=1760558803"
+          },
+          {
+            "alt": "Brand 8",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/Prosperis-Holdings-Logo.png?v=1760558649"
+          },
+          {
+            "alt": "Brand 9",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/United-Capital-logo-websites.png?v=1760558574"
+          },
+          {
+            "alt": "Brand 10",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/NSIA-new-website-logo_2.png?v=1760558407"
+          },
+          {
+            "alt": "Brand 11",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/fmdq-logo.svg?v=1760558313"
+          },
+          {
+            "alt": "Brand 12",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/WIOCC-Official-Logo--1024x346.webp?v=1760558240"
+          },
+          {
+            "alt": "Brand 13",
+            "src": "https://cdn.shopify.com/s/files/1/0711/8818/5243/files/Equinix_logo.png?v=1760558094"
+          }
+        ],
+        "carousel": {
+          "loop": true,
+          "autoplay": true,
+          "intervalMs": 50000,
+          "pauseOnHover": true
+        },
+        "subtitle": "A few of the amazing companies we've worked with"
+      }
+    ]
+  },
+  "about": {
+    "seo": {
+      "title": "About Greysteed | Corporate Gifting & Brand Procurement",
+      "ogImage": {
+        "alt": "About Greysteed",
+        "url": "/images/og-about-greysteed.jpg"
+      },
+      "description": "Learn about Greysteed — a trusted corporate gifting and procurement partner helping businesses create meaningful brand experiences through premium gifts and customization."
+    },
+    "version": 1,
+    "sections": [
+      {
+        "type": "aboutHero",
+        "layout": {
+          "align": "center",
+          "heightClass": "min-h-[55svh]",
+          "maxWidthClassName": "max-w-3xl"
+        },
+        "content": {
+          "cta": {
+            "href": "/shop",
+            "label": "Explore Our Collection"
+          },
+          "title": "Thoughtful Gifting.\nPowerful Brand Experiences.",
+          "eyebrow": "About Us",
+          "description": "Greysteed helps businesses build lasting relationships through premium corporate gifts, expert customization, and seamless procurement."
+        },
+        "enabled": true,
+        "background": {
+          "image": {
+            "alt": "About Greysteed",
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/greysteed-hero.webp",
+            "overlayClassName": "bg-black/45"
+          }
+        }
+      },
+      {
+        "type": "aboutSplit",
+        "image": {
+          "alt": "Greysteed corporate gifting",
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b86-8f86-72fd-a151-a8326f052ce9-IMG_9816.webp"
+        },
+        "layout": {
+          "align": "left",
+          "imagePosition": "left",
+          "backgroundClassName": "bg-background"
+        },
+        "content": {
+          "cta": {
+            "href": "/contact",
+            "label": "Contact Us"
+          },
+          "title": "Who We Are",
+          "paragraphs": [
+            "Greysteed is a leading corporate gift and procurement company dedicated to helping businesses build meaningful relationships and elevate their brand presence. Our extensive range of premium gifts, expert customization options, and streamlined procurement processes ensure seamless execution of your gifting and sourcing needs.",
+            "At Greysteed, we understand the importance of thoughtful gift-giving in business. Our team of experts curates unique, high-quality products that reflect your brand’s values and style. With years of experience in procurement and logistics, we guarantee efficient delivery and exceptional customer service."
+          ]
+        },
+        "enabled": true,
+        "overlay": {
+          "className": "bg-black/10"
+        }
+      },
+      {
+        "type": "aboutSplit",
+        "image": {
+          "alt": "Corporate and promotional gifting",
+          "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5372_c532ac30-bcc9-49ca-a647-3d730cfe3cb4.webp"
+        },
+        "layout": {
+          "align": "left",
+          "imagePosition": "right"
+        },
+        "content": {
+          "title": "What We Do",
+          "subtitle": "Corporate and Promotional Gift Service",
+          "paragraphs": [
+            "We provide customized products or items to businesses that help promote their brand, achieve marketing goals and reward their stakeholders.",
+            "Our corporate gift service is suitable for purposes such as client relationship building, employee recognition, brand promotion and corporate events. These gifts typically reflect the company’s image, values, and branding.",
+            "We also offer promotional gifts that can increase brand visibility, generate leads, and drive sales. These products can be gifted during trade shows, product launches, brand awareness campaigns, event promotions and customer loyalty programs."
+          ]
+        },
+        "enabled": true,
+        "background": {
+          "className": "bg-muted"
+        }
+      },
+      {
+        "type": "aboutValues",
+        "items": [
+          {
+            "icon": "award",
+            "title": "Commitment to Excellence",
+            "description": "Our commitment to excellence differentiates us from the rest. With Greysteed, your company will stand out."
+          },
+          {
+            "icon": "sliders",
+            "title": "Customizable Options",
+            "description": "All our gift options can be tailored to your brand specifications including colours, materials, and packaging — creating a stronger, more personal impact."
+          },
+          {
+            "icon": "clock",
+            "title": "Timely Delivery",
+            "description": "Whether it’s a long-term project or a quick turnaround, our strong supplier partnerships ensure we meet required timelines."
+          },
+          {
+            "icon": "wallet",
+            "title": "Competitive Pricing",
+            "description": "We deliver exceptional value across all budgets by balancing cost, quality, and gifting objectives."
+          }
+        ],
+        "title": "Why Greysteed",
+        "layout": {
+          "align": "center",
+          "columns": 2
+        },
+        "enabled": true,
+        "subtitle": "What sets us apart and makes us the trusted choice for corporate gifting."
+      },
+      {
+        "type": "aboutSplit",
+        "image": {
+          "alt": "Procurement and general supplies",
+          "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5204_a7125ac9-ae9d-43d4-aa57-a5d3eb134afb.webp"
+        },
+        "layout": {
+          "align": "left",
+          "imagePosition": "left"
+        },
+        "content": {
+          "title": "Procurement Solutions and General Supplies",
+          "paragraphs": [
+            "We have over the years developed strategic partnerships with various direct manufacturers around the world, and we are also equipped with vast knowledge of where to source for essential materials, goods, or commodities used across industries.",
+            "We are able to supply products required for daily operations, administrative work, maintenance and repair including stationery, office equipment, cleaning and janitorial supplies, computer hardware and much more.",
+            "With our procurement solutions, we help companies streamline their purchasing process by sourcing products that match exact specifications while ensuring consistent quality."
+          ]
+        },
+        "enabled": true,
+        "background": {
+          "className": "bg-muted"
+        }
+      },
+      {
+        "type": "aboutSuppliesScroller",
+        "items": [
+          {
+            "alt": "Project 1",
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5372_c532ac30-bcc9-49ca-a647-3d730cfe3cb4.webp"
+          },
+          {
+            "alt": "Project 2",
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5636_5fe4aab5-d56a-4a13-85da-ab327f764640.webp"
+          },
+          {
+            "alt": "Project 3",
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5642_6d51a8d1-8741-4543-af14-feef1d09f9df.webp"
+          },
+          {
+            "alt": "Project 4",
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/IMG_5783_de80bc4f-5d97-4ac5-9264-b7032e506d6a.webp"
+          }
+        ],
+        "layout": {
+          "gapClassName": "gap-4 md:gap-5",
+          "cardWidthClassName": "w-[240px] md:w-[300px]",
+          "backgroundClassName": "bg-white"
+        },
+        "content": {
+          "cta": {
+            "href": "/contact",
+            "label": "Request a Quote"
+          },
+          "title": "Some Of Our Work",
+          "paragraphs": [
+            "A glimpse into a few gift sets and branded items we’ve delivered for businesses across different industries.",
+            "Every project is tailored — from product selection and packaging to branding and delivery — ensuring a premium experience from start to finish."
+          ]
+        },
+        "enabled": true,
+        "carousel": {
+          "variant": "snap",
+          "autoplay": false,
+          "pauseOnHover": true
+        }
+      }
+    ]
+  },
+  "account": {
+    "pages": {
+      "login": {
+        "ui": {
+          "content": {
+            "header": {
+              "eyebrow": "Welcome back",
+              "heading": "Sign in to your account",
+              "description": "Manage your quote requests, saved items and updates in one place."
+            },
+            "marketing": {
+              "badge": "Greysteed Members",
+              "media": {
+                "image": {
+                  "alt": "Greysteed corporate gifting",
+                  "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b84-244a-70dc-b154-e7d41e74ea96-3pcTowelSetinGiftBox.webp"
+                }
+              },
+              "bullets": [
+                {
+                  "title": "Save items for later",
+                  "description": "Build a wishlist of gift ideas and revisit anytime."
+                },
+                {
+                  "title": "Track quote requests",
+                  "description": "Keep all your quote conversations and updates in one place."
+                },
+                {
+                  "title": "Faster checkout flow",
+                  "description": "Speed up future purchases with saved details."
+                }
+              ],
+              "heading": "A faster way to gift.",
+              "footerNote": "Trusted by leading teams across Nigeria for corporate gifting and procurement.",
+              "description": "Save favourites, track quote requests, and enjoy a smoother experience across devices."
+            }
+          },
+          "variant": "V2"
+        },
+        "seo": {
+          "title": "Sign in | Greysteed",
+          "description": "Sign in to your Greysteed account to manage quote requests, saved items and updates."
+        },
+        "version": 1
+      },
+      "account": {
+        "ui": {
+          "nav": [
+            {
+              "href": "/account",
+              "label": "Dashboard"
+            },
+            {
+              "href": "/account/orders",
+              "label": "My orders"
+            },
+            {
+              "href": "/account/products",
+              "label": "My products"
+            },
+            {
+              "href": "/account/credits",
+              "label": "My credits"
+            },
+            {
+              "href": "/account/information",
+              "label": "My information"
+            },
+            {
+              "href": "/account/addresses",
+              "label": "Address Book"
+            },
+            {
+              "label": "Log Out",
+              "action": "logout"
+            }
+          ],
+          "variant": "V1",
+          "userLabel": "My space",
+          "greetingLines": ["Hello, how", "are you?"]
+        },
+        "seo": {
+          "title": "My Account"
+        },
+        "version": 1
+      },
+      "register": {
+        "ui": {
+          "content": {
+            "header": {
+              "eyebrow": "New here?",
+              "heading": "Create your Greysteed account",
+              "description": "Join in seconds to save items and manage your quote requests."
+            },
+            "marketing": {
+              "badge": "Get started",
+              "media": {
+                "image": {
+                  "alt": "Greysteed corporate gifting",
+                  "src": "https://centa-hr.s3.amazonaws.com/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/living-greysteed.webp"
+                }
+              },
+              "bullets": [
+                {
+                  "title": "Wishlist your favourites",
+                  "description": "Save gift ideas and come back when you’re ready."
+                },
+                {
+                  "title": "Quick quote requests",
+                  "description": "Submit quote requests with fewer steps."
+                }
+              ],
+              "heading": "Build your shortlist.",
+              "footerNote": "Greysteed — premium corporate gifts & promotional items.",
+              "description": "Save products, request quotes faster, and keep everything organised for your team."
+            }
+          },
+          "variant": "V2"
+        },
+        "seo": {
+          "title": "Create account | Greysteed",
+          "description": "Create a Greysteed account to save favourites and manage your quote requests."
+        },
+        "version": 1
+      }
+    },
+    "version": 1
+  },
+  "contact": {
+    "seo": {
+      "title": "Contact Greysteed | Request a Quote for Corporate Gifts",
+      "ogImage": {
+        "alt": "Contact Greysteed",
+        "url": "/images/og-contact-greysteed.jpg"
+      },
+      "description": "Get in touch with Greysteed for corporate gifts, promotional items, branded merchandise and custom gifting. Request a quote, ask about customization, or speak to our team."
+    },
+    "version": 1,
+    "sections": [
+      {
+        "type": "Hero",
+        "layout": {
+          "align": "center",
+          "textAlign": "center",
+          "heightClass": "min-h-[55svh]",
+          "maxWidthClassName": "max-w-3xl"
+        },
+        "content": {
+          "cta": {
+            "href": "#contact",
+            "label": "Request a Quote"
+          },
+          "title": "Let’s Bring Your Brand\nTo Life.",
+          "eyebrow": "Contact Us",
+          "description": "Request a quote, ask about customization, or speak to our team about corporate gifts and branded promotional items."
+        },
+        "enabled": true,
+        "background": {
+          "image": {
+            "alt": "Greysteed Contact",
+            "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b88-f324-75d4-909b-ed2a4164d59a-IMG_5244_11083a03-adcb-4358-b776-01f0e9cf1c12.jpg",
+            "overlayClassName": "bg-black/45"
+          }
+        }
+      },
+      {
+        "form": {
+          "fields": ["name", "email", "phone", "company", "message", "subject"],
+          "enabled": true,
+          "privacyNote": "We’ll never share your email.",
+          "submitLabel": "Send Message",
+          "successMessage": "Thanks — we’ll reach out shortly."
+        },
+        "info": {
+          "email": ["info@greysteed.com"],
+          "phone": ["+234 816 529 5314"],
+          "social": [
+            {
+              "href": "https://www.instagram.com/greysteedng/",
+              "handle": "@greysteedng",
+              "platform": "instagram"
+            }
+          ],
+          "locations": [
+            {
+              "label": "LAGOS",
+              "address": "Plot 8, Omorinre Johnson Street, Lekki Phase 1, Lagos"
+            }
+          ]
+        },
+        "type": "contact",
+        "title": "Contact Details",
+        "layout": {
+          "map": {
+            "title": "Greysteed (Lekki Phase 1)",
+            "enabled": true,
+            "embedUrl": "https://www.google.com/maps?q=Plot%208%20Omorinre%20Johnson%20Street%20Lekki%20Phase%201%20Lagos&output=embed",
+            "heightClassName": "h-[360px]"
+          },
+          "formRow": {
+            "enabled": true,
+            "containerClassName": "max-w-3xl"
+          },
+          "variant": "stacked",
+          "bottomGrid": {
+            "order": ["details", "map"],
+            "columns": 2,
+            "gapClassName": "gap-10"
+          }
+        },
+        "enabled": true,
+        "subtitle": "Send us a message and we’ll respond shortly."
+      }
+    ]
+  },
+  "catalogue": {
+    "seo": {
+      "title": "2026 Gifting Catalog | Greysteed",
+      "description": "Explore Greysteed’s 2026 Gifting Catalog — premium corporate gifting, branded options, and curated gift sets for meaningful impressions."
+    },
+    "version": 1,
+    "sections": [
+      {
+        "card": {
+          "cta": {
+            "href": "/contact",
+            "label": "Contact Us"
+          },
+          "title": "Exceptional gifting solutions tailored for businesses and organizations.",
+          "eyebrow": "2026 GIFTING CATALOG",
+          "className": "bg-white/95",
+          "description": "At Greysteed, we specialize in creating exceptional gifting solutions tailored to meet the unique needs of businesses and organizations."
+        },
+        "type": "heroCard",
+        "layout": {
+          "textAlign": "left",
+          "heightClass": "min-h-[60svh]",
+          "cardPosition": "bottomRight",
+          "maxWidthClassName": "max-w-2xl",
+          "cardPaddingClassName": "p-6 md:p-10"
+        },
+        "enabled": true,
+        "background": {
+          "image": {
+            "alt": "Greysteed 2026 Gifting Catalog",
+            "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/greysteed-hero.webp"
+          },
+          "overlayClassName": "bg-black/45"
+        }
+      },
+      {
+        "type": "aboutSplit",
+        "image": {
+          "alt": "Greysteed gifting",
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/stores/019bbc24-416b-7c16-b655-c69e20f85115/media/files/tmp/019c0b8c-6cbe-70f6-af41-de4865f41e2a-IMG_9864.webp"
+        },
+        "layout": {
+          "align": "left",
+          "imagePosition": "left",
+          "backgroundClassName": "bg-background"
+        },
+        "content": {
+          "cta": {
+            "href": "/catalogue.pdf",
+            "label": "Download Catalog"
+          },
+          "title": "Make it More Meaningful",
+          "paragraphs": [
+            "Gifts are better appreciated when they are thoughtful, functional and stylish. This holiday season, we have curated gifts that create memorable impressions and appreciation.",
+            "All items have been produced with premium materials and expert craftsmanship with possibilities of branding for personalization.",
+            "This year, we have themed our gift selections into different categories but items can be mixed and matched according to individual preferences and budget.",
+            "Gift items will be packaged in leather boxes, branded paper boxes, or wrapped elegantly."
+          ]
+        },
+        "enabled": true
+      }
+    ]
+  },
+  "collections": {
+    "ui": {
+      "exploreMoreColumns": 3,
+      "afterContentExpandable": true,
+      "afterContentCollapsedHeightPx": 300
+    },
+    "seo": {
+      "title": "Collections | Greysteed",
+      "collections": {},
+      "description": "Explore Greysteed’s curated collections of corporate gifts, branded merchandise, and promotional items."
+    },
+    "version": 1,
+    "defaults": {
+      "templates": {
+        "descriptions": {
+          "general": "Explore our {{categoryName}} collection — curated corporate gifts and branded essentials designed to make lasting impressions."
+        },
+        "afterContentHtml": {
+          "general": "<h2>Shop {{categoryName}}</h2><p>Discover our {{categoryName}} collection at {{storeName}} — curated corporate gifts and promotional items built for quality, presentation, and impact. Whether you’re gifting clients, rewarding teams, or creating event-ready merchandise, you’ll find options that align with your brand and budget. <strong>Expert tip:</strong> Add custom branding to create a cohesive, premium experience and strengthen recall.</p>"
+        }
+      },
+      "description": "{{templates.descriptions.general}}",
+      "afterContentHtml": "{{templates.afterContentHtml.general}}"
+    }
+  }
+}

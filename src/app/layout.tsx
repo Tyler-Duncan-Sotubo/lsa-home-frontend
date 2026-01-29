@@ -46,7 +46,6 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${montserrat.variable} ${dosis.variable} antialiased`}>
         <ThemeProvider theme={config.theme} />
-        <ScrollToTop />
 
         <AuthProvider>
           <AppProviders>
@@ -63,6 +62,7 @@ export default async function RootLayout({
 
               <Suspense fallback={<div>Loading...</div>}>
                 <main className="min-h-dvh md:pb-0">
+                  <ScrollToTop />
                   {isSystemPage ? (
                     <SystemPageClient config={config} />
                   ) : (

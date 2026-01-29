@@ -38,50 +38,48 @@ export function BlogListOne({
       {/* Top editorial row */}
       <section className="grid gap-6 lg:grid-cols-3">
         {/* Featured */}
-        <SectionReveal className="lg:col-span-2" y={14}>
-          <RevealFromSide direction="left" distance={22}>
-            <article className="overflow-hidden">
-              <Link href={`${basePath}/${featured.slug}`} className="block">
-                <div className="relative aspect-video w-full">
-                  {featured.coverImageUrl ? (
-                    <Image
-                      src={featured.coverImageUrl}
-                      alt={featured.title}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 1024px) 66vw, 100vw"
-                      priority
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-muted" />
-                  )}
+        <RevealFromSide direction="left" distance={22}>
+          <article className="overflow-hidden">
+            <Link href={`${basePath}/${featured.slug}`} className="block">
+              <div className="relative aspect-video w-full">
+                {featured.coverImageUrl ? (
+                  <Image
+                    src={featured.coverImageUrl}
+                    alt={featured.title}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 66vw, 100vw"
+                    priority
+                  />
+                ) : (
+                  <div className="h-full w-full bg-muted" />
+                )}
+              </div>
+
+              <div className="py-4">
+                <div className="text-xs font-medium text-muted-foreground">
+                  {featured.publishedAt
+                    ? fmtDate(featured.publishedAt, "MMMM dd, yyyy")
+                    : ""}
                 </div>
 
-                <div className="py-4">
-                  <div className="text-xs font-medium text-muted-foreground">
-                    {featured.publishedAt
-                      ? fmtDate(featured.publishedAt, "MMMM dd, yyyy")
-                      : ""}
-                  </div>
+                <h2 className="mt-2 text-2xl md:text-3xl font-heading font-semibold tracking-tight line-clamp-2">
+                  {featured.title}
+                </h2>
 
-                  <h2 className="mt-2 text-2xl md:text-3xl font-heading font-semibold tracking-tight line-clamp-2">
-                    {featured.title}
-                  </h2>
+                {featured.excerpt ? (
+                  <p className="mt-3 text-muted-foreground line-clamp-3">
+                    {featured.excerpt}
+                  </p>
+                ) : null}
 
-                  {featured.excerpt ? (
-                    <p className="mt-3 text-muted-foreground line-clamp-3">
-                      {featured.excerpt}
-                    </p>
-                  ) : null}
-
-                  <div className="mt-5 inline-flex items-center text-sm font-semibold underline underline-offset-4">
-                    Read article
-                  </div>
+                <div className="mt-5 inline-flex items-center text-sm font-semibold underline underline-offset-4">
+                  Read article
                 </div>
-              </Link>
-            </article>
-          </RevealFromSide>
-        </SectionReveal>
+              </div>
+            </Link>
+          </article>
+        </RevealFromSide>
 
         {/* Right column: next 2 stacked */}
         <Stagger

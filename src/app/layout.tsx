@@ -44,13 +44,14 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} ${dosis.variable} antialiased`}>
+      <body
+        className={`${montserrat.variable} ${dosis.variable} antialiased min-h-dvh flex flex-col`}
+      >
         <ThemeProvider theme={config.theme} />
 
         <AuthProvider>
           <AppProviders>
             <QueryProvider>
-              {/* You can decide if you want analytics on system pages */}
               {!isSystemPage && <AnalyticsTagLoader />}
               {!isSystemPage && (
                 <AnalyticsScripts integrations={integrations} />
@@ -61,7 +62,7 @@ export default async function RootLayout({
               <RuntimeConfigHydrator config={config} />
 
               <Suspense fallback={<div>Loading...</div>}>
-                <main className="min-h-dvh md:pb-0">
+                <main className="flex-1">
                   <ScrollToTop />
                   {isSystemPage ? (
                     <SystemPageClient config={config} />

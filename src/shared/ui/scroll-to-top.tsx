@@ -1,16 +1,16 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useSelectedLayoutSegments } from "next/navigation";
 
-const ScrollToTop = () => {
-  const pathname = usePathname();
+export default function ScrollToTop() {
+  const segments = useSelectedLayoutSegments();
+  const segmentsPath = segments.join("/");
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]); // Runs on every route change
+    // scroll instantly
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [segmentsPath]);
 
   return null;
-};
-
-export default ScrollToTop;
+}

@@ -143,6 +143,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    overscroll-behavior-y: none; /* stops pull-to-refresh on most modern browsers */
   }
 
   input,

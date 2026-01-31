@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Suspense } from "react";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { Metadata } from "next";
@@ -6,6 +7,7 @@ import { getBaseUrl } from "@/shared/seo/baseurl";
 import { listCollectionProducts } from "@/features/Collections/actions/get-collections";
 import { CollectionPageClient } from "@/features/Collections/ui/collection-page-client";
 import { notFound } from "next/navigation";
+import { CollectionPageSkeleton } from "@/features/skeletons/collection-page.skeleton";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -90,8 +92,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function CollectionPage({ params }: PageProps) {
-  const { slug } = await params;
+// ✅ child server component that suspends
+async function CollectionPageContent({ slug }: { slug: string }) {
   const { config, data } = await loadCollectionPage(slug);
 
   if (!data?.category) return notFound();
@@ -102,5 +104,15 @@ export default async function CollectionPage({ params }: PageProps) {
       products={data.products}
       collectionsConfig={config.pages?.collections} // keep for UI-only (optional)
     />
+  );
+}
+
+export default async function CollectionPage({ params }: PageProps) {
+  const { slug } = await params;
+
+  return (
+    <Suspense fallback={<CollectionPageSkeleton showSidebar={false} />}>
+      <CollectionPageContent slug={slug} />
+    </Suspense>
   );
 }

@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { listStorefrontCategories } from "@/features/Collections/actions/get-collections";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { getBaseUrl } from "@/shared/seo/baseurl";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import CollectionsGridClient from "@/features/Collections/ui/collections-grid.client";
+import { CollectionsGridSkeleton } from "@/features/skeletons/ index";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();
@@ -25,8 +27,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function CollectionsPage() {
+async function CollectionsGrid() {
   const categories = await listStorefrontCategories();
-
   return <CollectionsGridClient categories={categories} />;
+}
+
+export default function CollectionsPage() {
+  return (
+    <Suspense fallback={<CollectionsGridSkeleton count={12} />}>
+      <CollectionsGrid />
+    </Suspense>
+  );
 }

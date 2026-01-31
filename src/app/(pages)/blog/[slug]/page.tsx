@@ -6,11 +6,12 @@ import { getStorefrontConfig as _getStorefrontConfig } from "@/config/runtime/ge
 import { BlogPostRenderer } from "@/features/Blog/ui/blogpost/blog-post-renderer";
 import { getRelatedBlogPosts } from "@/features/Blog/actions/related";
 import { RelatedPosts } from "@/features/Blog/ui/related-posts";
+import { buildMetadata } from "@/shared/seo/build-metadata";
 
 // ✅ cache to avoid double hits from generateMetadata + page
 const getStorefrontConfig = cache(async () => _getStorefrontConfig());
 const getBlogPostBySlugPublic = cache(async (slug: string) =>
-  _getBlogPostBySlugPublic(slug)
+  _getBlogPostBySlugPublic(slug),
 );
 
 function stripHtml(input: string) {
@@ -23,59 +24,35 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-
   const [config, post] = await Promise.all([
     getStorefrontConfig(),
     getBlogPostBySlugPublic(slug),
   ]);
 
-  const siteName = config.seo?.siteName || config.store?.name || "Storefront";
+  const base = buildMetadata({
+    globalSeo: config.seo,
+    pageSeo: post
+      ? {
+          title: post.seoTitle || post.title,
+          description:
+            post.seoDescription ||
+            (post.excerpt ? stripHtml(post.excerpt).slice(0, 155) : ""),
+        }
+      : {
+          title: `Post not found | ${config.seo?.siteName || config.store?.name || "Storefront"}`,
+          description: "The requested post could not be found.",
+        },
+  });
 
-  const canonicalBaseUrl =
-    config.seo?.canonicalBaseUrl || process.env.NEXT_PUBLIC_SITE_URL || "";
-
-  const requestedUrl = canonicalBaseUrl
-    ? `${canonicalBaseUrl}/blog/${encodeURIComponent(slug)}`
-    : `/blog/${encodeURIComponent(slug)}`;
-
-  if (!post) {
-    return {
-      title: `Post not found | ${siteName}`,
-      description: "The requested post could not be found.",
-      alternates: { canonical: requestedUrl },
-      robots: { index: false, follow: false },
-      openGraph: {
-        title: `Post not found | ${siteName}`,
-        description: "The requested post could not be found.",
-        url: requestedUrl,
-        siteName,
-        type: "website",
-      },
-    };
-  }
-
-  const title = post.seoTitle || post.title;
-
-  const description =
-    post.seoDescription ||
-    (post.excerpt ? stripHtml(post.excerpt).slice(0, 155) : "");
-
-  const canonicalUrl = canonicalBaseUrl
-    ? `${canonicalBaseUrl}/blog/${post.slug}`
-    : `/blog/${post.slug}`;
-
+  // Add your canonical + OG/article bits here as needed
   return {
-    title,
-    description,
-    alternates: { canonical: canonicalUrl },
+    ...base,
+    alternates: { canonical: /* your canonicalUrl */ undefined },
     openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName,
-      type: "article",
-      publishedTime: post.publishedAt ?? undefined,
-      images: post.coverImageUrl
+      ...base.openGraph,
+      type: post ? "article" : "website",
+      publishedTime: post?.publishedAt ?? undefined,
+      images: post?.coverImageUrl
         ? [
             {
               url: post.coverImageUrl,
@@ -84,13 +61,12 @@ export async function generateMetadata({
               alt: post.title,
             },
           ]
-        : [],
+        : base.openGraph?.images,
     },
     twitter: {
+      ...base.twitter,
       card: "summary_large_image",
-      title,
-      description,
-      images: post.coverImageUrl ? [post.coverImageUrl] : [],
+      images: post?.coverImageUrl ? [post.coverImageUrl] : base.twitter?.images,
     },
   };
 }

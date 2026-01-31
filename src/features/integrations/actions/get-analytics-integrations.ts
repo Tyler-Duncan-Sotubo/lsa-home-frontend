@@ -8,7 +8,7 @@ export async function getStorefrontAnalyticsIntegrations() {
     "/api/integrations/analytics/storefront",
     {
       revalidate: 300,
-    }
+    },
   );
 
   if (!res.ok) return [];

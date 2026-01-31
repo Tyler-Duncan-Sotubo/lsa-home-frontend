@@ -1,13 +1,5 @@
-import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
-import LoadingComp from "@/shared/ui/loading/loading";
+import { ProductPageSkeleton } from "@/features/skeletons/product-page.skeleton";
 
-export default async function Loading() {
-  const config = await getStorefrontConfig();
-
-  return (
-    <LoadingComp
-      logoUrl={config.theme?.assets?.logoUrl}
-      storeName={config.store?.name}
-    />
-  );
+export default function Loading() {
+  return <ProductPageSkeleton />;
 }

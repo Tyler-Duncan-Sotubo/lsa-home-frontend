@@ -61,7 +61,13 @@ export default async function RootLayout({
               {!isSystemPage && <HeaderComposition config={config} />}
               <RuntimeConfigHydrator config={config} />
 
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense
+                fallback={
+                  <main className="flex-1 min-h-[60vh] flex items-center justify-center">
+                    Loading...
+                  </main>
+                }
+              >
                 <main className="flex-1">
                   <ScrollToTop />
                   {isSystemPage ? (

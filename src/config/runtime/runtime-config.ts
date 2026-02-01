@@ -22,7 +22,7 @@ export type StorefrontConfigResult =
 export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigResult> {
   const res = await storefrontFetchSafe<StorefrontConfigV1>(
     "/api/storefront-config/config",
-    { method: "GET", tags: ["storefront-config"] }
+    { method: "GET", tags: ["storefront-config"], revalidate: 21600 },
   );
   if (!res.ok) {
     const err = res.error as any;
@@ -32,10 +32,10 @@ export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigRes
       (res.statusCode === 400
         ? StorefrontConfigErrorCode.DOMAIN_NOT_FOUND
         : res.statusCode === 404
-        ? StorefrontConfigErrorCode.THEME_NOT_READY
-        : res.statusCode === 400
-        ? StorefrontConfigErrorCode.LOCALHOST_BLOCKED
-        : StorefrontConfigErrorCode.UNKNOWN);
+          ? StorefrontConfigErrorCode.THEME_NOT_READY
+          : res.statusCode === 400
+            ? StorefrontConfigErrorCode.LOCALHOST_BLOCKED
+            : StorefrontConfigErrorCode.UNKNOWN);
 
     return {
       ok: false,

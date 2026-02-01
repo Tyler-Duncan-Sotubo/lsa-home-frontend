@@ -25,7 +25,7 @@ export default function PromoBanner({ slides, autoplay }: Props) {
     return (
       <div className="w-full bg-primary text-secondary overflow-hidden">
         <div className="relative mx-auto max-w-[60%]">
-          <div className="flex h-10 items-center justify-center px-4 text-center text-xs md:text-[12px] font-semibold tracking-wide">
+          <div className="flex h-10 items-center justify-center px-4 text-center text-[10px] md:text-[12px] font-semibold tracking-wide">
             <span>{s.text}</span>
             {s.link && (
               <a href={s.link.href} className="ml-2 underline hover:opacity-80">

@@ -10,10 +10,6 @@ export async function getProductBySlugWithVariations(slug: string) {
   );
 
   if (!res.ok) {
-    console.error("getProductBySlugWithVariations failed", {
-      statusCode: res.statusCode,
-      error: res.error,
-    });
     return null; // ✅ better than []
   }
 

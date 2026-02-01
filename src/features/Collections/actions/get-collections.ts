@@ -21,7 +21,7 @@ export async function listCollectionProducts(
     search?: string;
     includeChildren?: boolean;
     attr?: Record<string, string | string[]>;
-  }
+  },
 ) {
   const perPage = opts?.perPage ?? 24;
   const page = opts?.page ?? 1;
@@ -43,7 +43,7 @@ export async function listCollectionProducts(
 
   const res = await storefrontFetchSafe<CollectionResponse>(
     `/api/catalog/products/storefront/collections/${slug}?${qs.toString()}`,
-    { tags: [`collection:${slug}`] }
+    { tags: [`collection:${slug}`] },
   );
 
   if (!res.ok) {
@@ -92,7 +92,7 @@ export async function getCollectionProductsGroupedBySlug(
     search?: string;
     includeChildren?: boolean;
     attr?: Record<string, string | string[]>;
-  }
+  },
 ) {
   const perPage = opts?.perPage ?? 24;
   const page = opts?.page ?? 1;
@@ -114,7 +114,7 @@ export async function getCollectionProductsGroupedBySlug(
 
   const res = await storefrontFetchSafe<StorefrontCollectionsHubResponse>(
     `/api/catalog/products/storefront/collections/${slug}/grouped?${qs.toString()}`,
-    { tags: [`collection-grouped:${slug}`] }
+    { tags: [`collection-grouped:${slug}`] },
   );
 
   if (!res.ok) {

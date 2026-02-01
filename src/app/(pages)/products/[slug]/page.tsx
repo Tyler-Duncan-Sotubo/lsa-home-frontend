@@ -9,12 +9,13 @@ import {
   getProductBySlugWithVariations as _getProductBySlugWithVariations,
   listProducts,
 } from "@/features/Products/actions/products";
-import { getBaseUrl } from "@/shared/seo/baseurl";
+
 import { getProductReviews } from "@/features/reviews/actions/get-product-reviews";
 import { productToSeo } from "@/shared/seo/product-to-seo";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { getStorefrontConfig as _getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { HydrationLoading } from "@/shared/ui/hydration-loading";
+import { getRequestBaseUrl } from "@/shared/seo/get-request-base-url";
 
 // ✅ Memoize to avoid double DB hit from generateMetadata + page render
 const getProductBySlugWithVariations = cache(async (slug: string) => {
@@ -52,7 +53,7 @@ export async function generateMetadata({
     pageSeo,
   });
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getRequestBaseUrl();
   const canonical = baseUrl
     ? `${baseUrl}/products/${product.slug}`
     : `/products/${product.slug}`;
@@ -93,7 +94,7 @@ export default async function ProductPage({
       : Promise.resolve([]),
   ]);
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getRequestBaseUrl();
   const productUrl = baseUrl
     ? `${baseUrl}/products/${product.slug}`
     : `/products/${product.slug}`;

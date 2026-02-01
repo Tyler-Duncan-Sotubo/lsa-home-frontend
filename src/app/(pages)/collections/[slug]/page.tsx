@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { Metadata } from "next";
-import { getBaseUrl } from "@/shared/seo/baseurl";
+import { getRequestBaseUrl } from "@/shared/seo/get-request-base-url";
 import { listCollectionProducts } from "@/features/Collections/actions/get-collections";
 import { CollectionPageClient } from "@/features/Collections/ui/collection-page-client";
 import { notFound } from "next/navigation";
@@ -45,12 +45,11 @@ export async function generateMetadata({
   const hubTitle = titleFromSlug(slug);
   const storeName = config.store?.name ?? "Store";
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getRequestBaseUrl();
   const canonical = baseUrl
     ? `${baseUrl}/collections/hubs/${encodeURIComponent(slug)}`
     : `/collections/hubs/${encodeURIComponent(slug)}`;
 
-  // If hub not found, noindex it
   if (!data) {
     return {
       title: `${hubTitle} | ${storeName}`,
@@ -61,24 +60,15 @@ export async function generateMetadata({
 
   const category = data.category as any | undefined;
 
-  // ✅ SEO now comes from API category
-  const metaTitle: string | undefined = category?.metaTitle ?? undefined;
-  const metaDescription: string | undefined =
-    category?.metaDescription ?? undefined;
-
-  const ogFallback =
-    category?.imageUrl ??
-    data.products?.[0]?.images?.[0]?.src ??
-    config.seo?.ogImage?.url ??
-    undefined;
-
   const pageSeo = {
-    title: metaTitle ?? `${hubTitle} | ${storeName}`,
+    title: category?.metaTitle ?? `${hubTitle} | ${storeName}`,
     description:
-      metaDescription ??
+      category?.metaDescription ??
       category?.description ??
       `Explore our full ${hubTitle.toLowerCase()} collection at ${storeName}.`,
-    ogImage: ogFallback ? { url: ogFallback, alt: hubTitle } : undefined,
+    ogImage: category?.imageUrl
+      ? { url: category.imageUrl, alt: hubTitle }
+      : undefined,
   };
 
   const base = buildMetadata({

@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { listProducts } from "@/features/Products/actions/products";
 import { ShopPageClient } from "@/features/Shop/ui/shop-page-client";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
-import { getBaseUrl } from "@/shared/seo/baseurl";
 import { buildMetadata } from "@/shared/seo/build-metadata";
+import { getRequestBaseUrl } from "@/shared/seo/get-request-base-url";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();
   const storeName = config.store?.name ?? "Store";
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getRequestBaseUrl();
   const canonical = baseUrl ? `${baseUrl}/shop` : "/shop";
 
   return {

@@ -43,7 +43,7 @@ export function CollectionPageClient({
 
   const filteredProducts = useMemo(
     () => applyCollectionFilters(products, filters),
-    [products, filters]
+    [products, filters],
   );
 
   const slug = (category?.slug ?? "").toLowerCase();
@@ -60,7 +60,7 @@ export function CollectionPageClient({
       { label: "Home", href: "/" },
       { label: category?.name ?? "Collection" },
     ],
-    [category?.name]
+    [category?.name],
   );
 
   const jsonLdDescription =
@@ -90,13 +90,13 @@ export function CollectionPageClient({
         />
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <h1 className="text-4xl font-semibold text-primary">
+          <h1 className="md:text-4xl text-lg font-semibold text-primary">
             {category?.name}
           </h1>
 
           {description ? (
             <div className="md:w-1/2">
-              <p className="text-primary text-base font-medium">
+              <p className="text-primary md:text-base text-xs font-medium">
                 {description}
               </p>
             </div>
@@ -121,7 +121,7 @@ export function CollectionPageClient({
         <div>
           <ProductRail
             products={filteredProducts}
-            sectionClassName="w-full py-4"
+            sectionClassName="w-full"
             layout="wrap"
           />
         </div>

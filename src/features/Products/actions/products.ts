@@ -6,7 +6,7 @@ import { storefrontFetchSafe } from "@/shared/api/fetch";
 export async function getProductBySlugWithVariations(slug: string) {
   const res = await storefrontFetchSafe<WooProduct>(
     `/api/catalog/products/storefront/${slug}`,
-    { tags: [`product:${slug}`, `product:${slug}:reviews`] }
+    { tags: [`product:${slug}`, `product:${slug}:reviews`] },
   );
 
   if (!res.ok) {
@@ -35,7 +35,7 @@ export async function listProducts(params?: {
 
   const res = await storefrontFetchSafe<WooProduct[]>(
     `/api/catalog/products/storefront?${qs.toString()}`,
-    { revalidate: 60, tags: ["products"] }
+    { revalidate: 60, tags: ["products"] },
   );
 
   if (!res.ok) {

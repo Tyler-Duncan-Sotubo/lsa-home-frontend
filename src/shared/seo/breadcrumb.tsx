@@ -13,7 +13,7 @@ interface BreadcrumbProps {
 
 export function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <nav aria-label="Breadcrumb" className="text-sm mb-4 capitalize">
+    <nav aria-label="Breadcrumb" className="text-xs mb-4 capitalize">
       <ol className="flex items-center flex-wrap gap-1 text-muted-foreground">
         {items.map((item, i) => {
           const isLast = i === items.length - 1;

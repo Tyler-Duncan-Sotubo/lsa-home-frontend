@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { buildMetadata } from "@/shared/seo/build-metadata";
-import { getBaseUrl } from "@/shared/seo/baseurl";
 import { getCollectionProductsGroupedBySlug } from "@/features/Collections/actions/get-collections";
 import { CollectionsHubPageClient } from "@/features/Collections/ui/collections-hub-page-client";
+import { getRequestBaseUrl } from "@/shared/seo/get-request-base-url";
 
 export async function generateMetadata({
   params,
@@ -25,7 +25,7 @@ export async function generateMetadata({
 
   const storeName = config.store?.name ?? "Store";
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getRequestBaseUrl();
   const canonical = baseUrl
     ? `${baseUrl}/collections/hubs/${encodeURIComponent(slug)}`
     : `/collections/hubs/${encodeURIComponent(slug)}`;

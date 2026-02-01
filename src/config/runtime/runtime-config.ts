@@ -22,7 +22,7 @@ export type StorefrontConfigResult =
 export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigResult> {
   const res = await storefrontFetchSafe<StorefrontConfigV1>(
     "/api/storefront-config/config",
-    { method: "GET", tags: ["storefront-config"], revalidate: 21600 },
+    { method: "GET", tags: ["storefront-config"], revalidate: 604800 },
   );
   if (!res.ok) {
     const err = res.error as any;

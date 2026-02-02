@@ -59,7 +59,7 @@ export function SiteHeader({ config }: Props) {
 
             <Link href="/" className="hidden md:flex items-center">
               {logoUrl ? (
-                <div className="relative h-16 w-26">
+                <div className="relative h-10 w-20">
                   <Image
                     src={logoUrl}
                     alt={storeName}
@@ -78,7 +78,7 @@ export function SiteHeader({ config }: Props) {
           <div className="flex justify-center">
             <Link href="/" className="flex md:hidden items-center">
               {logoUrl ? (
-                <div className="relative h-16 w-22">
+                <div className="relative h-10 w-20">
                   <Image
                     src={logoUrl}
                     alt={storeName}
@@ -130,7 +130,7 @@ export function SiteHeader({ config }: Props) {
  */
 function emphasizesAlwaysShowOrAllowed(
   item: { label: string; href: string },
-  ui?: { blog?: boolean; about?: boolean; contact?: boolean }
+  ui?: { blog?: boolean; about?: boolean; contact?: boolean },
 ) {
   const label = (item.label ?? "").trim().toLowerCase();
   const href = (item.href ?? "").trim().toLowerCase();

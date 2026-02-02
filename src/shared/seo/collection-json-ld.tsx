@@ -12,34 +12,52 @@ interface CollectionJsonLdProps {
   collection: Collection;
   products: Product[];
   basePath?: string; // default "/collections"
+
+  /**
+   * Pass the request base URL from the server (recommended).
+   * e.g. const baseUrl = await getRequestBaseUrl();
+   */
+  baseUrl: string | null;
 }
 
 export function CollectionJsonLd({
   collection,
   products,
   basePath = "/collections",
+  baseUrl,
 }: CollectionJsonLdProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-
-  if (!siteUrl && process.env.NODE_ENV !== "production") {
+  if (!baseUrl && process.env.NODE_ENV !== "production") {
     console.warn(
-      "NEXT_PUBLIC_SITE_URL is not set – CollectionJsonLd will render without absolute urls."
+      "CollectionJsonLd: baseUrl is null – urls/images may be relative and rich results may be degraded.",
     );
   }
 
-  const normalizedBase = siteUrl?.endsWith("/")
-    ? siteUrl.slice(0, -1)
-    : siteUrl;
-
-  const collectionUrl = normalizedBase
-    ? `${normalizedBase}${basePath}/${collection.slug}`
-    : undefined;
+  const normalizedBase = baseUrl?.endsWith("/")
+    ? baseUrl.slice(0, -1)
+    : baseUrl;
 
   const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "").trim();
 
-  const description = collection.description
-    ? stripHtml(collection.description)
-    : undefined;
+  const description =
+    collection.description && collection.description.trim()
+      ? stripHtml(collection.description)
+      : undefined;
+
+  const collectionUrl =
+    normalizedBase && collection.slug
+      ? `${normalizedBase}${basePath}/${collection.slug}`
+      : undefined;
+
+  const toAbsoluteUrl = (src?: string | null) => {
+    if (!src) return undefined;
+    if (src.startsWith("http://") || src.startsWith("https://")) return src;
+    if (!normalizedBase) return src; // fallback (dev)
+    return src.startsWith("/")
+      ? `${normalizedBase}${src}`
+      : `${normalizedBase}/${src}`;
+  };
+
+  const collectionImageUrl = toAbsoluteUrl(collection.imageUrl);
 
   const jsonLd: Record<string, any> = {
     "@context": "https://schema.org",
@@ -47,10 +65,11 @@ export function CollectionJsonLd({
     name: collection.name,
     url: collectionUrl,
     description,
-    primaryImageOfPage: collection.imageUrl
+
+    primaryImageOfPage: collectionImageUrl
       ? {
           "@type": "ImageObject",
-          url: collection.imageUrl,
+          url: collectionImageUrl,
         }
       : undefined,
 
@@ -59,11 +78,13 @@ export function CollectionJsonLd({
       itemListOrder: "https://schema.org/ItemListOrderAscending",
       numberOfItems: products?.length ?? 0,
       itemListElement: (products ?? []).map((p, index) => {
-        const productUrl = normalizedBase
-          ? `${normalizedBase}/products/${p.slug}`
-          : undefined;
+        const productUrl =
+          normalizedBase && p.slug
+            ? `${normalizedBase}/products/${p.slug}`
+            : undefined;
 
-        const image = p.images?.[0]?.src;
+        const imageSrc = p.images?.[0]?.src;
+        const image = toAbsoluteUrl(imageSrc);
 
         return {
           "@type": "ListItem",
@@ -80,10 +101,10 @@ export function CollectionJsonLd({
     },
   };
 
-  // Clean up undefined fields (optional but keeps output tidy)
+  // Remove undefined keys for cleaner output (including nested objects)
   const clean = (obj: any) =>
     JSON.parse(
-      JSON.stringify(obj, (_k, v) => (v === undefined ? undefined : v))
+      JSON.stringify(obj, (_k, v) => (v === undefined ? undefined : v)),
     );
 
   return (

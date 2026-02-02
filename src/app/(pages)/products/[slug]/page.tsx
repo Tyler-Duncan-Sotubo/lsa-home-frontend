@@ -9,7 +9,6 @@ import {
   getProductBySlugWithVariations as _getProductBySlugWithVariations,
   listProducts,
 } from "@/features/Products/actions/products";
-
 import { getProductReviews } from "@/features/reviews/actions/get-product-reviews";
 import { productToSeo } from "@/shared/seo/product-to-seo";
 import { buildMetadata } from "@/shared/seo/build-metadata";
@@ -124,6 +123,7 @@ export default async function ProductPage({
         product={product}
         reviews={reviews}
         brandName={storeName}
+        baseUrl={baseUrl}
       />
       <BreadcrumbJsonLd items={breadcrumbItems} />
 

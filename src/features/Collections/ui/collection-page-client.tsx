@@ -9,11 +9,9 @@ import {
   CollectionFiltersState,
   getCollectionFilterMeta,
 } from "../actions/filters";
-
 import { CategoryAfterContent } from "@/features/Collections/ui/category-after-content";
 import { CollectionsPageConfigV1 } from "@/config/types/pages/Collections/collections-page.types";
 import { Breadcrumb } from "@/shared/seo/breadcrumb";
-import { CollectionJsonLd } from "@/shared/seo/collection-json-ld";
 
 interface CollectionPageClientProps {
   category: WooCategory & {
@@ -46,8 +44,6 @@ export function CollectionPageClient({
     [products, filters],
   );
 
-  const slug = (category?.slug ?? "").toLowerCase();
-
   // ✅ Now comes directly from API category
   const description =
     (category?.metaDescription ?? category?.description ?? undefined) ||
@@ -63,12 +59,6 @@ export function CollectionPageClient({
     [category?.name],
   );
 
-  const jsonLdDescription =
-    category?.metaDescription ?? category?.description ?? "";
-
-  const jsonLdImage =
-    category?.imageUrl ?? products?.[0]?.images?.[0]?.src ?? undefined;
-
   const hasFilters =
     (meta.allColors?.length ?? 0) > 0 ||
     (meta.allSizes?.length ?? 0) > 0 ||
@@ -78,16 +68,6 @@ export function CollectionPageClient({
     <section className="mx-auto w-[95%] space-y-6 py-8">
       <header className="flex flex-col gap-2 px-5">
         <Breadcrumb items={breadcrumbItems} />
-
-        <CollectionJsonLd
-          collection={{
-            slug,
-            name: category?.name ?? "Collection",
-            description: jsonLdDescription,
-            imageUrl: jsonLdImage,
-          }}
-          products={filteredProducts}
-        />
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h1 className="md:text-4xl text-lg font-semibold text-primary">

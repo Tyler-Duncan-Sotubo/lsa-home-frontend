@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Suspense } from "react";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { buildMetadata } from "@/shared/seo/build-metadata";
-import { Metadata } from "next";
 import { getRequestBaseUrl } from "@/shared/seo/get-request-base-url";
 import { listCollectionProducts } from "@/features/Collections/actions/get-collections";
 import { CollectionPageClient } from "@/features/Collections/ui/collection-page-client";
-import { notFound } from "next/navigation";
 import { CollectionPageSkeleton } from "@/features/skeletons/collection-page.skeleton";
+import { CollectionJsonLd } from "@/shared/seo/collection-json-ld";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -88,12 +89,38 @@ async function CollectionPageContent({ slug }: { slug: string }) {
 
   if (!data?.category) return notFound();
 
+  const baseUrl = await getRequestBaseUrl();
+
+  const category = data.category as any;
+  const categorySlug = (category?.slug ?? slug).toLowerCase();
+
+  const jsonLdDescription =
+    category?.metaDescription ?? category?.description ?? "";
+  const jsonLdImage =
+    category?.imageUrl ?? data.products?.[0]?.images?.[0]?.src ?? undefined;
+
   return (
-    <CollectionPageClient
-      category={data.category as any}
-      products={data.products}
-      collectionsConfig={config.pages?.collections} // keep for UI-only (optional)
-    />
+    <>
+      {/* ✅ JSON-LD is now server-rendered with correct baseUrl */}
+      <CollectionJsonLd
+        baseUrl={baseUrl}
+        basePath="/collections/hubs"
+        collection={{
+          slug: categorySlug,
+          name: category?.name ?? "Collection",
+          description: jsonLdDescription,
+          imageUrl: jsonLdImage,
+        }}
+        // Important: use the full unfiltered list from server
+        products={data.products}
+      />
+
+      <CollectionPageClient
+        category={category}
+        products={data.products}
+        collectionsConfig={config.pages?.collections} // UI-only (optional)
+      />
+    </>
   );
 }
 

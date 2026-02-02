@@ -5,7 +5,6 @@ import { Suspense, useMemo } from "react";
 import { ProductRailSkeleton } from "@/features/Products/ui/ProductRail/product-rail-skeleton";
 import { ProductRail } from "@/features/Products/ui/ProductRail/product-rail";
 import { Breadcrumb } from "@/shared/seo/breadcrumb";
-import { CollectionJsonLd } from "@/shared/seo/collection-json-ld";
 import { CategoryAfterContent } from "@/features/Collections/ui/category-after-content";
 import { ExploreMoreCard } from "./explore-more-category-card";
 
@@ -59,7 +58,7 @@ export function CollectionsHubPageClient({
 
   const breadcrumbItems = useMemo(
     () => [{ label: "Home", href: "/" }, { label: title }],
-    [title]
+    [title],
   );
 
   const description =
@@ -67,31 +66,10 @@ export function CollectionsHubPageClient({
     parent?.description ??
     `Explore our full ${title.toLowerCase()} collection at ${storeName}.`;
 
-  const imageUrl =
-    parent?.imageUrl ??
-    groups?.[0]?.products?.[0]?.images?.[0]?.src ??
-    undefined;
-
-  const productsForJsonLd = useMemo(
-    () => (groups ?? []).flatMap((g) => g.products ?? []),
-    [groups]
-  );
-
   return (
     <div className="w-[95%] mx-auto py-10 space-y-10">
       <header>
         <Breadcrumb items={breadcrumbItems} />
-
-        <CollectionJsonLd
-          basePath="/collections/hubs"
-          collection={{
-            slug,
-            name: title,
-            description,
-            imageUrl,
-          }}
-          products={productsForJsonLd}
-        />
 
         <h1 className="text-3xl md:text-4xl font-semibold capitalize">
           {title}
@@ -116,7 +94,7 @@ export function CollectionsHubPageClient({
               collections={category.slug}
             />
           </Suspense>
-        )
+        ),
       )}
 
       {/* ✅ Explore More (from API) */}

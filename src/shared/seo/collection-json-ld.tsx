@@ -20,23 +20,36 @@ interface CollectionJsonLdProps {
   baseUrl: string | null;
 }
 
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "").trim();
+
+const deepClean = <T,>(obj: T): T =>
+  JSON.parse(JSON.stringify(obj, (_k, v) => (v === undefined ? undefined : v)));
+
 export function CollectionJsonLd({
   collection,
   products,
   basePath = "/collections",
   baseUrl,
 }: CollectionJsonLdProps) {
-  if (!baseUrl && process.env.NODE_ENV !== "production") {
+  // Treat "" as null too
+  const normalizedBase =
+    baseUrl && baseUrl.trim()
+      ? baseUrl.endsWith("/")
+        ? baseUrl.slice(0, -1)
+        : baseUrl
+      : null;
+
+  if (!normalizedBase && process.env.NODE_ENV !== "production") {
     console.warn(
-      "CollectionJsonLd: baseUrl is null – urls/images may be relative and rich results may be degraded.",
+      "CollectionJsonLd: baseUrl is null/empty – urls/images may be relative and rich results may be degraded.",
     );
   }
 
-  const normalizedBase = baseUrl?.endsWith("/")
-    ? baseUrl.slice(0, -1)
-    : baseUrl;
-
-  const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "").trim();
+  // In production, if we can’t form proper absolute URLs, skip emitting
+  // (prevents accidental railway/relative structured data issues)
+  if (!normalizedBase && process.env.NODE_ENV === "production") {
+    return null;
+  }
 
   const description =
     collection.description && collection.description.trim()
@@ -51,7 +64,7 @@ export function CollectionJsonLd({
   const toAbsoluteUrl = (src?: string | null) => {
     if (!src) return undefined;
     if (src.startsWith("http://") || src.startsWith("https://")) return src;
-    if (!normalizedBase) return src; // fallback (dev)
+    if (!normalizedBase) return src; // dev fallback
     return src.startsWith("/")
       ? `${normalizedBase}${src}`
       : `${normalizedBase}/${src}`;
@@ -67,10 +80,7 @@ export function CollectionJsonLd({
     description,
 
     primaryImageOfPage: collectionImageUrl
-      ? {
-          "@type": "ImageObject",
-          url: collectionImageUrl,
-        }
+      ? { "@type": "ImageObject", url: collectionImageUrl }
       : undefined,
 
     mainEntity: {
@@ -90,8 +100,12 @@ export function CollectionJsonLd({
           "@type": "ListItem",
           position: index + 1,
           url: productUrl,
+
+          // IMPORTANT:
+          // Don't embed @type:"Product" here unless you also provide offers/review/aggregateRating,
+          // otherwise validators may warn.
           item: {
-            "@type": "Product",
+            "@type": "Thing",
             name: p.name,
             url: productUrl,
             image: image ? [image] : undefined,
@@ -101,16 +115,10 @@ export function CollectionJsonLd({
     },
   };
 
-  // Remove undefined keys for cleaner output (including nested objects)
-  const clean = (obj: any) =>
-    JSON.parse(
-      JSON.stringify(obj, (_k, v) => (v === undefined ? undefined : v)),
-    );
-
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(clean(jsonLd)) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(deepClean(jsonLd)) }}
     />
   );
 }

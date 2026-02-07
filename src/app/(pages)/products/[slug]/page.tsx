@@ -52,10 +52,13 @@ export async function generateMetadata({
     pageSeo,
   });
 
+  // getRequestBaseUrl now returns "" for blocked hosts (railway), otherwise scheme://host
   const baseUrl = await getRequestBaseUrl();
-  const canonical = baseUrl
-    ? `${baseUrl}/products/${product.slug}`
-    : `/products/${product.slug}`;
+
+  const canonical =
+    baseUrl && baseUrl.trim()
+      ? `${baseUrl}/products/${product.slug}`
+      : `/products/${product.slug}`;
 
   return {
     ...base,
@@ -94,18 +97,21 @@ export default async function ProductPage({
   ]);
 
   const baseUrl = await getRequestBaseUrl();
-  const productUrl = baseUrl
-    ? `${baseUrl}/products/${product.slug}`
-    : `/products/${product.slug}`;
+
+  const productUrl =
+    baseUrl && baseUrl.trim()
+      ? `${baseUrl}/products/${product.slug}`
+      : `/products/${product.slug}`;
 
   // ✅ IMPORTANT: use /collections not /category (based on your routing)
   const breadcrumbItems = [
-    { name: "Home", url: baseUrl || "/" },
+    { name: "Home", url: baseUrl && baseUrl.trim() ? baseUrl : "/" },
     ...(product.categories ?? []).map((cat: any) => ({
       name: cat.name,
-      url: baseUrl
-        ? `${baseUrl}/collections/${cat.slug}`
-        : `/collections/${cat.slug}`,
+      url:
+        baseUrl && baseUrl.trim()
+          ? `${baseUrl}/collections/${cat.slug}`
+          : `/collections/${cat.slug}`,
     })),
     { name: product.name, url: productUrl },
   ];
@@ -123,8 +129,9 @@ export default async function ProductPage({
         product={product}
         reviews={reviews}
         brandName={storeName}
-        baseUrl={baseUrl}
+        baseUrl={baseUrl && baseUrl.trim() ? baseUrl : null}
       />
+
       <BreadcrumbJsonLd items={breadcrumbItems} />
 
       <ProductPageClient

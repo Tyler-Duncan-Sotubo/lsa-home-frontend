@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Rating } from "../../../../../reviews/ui/rating";
 import { VariantSelectors } from "../../../ProductInfo/variant-selectors";
@@ -18,13 +19,26 @@ import { LINK_COPY } from "@/shared/constants/link-copy";
 import { LinkedProducts } from "../../../ProductInfo/linked-products";
 import { gaEvent } from "@/features/integrations/config/ga";
 
-// normalize helper for comparisons
 const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
+
+/**
+ * ✅ Admin preset list (UI knows these “official” option names)
+ * Keep the values EXACTLY how admin sets them (case-insensitive match still works).
+ */
+const OPTION_PRESETS = [
+  { value: "Color", label: "Color" },
+  { value: "Size", label: "Size" },
+  { value: "Material", label: "Material" },
+  { value: "Style", label: "Style" },
+  { value: "Type", label: "Type" },
+] as const;
+
+type PresetName = (typeof OPTION_PRESETS)[number]["value"];
 
 export interface ProductDetailsTwoProps {
   product: Product;
   selectedColor?: string | null;
-  onSelectColor?: (color: string) => void; // sync with gallery
+  onSelectColor?: (color: string) => void;
   isModal?: boolean;
   onAddedToCart?: () => void;
   showInfoSections?: boolean;
@@ -49,54 +63,143 @@ export function ProductDetailsQuoteOne({
 
   const [quantity, setQuantity] = useState(1);
 
-  const { colorAttributes, sizeAttributes } = useMemo(() => {
+  // Keep existing size/color model
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
+  // ✅ New: extra selections (Material/Style/Type etc.)
+  const [selectedExtras, setSelectedExtras] = useState<
+    Partial<Record<PresetName, string | null>>
+  >({});
+
+  /**
+   * ✅ Split product.attributes into:
+   * - colorAttributes, sizeAttributes (existing VariantSelectors needs them)
+   * - presetExtrasAttributes (Material/Style/Type etc), ONLY if present
+   */
+  const {
+    colorAttributes,
+    sizeAttributes,
+    presetExtrasAttributes, // map: "Material" | "Style" | "Type" -> attribute
+  } = useMemo(() => {
     const attrs = product?.attributes ?? [];
-    const color = attrs.filter((a) => a.name.toLowerCase().includes("color"));
-    const size = attrs.filter((a) => a.name.toLowerCase().includes("size"));
-    const other = attrs.filter(
-      (a) =>
-        !a.name.toLowerCase().includes("color") &&
-        !a.name.toLowerCase().includes("size"),
-    );
+
+    const byPreset = new Map<PresetName, any[]>();
+    for (const p of OPTION_PRESETS) byPreset.set(p.value, []);
+
+    for (const a of attrs as any[]) {
+      const name = String(a?.name ?? "");
+      const hit = OPTION_PRESETS.find(
+        (p) =>
+          norm(p.value) === norm(name) || norm(name).includes(norm(p.value)),
+      );
+      if (hit) {
+        byPreset.get(hit.value)!.push(a);
+      }
+    }
+
+    const color = byPreset.get("Color") ?? [];
+    const size = byPreset.get("Size") ?? [];
+
+    const extras: Partial<Record<PresetName, any>> = {};
+    for (const p of OPTION_PRESETS) {
+      if (p.value === "Color" || p.value === "Size") continue;
+      const list = byPreset.get(p.value) ?? [];
+      if (list.length) extras[p.value] = list[0]; // take first matching attribute
+    }
+
     return {
       colorAttributes: color,
       sizeAttributes: size,
-      otherAttributes: other,
+      presetExtrasAttributes: extras,
     };
   }, [product]);
 
   const rating = Number(product.average_rating ?? 0);
   const reviews = product.rating_count ?? 0;
 
+  // Defaults (keeps existing behavior)
   const firstSize = sizeAttributes[0]?.options?.[0] ?? null;
   const firstColor = colorAttributes[0]?.options?.[0] ?? null;
-
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const effectiveSize = selectedSize ?? firstSize;
   const effectiveColor = selectedColor ?? firstColor ?? null;
 
+  /**
+   * ✅ Default extras to first option when present
+   */
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedExtras((prev) => {
+      const next = { ...prev };
+
+      (["Material", "Style", "Type"] as PresetName[]).forEach((k) => {
+        const attr = presetExtrasAttributes[k] as any | undefined;
+        const first = attr?.options?.[0] ?? null;
+        if (attr && next[k] == null) next[k] = first;
+      });
+
+      return next;
+    });
+  }, [presetExtrasAttributes]);
+
+  /**
+   * ✅ Build a stable selection key using OPTION_PRESETS order.
+   * This ensures index + lookup always agree.
+   */
+  const selectionKey = useMemo(() => {
+    const parts: string[] = [];
+
+    for (const p of OPTION_PRESETS) {
+      if (p.value === "Color") {
+        parts.push(norm(effectiveColor));
+        continue;
+      }
+      if (p.value === "Size") {
+        parts.push(norm(effectiveSize));
+        continue;
+      }
+      // extras
+      parts.push(norm(selectedExtras[p.value] ?? null));
+    }
+
+    return parts.join("|");
+  }, [effectiveColor, effectiveSize, selectedExtras]);
+
+  /**
+   * ✅ Index variations by the same preset-based key.
+   * (Supports size-only, color-only, or combinations with Material/Style/Type)
+   */
   const variationIndex = useMemo(() => {
-    const vars = product.variations ?? [];
+    const vars = (product.variations ?? []) as any[];
     const map = new Map<string, any>();
 
-    for (const v of vars as any[]) {
-      const attrs: any[] = v.attributes ?? [];
-      const size = norm(
-        attrs.find((a) => a.name?.toLowerCase().includes("size"))?.option,
-      );
-      const color = norm(
-        attrs.find((a) => a.name?.toLowerCase().includes("color"))?.option,
-      );
-      map.set(`${size}|${color}`, v);
+    for (const v of vars) {
+      const attrs: any[] = v?.attributes ?? [];
+
+      const getOpt = (preset: PresetName) => {
+        const found = attrs.find((a) => {
+          const n = norm(a?.name);
+          return n === norm(preset) || n.includes(norm(preset));
+        });
+        return norm(found?.option ?? null);
+      };
+
+      const keyParts = OPTION_PRESETS.map((p) => getOpt(p.value));
+      const key = keyParts.join("|");
+
+      map.set(key, v);
     }
+
     return map;
   }, [product.variations]);
 
   const activeVariation = useMemo(() => {
-    const key = `${norm(effectiveSize)}|${norm(effectiveColor)}`;
-    return variationIndex.get(key) ?? product.variations?.[0] ?? null;
-  }, [variationIndex, effectiveSize, effectiveColor, product.variations]);
+    return (
+      variationIndex.get(selectionKey) ??
+      (product.variations?.[0] as any) ??
+      null
+    );
+  }, [variationIndex, selectionKey, product.variations]);
 
   const isInStock = useMemo(() => {
     const vAny = activeVariation as any | null;
@@ -108,12 +211,8 @@ export function ProductDetailsQuoteOne({
   }, [activeVariation, product]);
 
   const isPriceEligible = useMemo(() => {
-    // No variation matched at all
     if (!activeVariation) return false;
-
-    // Explicitly out of stock
     if (!isInStock) return false;
-
     return true;
   }, [activeVariation, isInStock]);
 
@@ -132,28 +231,42 @@ export function ProductDetailsQuoteOne({
 
   const buildAttributes = (): Record<string, string | null> => {
     const out: Record<string, string | null> = {};
+
     if (effectiveSize) out["Size"] = effectiveSize;
     if (effectiveColor) out["Color"] = effectiveColor;
 
+    // include extras
+    for (const p of OPTION_PRESETS) {
+      if (p.value === "Color" || p.value === "Size") continue;
+      const v = selectedExtras[p.value];
+      if (v) out[p.value] = v;
+    }
+
+    // include variation attributes too (source of truth)
     const attrs = (activeVariation as any)?.attributes ?? [];
     for (const a of attrs) {
       const key = a?.name ? String(a.name) : null;
       const val = a?.option ? String(a.option) : null;
       if (key) out[key] = val;
     }
+
     return out;
   };
 
   const buildVariantLabel = () => {
     const parts: string[] = [];
-
     if (effectiveSize) parts.push(`Size: ${effectiveSize}`);
     if (effectiveColor) parts.push(`Color: ${effectiveColor}`);
+
+    for (const p of OPTION_PRESETS) {
+      if (p.value === "Color" || p.value === "Size") continue;
+      const v = selectedExtras[p.value];
+      if (v) parts.push(`${p.value}: ${v}`);
+    }
 
     return parts.length ? parts.join(" · ") : undefined;
   };
 
-  // Normalize price info: regular / sale / onSale from variation or product
   const { regularPrice, salePrice, onSale } = useMemo(() => {
     const vAny = activeVariation as any | null;
     const pAny = product as any;
@@ -171,7 +284,6 @@ export function ProductDetailsQuoteOne({
     const finalRegular = vRegular || vPrice || pRegular || pPrice || null;
     const finalSale = vSale || pSale || null;
 
-    // only true if sale exists and is actually lower than regular
     const regN = Number(finalRegular ?? 0);
     const saleN = Number(finalSale ?? 0);
     const finalOnSale =
@@ -233,6 +345,7 @@ export function ProductDetailsQuoteOne({
         },
       ],
     });
+
     onAddedToCart?.();
   };
 
@@ -268,85 +381,83 @@ export function ProductDetailsQuoteOne({
         <Rating rating={rating} reviews={reviews} />
 
         {/* ================= PRICE BLOCK ================= */}
-        {
-          canSee ? (
-            // -------- PRICE VISIBLE --------
-            isPriceEligible ? (
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex flex-col">
-                  {
-                    formattedSale && formattedRegular ? (
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-sm md:text-base line-through text-muted-foreground">
-                          {formattedRegular}
-                        </span>
-
-                        <span className="text-base md:text-lg font-semibold text-primary">
-                          {pricePrefix}
-                          {formattedSale}
-                        </span>
-
-                        {discountPercent && (
-                          <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-                            -{discountPercent}%
-                          </span>
-                        )}
-                      </div>
-                    ) : formattedRegular ? (
-                      <span className="text-base md:text-lg font-semibold">
-                        {pricePrefix}
-                        {formattedRegular}
-                      </span>
-                    ) : null /* if eligible but somehow no prices, show nothing */
-                  }
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10">
-                  <span className="h-2.5 w-2.5 rounded-full bg-destructive" />
-                </div>
-
-                <div className="flex flex-col">
-                  <p className="text-sm font-semibold text-destructive">
-                    Out of stock
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    This option isn’t available right now. Try another size or
-                    color.
-                  </p>
-                </div>
-              </div>
-            )
-          ) : // -------- PRICE HIDDEN --------
+        {canSee ? (
           isPriceEligible ? (
-            <div className="rounded-lg py-2">
-              {/* 👇 show CTA only when config requires login */}
-              {rule === "loggedInOnly" && !isLoggedIn ? (
-                <p className="mt-1 text-base text-muted-foreground">
-                  <Link href="/account/login" className="underline font-medium">
-                    Login
-                  </Link>
-                  <span className="mt-1"> to see pricing.</span>
-                </p>
-              ) : (
-                <div>
-                  <p className="text-sm font-medium text-foreground">Pricing</p>
-                  <p className="text-xs text-muted-foreground">
-                    Pricing is provided via quote based on your selections and
-                    quantity.
-                  </p>
-                </div>
-              )}
-            </div>
-          ) : null // 👈 variant unavailable => blank area
-        }
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col">
+                {formattedSale && formattedRegular ? (
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm md:text-base line-through text-muted-foreground">
+                      {formattedRegular}
+                    </span>
 
+                    <span className="text-base md:text-lg font-semibold text-primary">
+                      {pricePrefix}
+                      {formattedSale}
+                    </span>
+
+                    {discountPercent && (
+                      <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                        -{discountPercent}%
+                      </span>
+                    )}
+                  </div>
+                ) : formattedRegular ? (
+                  <span className="text-base md:text-lg font-semibold">
+                    {pricePrefix}
+                    {formattedRegular}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10">
+                <span className="h-2.5 w-2.5 rounded-full bg-destructive" />
+              </div>
+
+              <div className="flex flex-col">
+                <p className="text-sm font-semibold text-destructive">
+                  Out of stock
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  This option isn’t available right now. Try another option.
+                </p>
+              </div>
+            </div>
+          )
+        ) : isPriceEligible ? (
+          <div className="rounded-lg py-2">
+            {rule === "loggedInOnly" && !isLoggedIn ? (
+              <p className="mt-1 text-base text-muted-foreground">
+                <Link href="/account/login" className="underline font-medium">
+                  Login
+                </Link>
+                <span className="mt-1"> to see pricing.</span>
+              </p>
+            ) : (
+              <div>
+                <p className="text-sm font-medium text-foreground">Pricing</p>
+                <p className="text-xs text-muted-foreground">
+                  Pricing is provided via quote based on your selections and
+                  quantity.
+                </p>
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {/* ✅ Keep existing size/color selectors */}
         <VariantSelectors
           colorAttributes={colorAttributes}
           sizeAttributes={sizeAttributes}
+          extraAttributes={presetExtrasAttributes}
           selectedColor={effectiveColor}
           selectedSize={effectiveSize}
+          selectedExtras={selectedExtras}
+          onSelectExtra={(name, opt) =>
+            setSelectedExtras((p) => ({ ...p, [name]: opt }))
+          }
           onSelectColor={handleSelectColor}
           onSelectSize={setSelectedSize}
           variations={product.variations}
@@ -362,20 +473,6 @@ export function ProductDetailsQuoteOne({
               Request Quote
             </Button>
 
-            {/* <div className="relative">
-              <select
-                className="sm:h-13.5 2xl:h-15 rounded-md border bg-background px-3 pr-8 text-lg font-medium"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value) || 1)}
-              >
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
-            </div> */}
-
             {showWishListButton && (
               <WishlistButton
                 item={{
@@ -386,8 +483,8 @@ export function ProductDetailsQuoteOne({
                   salePrice: null,
                   onSale: false,
                   image: variationImageSrc,
-                  rating: rating,
-                  reviews: reviews,
+                  rating,
+                  reviews,
                   priceHtml: product.price_html,
                 }}
               />

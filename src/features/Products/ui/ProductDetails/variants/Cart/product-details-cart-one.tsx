@@ -25,6 +25,19 @@ export interface ProductDetailsPanelProps {
 
 const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
 
+/**
+ * ✅ Preset list (admin-defined “known” option names)
+ */
+const OPTION_PRESETS = [
+  { value: "Color", label: "Color" },
+  { value: "Size", label: "Size" },
+  { value: "Material", label: "Material" },
+  { value: "Style", label: "Style" },
+  { value: "Type", label: "Type" },
+] as const;
+
+type PresetName = (typeof OPTION_PRESETS)[number]["value"];
+
 export function ProductDetailsCartOne({
   product,
   selectedColor,
@@ -36,21 +49,51 @@ export function ProductDetailsCartOne({
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
+  // ✅ New: extra selections (Material/Style/Type)
+  const [selectedExtras, setSelectedExtras] = useState<
+    Partial<Record<PresetName, string | null>>
+  >({});
+
   const formatMoney = useMoney();
 
-  const { colorAttributes, sizeAttributes } = useMemo(() => {
-    const attrs = product?.attributes ?? [];
-    const color = attrs.filter((a) => a.name.toLowerCase().includes("color"));
-    const size = attrs.filter((a) => a.name.toLowerCase().includes("size"));
-    const other = attrs.filter(
-      (a) =>
-        !a.name.toLowerCase().includes("color") &&
-        !a.name.toLowerCase().includes("size"),
-    );
+  /**
+   * ✅ Split attributes:
+   * - colorAttributes + sizeAttributes (existing VariantSelectors)
+   * - presetExtrasAttributes (Material/Style/Type…) for extra UI
+   */
+  const {
+    colorAttributes,
+    sizeAttributes,
+    presetExtrasAttributes, // map preset -> attribute
+  } = useMemo(() => {
+    const attrs = (product?.attributes ?? []) as any[];
+
+    const byPreset = new Map<PresetName, any[]>();
+    for (const p of OPTION_PRESETS) byPreset.set(p.value, []);
+
+    for (const a of attrs) {
+      const name = String(a?.name ?? "");
+      const hit = OPTION_PRESETS.find(
+        (p) =>
+          norm(p.value) === norm(name) || norm(name).includes(norm(p.value)),
+      );
+      if (hit) byPreset.get(hit.value)!.push(a);
+    }
+
+    const color = byPreset.get("Color") ?? [];
+    const size = byPreset.get("Size") ?? [];
+
+    const extras: Partial<Record<PresetName, any>> = {};
+    for (const p of OPTION_PRESETS) {
+      if (p.value === "Color" || p.value === "Size") continue;
+      const list = byPreset.get(p.value) ?? [];
+      if (list.length) extras[p.value] = list[0];
+    }
+
     return {
       colorAttributes: color,
       sizeAttributes: size,
-      otherAttributes: other,
+      presetExtrasAttributes: extras,
     };
   }, [product]);
 
@@ -63,32 +106,75 @@ export function ProductDetailsCartOne({
   const effectiveSize = selectedSize ?? firstSize;
   const effectiveColor = selectedColor ?? firstColor ?? null;
 
+  /**
+   * ✅ Default extras (first option) when present
+   */
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedExtras((prev) => {
+      const next = { ...prev };
+      (["Material", "Style", "Type"] as PresetName[]).forEach((k) => {
+        const attr = presetExtrasAttributes[k] as any | undefined;
+        const first = attr?.options?.[0] ?? null;
+        if (attr && next[k] == null) next[k] = first;
+      });
+      return next;
+    });
+  }, [presetExtrasAttributes]);
+
+  /**
+   * ✅ Build selection key in preset order (same key used for indexing variations)
+   */
+  const selectionKey = useMemo(() => {
+    const parts: string[] = [];
+    for (const p of OPTION_PRESETS) {
+      if (p.value === "Color") {
+        parts.push(norm(effectiveColor));
+        continue;
+      }
+      if (p.value === "Size") {
+        parts.push(norm(effectiveSize));
+        continue;
+      }
+      parts.push(norm(selectedExtras[p.value] ?? null));
+    }
+    return parts.join("|");
+  }, [effectiveColor, effectiveSize, selectedExtras]);
+
+  /**
+   * ✅ Index variations by preset-based key
+   */
+  const variationIndex = useMemo(() => {
+    const vars = (product.variations ?? []) as any[];
+    const map = new Map<string, any>();
+
+    for (const v of vars) {
+      const attrs: any[] = v?.attributes ?? [];
+
+      const getOpt = (preset: PresetName) => {
+        const found = attrs.find((a) => {
+          const n = norm(a?.name);
+          return n === norm(preset) || n.includes(norm(preset));
+        });
+        return norm(found?.option ?? null);
+      };
+
+      const keyParts = OPTION_PRESETS.map((p) => getOpt(p.value));
+      const key = keyParts.join("|");
+      map.set(key, v);
+    }
+
+    return map;
+  }, [product.variations]);
+
+  /**
+   * ✅ Active variation now respects Color+Size+Material+Style+Type
+   */
   const activeVariation = useMemo(() => {
     const variations = product.variations ?? [];
     if (variations.length === 0) return null;
-
-    const targetSize = norm(effectiveSize);
-    const targetColor = norm(effectiveColor);
-
-    const match = variations.find((v) => {
-      const attrs = v.attributes ?? [];
-      const sizeAttr = attrs.find((a) => a.name.toLowerCase().includes("size"));
-      const colorAttr = attrs.find((a) =>
-        a.name.toLowerCase().includes("color"),
-      );
-
-      const sizeMatch = targetSize
-        ? norm(sizeAttr?.option) === targetSize
-        : true;
-      const colorMatch = targetColor
-        ? norm(colorAttr?.option) === targetColor
-        : true;
-
-      return sizeMatch && colorMatch;
-    });
-
-    return match ?? variations[0] ?? null;
-  }, [product.variations, effectiveColor, effectiveSize]);
+    return variationIndex.get(selectionKey) ?? variations[0] ?? null;
+  }, [variationIndex, selectionKey, product.variations]);
 
   // ✅ STOCK: derive max qty from active variation stock (fallback: 10)
   const maxQty = useMemo(() => {
@@ -207,11 +293,17 @@ export function ProductDetailsCartOne({
       <div className="flex flex-col gap-4 pb-6">
         <Rating rating={rating} reviews={reviews} />
 
+        {/* ✅ Existing Color/Size selectors stay */}
         <VariantSelectors
           colorAttributes={colorAttributes}
           sizeAttributes={sizeAttributes}
+          extraAttributes={presetExtrasAttributes}
           selectedColor={effectiveColor}
           selectedSize={effectiveSize}
+          selectedExtras={selectedExtras}
+          onSelectExtra={(name, opt) =>
+            setSelectedExtras((p) => ({ ...p, [name]: opt }))
+          }
           onSelectColor={handleSelectColor}
           onSelectSize={setSelectedSize}
           variations={product.variations}

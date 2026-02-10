@@ -35,14 +35,10 @@ export function ProductInfoSections({ product }: ProductInfoSectionsProps) {
               </AccordionTrigger>
 
               <AccordionContent>
-                {section.kind === "html" ? (
-                  <div
-                    className="prose prose-sm max-w-none text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: value }}
-                  />
-                ) : (
-                  <p className="whitespace-pre-line">{value}</p>
-                )}
+                <div
+                  className="prose prose-sm max-w-none text-muted-foreground"
+                  dangerouslySetInnerHTML={{ __html: value }}
+                />
               </AccordionContent>
             </AccordionItem>
           );

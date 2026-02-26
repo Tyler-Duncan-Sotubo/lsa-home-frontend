@@ -276,7 +276,7 @@ export function ProductCard({
             <div className="rounded-lg">
               {rule === "loggedInOnly" && !isLoggedIn ? (
                 <p className="text-[14px] text-muted-foreground">
-                  <Link href="/account/login" className="underline font-medium">
+                  <Link href="/login" className="underline font-medium">
                     Login
                   </Link>{" "}
                   to see pricing.

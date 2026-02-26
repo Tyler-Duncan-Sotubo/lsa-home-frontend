@@ -344,7 +344,7 @@ export function QuoteSheet() {
                             {rule === "loggedInOnly" && !isLoggedIn ? (
                               <p className="text-[11px] text-muted-foreground">
                                 <Link
-                                  href="/account/login"
+                                  href="/login"
                                   className="underline font-medium"
                                 >
                                   Sign in

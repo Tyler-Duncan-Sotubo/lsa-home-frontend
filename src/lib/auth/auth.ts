@@ -18,7 +18,7 @@ type Customer = {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
-  pages: { signIn: "/account/login" },
+  pages: { signIn: "/login" },
 
   providers: [
     Credentials({

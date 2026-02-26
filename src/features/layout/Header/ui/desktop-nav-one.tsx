@@ -39,11 +39,38 @@ export function DesktopOne({ items, specialItems }: Props) {
 
   const openItem = React.useMemo(
     () => items.find((i) => i.label === openLabel && i.type === "mega"),
-    [items, openLabel]
+    [items, openLabel],
   ) as Extract<NavItem, { type: "mega" }> | undefined;
 
   const getSpecialClass = (label: string) =>
     specialItems?.find((s) => s.matchLabel === label)?.className ?? "";
+
+  // ✅ hover-intent close delay so you can move from trigger -> panel without it collapsing
+  const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const CLEAR_CLOSE_TIMER = React.useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const OPEN = React.useCallback(
+    (label: string) => {
+      CLEAR_CLOSE_TIMER();
+      setOpenLabel(label);
+    },
+    [CLEAR_CLOSE_TIMER],
+  );
+
+  const SCHEDULE_CLOSE = React.useCallback(() => {
+    CLEAR_CLOSE_TIMER();
+    closeTimerRef.current = setTimeout(() => {
+      setOpenLabel(null);
+      closeTimerRef.current = null;
+    }, 140); // tweak 100–250ms if you want
+  }, [CLEAR_CLOSE_TIMER]);
 
   // Close on ESC
   React.useEffect(() => {
@@ -58,6 +85,13 @@ export function DesktopOne({ items, specialItems }: Props) {
   React.useEffect(() => {
     setOpenLabel(null);
   }, [pathname]);
+
+  // Cleanup timer on unmount
+  React.useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
 
   // Mark mega trigger active if any of its links are active
   function isMegaActive(item: Extract<NavItem, { type: "mega" }>) {
@@ -86,13 +120,14 @@ export function DesktopOne({ items, specialItems }: Props) {
               <div
                 key={mega.label}
                 className="relative flex items-center"
-                onMouseEnter={() => setOpenLabel(mega.label)}
-                onMouseLeave={() => setOpenLabel(null)}
+                // ✅ Use pointer events + delayed close
+                onPointerEnter={() => OPEN(mega.label)}
+                onPointerLeave={() => SCHEDULE_CLOSE()}
               >
                 {/* ✅ Clickable label */}
                 <Link
                   href={mega.href ?? "#"}
-                  onFocus={() => setOpenLabel(mega.label)}
+                  onFocus={() => OPEN(mega.label)}
                   className={[
                     "px-3 py-1 cursor-pointer 2xl:text-base text-sm font-medium transition-all",
                     "hover:underline hover:font-semibold",
@@ -107,14 +142,15 @@ export function DesktopOne({ items, specialItems }: Props) {
                 {/* ✅ Separate toggle (so you can still open menu without navigating) */}
                 <button
                   type="button"
-                  onClick={() => setOpenLabel(isOpen ? null : mega.label)}
+                  onClick={() =>
+                    isOpen ? setOpenLabel(null) : OPEN(mega.label)
+                  }
                   aria-expanded={isOpen}
                   aria-controls={`mega-${mega.label}`}
                   className="p-1 rounded-md hover:bg-muted"
                   title="Open menu"
                 >
                   <span className="sr-only">Open {mega.label} menu</span>
-                  {/* tiny chevron */}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M6 9l6 6 6-6"
@@ -125,6 +161,19 @@ export function DesktopOne({ items, specialItems }: Props) {
                     />
                   </svg>
                 </button>
+
+                {/* ✅ Render overlay when this mega is open.
+                    It participates in "hover area" by calling OPEN/SCHEDULE_CLOSE. */}
+                {isOpen ? (
+                  <MegaOverlay
+                    id={`mega-${mega.label}`}
+                    item={mega}
+                    pathname={pathname}
+                    onClose={() => setOpenLabel(null)}
+                    onHoverEnter={() => OPEN(mega.label)}
+                    onHoverLeave={() => SCHEDULE_CLOSE()}
+                  />
+                ) : null}
               </div>
             );
           }
@@ -148,15 +197,9 @@ export function DesktopOne({ items, specialItems }: Props) {
         })}
       </div>
 
-      {/* Full-screen dropdown overlay */}
-      {openItem ? (
-        <MegaOverlay
-          id={`mega-${openItem.label}`}
-          item={openItem}
-          pathname={pathname}
-          onClose={() => setOpenLabel(null)}
-        />
-      ) : null}
+      {/* NOTE: we no longer render the overlay down here.
+          It's rendered next to the trigger so hover logic is centralized. */}
+      {openItem ? null : null}
     </div>
   );
 }
@@ -170,51 +213,40 @@ function MegaOverlay({
   item,
   pathname,
   onClose,
+  onHoverEnter,
+  onHoverLeave,
 }: {
   id: string;
   item: Extract<NavItem, { type: "mega" }>;
   pathname: string;
   onClose: () => void;
+  onHoverEnter: () => void;
+  onHoverLeave: () => void;
 }) {
-  const panelRef = React.useRef<HTMLDivElement>(null);
-
-  // ✅ Close when clicking outside the panel (without blocking page clicks)
-  React.useEffect(() => {
-    function onDocMouseDown(e: MouseEvent) {
-      const panel = panelRef.current;
-      if (!panel) return;
-
-      // If click is inside the panel, do nothing
-      if (panel.contains(e.target as Node)) return;
-
-      // Otherwise close
-      onClose();
-    }
-
-    document.addEventListener("mousedown", onDocMouseDown);
-    return () => document.removeEventListener("mousedown", onDocMouseDown);
-  }, [onClose]);
-
   return (
     <div
-      className="fixed inset-0 z-9999 pointer-events-none"
+      className="fixed inset-0 z-9999 pointer-events-auto"
       role="dialog"
       aria-label={`${item.label} menu`}
       aria-modal={false as any}
+      // ✅ keep open when hovering anywhere in overlay
+      onPointerEnter={onHoverEnter}
+      onPointerLeave={onHoverLeave}
     >
-      {/* Optional visual backdrop (non-interactive so page remains clickable) */}
-      <div className="absolute inset-0 pointer-events-none" />
+      {/* ✅ Backdrop captures pointer so moving from trigger -> panel doesn't "fall through"
+          Click backdrop to close */}
+      <button
+        type="button"
+        aria-label="Close menu"
+        className="absolute inset-0 cursor-default"
+        onClick={onClose}
+      />
 
       {/* Panel: full width, anchored under header */}
-      <div
-        ref={panelRef}
-        className="absolute left-0 right-0 top-0 md:top-20 pointer-events-auto"
-        onMouseLeave={onClose} // ✅ close when leaving dropdown area
-      >
-        {/* adjust md:top-20 to match your header height */}
+      <div className="absolute left-0 right-0 top-0 md:top-20 pointer-events-auto">
         <div id={id} className="bg-background border-t shadow-lg">
           <div className="mx-auto w-[95%] py-8">
-            {/* ✅ sections + divider + feature */}
+            {/* sections + divider + feature */}
             <div className="grid gap-8 lg:grid-cols-[2fr_1px_1fr] items-stretch">
               {/* Left: sections */}
               <div className="grid gap-8 md:grid-cols-3">
@@ -227,14 +259,13 @@ function MegaOverlay({
                       {sec.items.map((link) => {
                         const active = isActivePath(pathname, link.href, true);
                         return (
-                          <li key={link.label} className="">
+                          <li key={link.label}>
                             <Link
                               href={link.href}
                               onClick={onClose}
                               aria-current={active ? "page" : undefined}
                               className={[
                                 "block rounded-md py-1 transition-all",
-                                "",
                                 active ? "font-bold" : "",
                               ].join(" ")}
                             >
@@ -263,7 +294,7 @@ function MegaOverlay({
                 ))}
               </div>
 
-              {/* ✅ Divider */}
+              {/* Divider */}
               <div className="hidden lg:block bg-border" />
 
               {/* Right: Featured tile */}
@@ -271,9 +302,7 @@ function MegaOverlay({
                 <Link
                   href={item.feature.href}
                   onClick={onClose}
-                  className={["group overflow-hidden", "transition-all"].join(
-                    " "
-                  )}
+                  className="group overflow-hidden transition-all"
                 >
                   <div className="relative h-96 w-full aspect-12/16">
                     <Image

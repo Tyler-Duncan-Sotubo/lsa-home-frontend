@@ -33,7 +33,7 @@ export async function getStorefrontConfig(): Promise<StorefrontConfigV1> {
 type LocalPreset = "default" | "maintenance" | "not-found";
 
 export async function loadLocalStorefrontConfig(
-  preset: LocalPreset
+  preset: LocalPreset,
 ): Promise<StorefrontConfigV1> {
   switch (preset) {
     case "maintenance": {

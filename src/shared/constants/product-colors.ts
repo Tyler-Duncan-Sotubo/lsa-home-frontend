@@ -1,10 +1,10 @@
-export const colorSwatchMap: Record<string, string> = {
+const baseColorSwatchMap: Record<string, string> = {
   Anthracite: "#2F3437",
   Sage: "#A5B39E",
   "French Blue": "#4A6FA5",
   Sangria: "#8B1E3F",
   Bronze: "#A97142",
-
+  Brown: "#8B4513",
   Apricot: "#FBBA89",
   SteelGrey: "#7A7F85",
   Black: "#000000",
@@ -22,7 +22,6 @@ export const colorSwatchMap: Record<string, string> = {
   Mint: "#B6E5C6",
   Emerald: "#009B77",
 
-  // Added colors
   Stone: "#C2BEB6",
   Copper: "#B87333",
   "Hunter Green": "#355E3B",
@@ -34,7 +33,6 @@ export const colorSwatchMap: Record<string, string> = {
   Taupe: "#8B7E74",
   Natural: "#E6DCCF",
 
-  // Newly added
   Sand: "#D8CFC4",
   "Dusty Pink": "#D8A7B1",
   Grey: "#9CA3AF",
@@ -42,3 +40,15 @@ export const colorSwatchMap: Record<string, string> = {
 
   Default: "#E5E7EB",
 };
+
+// 🔥 Automatically add lowercase versions
+export const colorSwatchMap: Record<string, string> = Object.entries(
+  baseColorSwatchMap,
+).reduce(
+  (acc, [key, value]) => {
+    acc[key] = value; // original
+    acc[key.toLowerCase()] = value; // lowercase
+    return acc;
+  },
+  {} as Record<string, string>,
+);

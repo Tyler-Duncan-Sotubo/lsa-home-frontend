@@ -430,7 +430,7 @@ export function ProductDetailsQuoteOne({
           <div className="rounded-lg py-2">
             {rule === "loggedInOnly" && !isLoggedIn ? (
               <p className="mt-1 text-base text-muted-foreground">
-                <Link href="/account/login" className="underline font-medium">
+                <Link href="/login" className="underline font-medium">
                   Login
                 </Link>
                 <span className="mt-1"> to see pricing.</span>

@@ -19,9 +19,9 @@ import { useCanSeePrice } from "@/shared/hooks/use-can-see-price";
 const WishlistButton = dynamic(
   () =>
     import("@/features/Products/ui/ProductInfo/wishlist-button").then(
-      (m) => m.WishlistButton
+      (m) => m.WishlistButton,
     ),
-  { ssr: false }
+  { ssr: false },
 );
 
 export interface ProductCardProps {
@@ -72,7 +72,7 @@ export function ProductCardHoverActions({
   const saleFormatted = formatPrice(salePrice);
 
   const showWishListButton = useAppSelector(
-    (s) => s.runtimeConfig.ui.product.showWishlistButton
+    (s) => s.runtimeConfig.ui.product.showWishlistButton,
   );
 
   const handleMarkRecentlyViewed = useCallback(() => {
@@ -88,7 +88,7 @@ export function ProductCardHoverActions({
         priceHtml: priceHtml ?? null,
         averageRating,
         ratingCount,
-      })
+      }),
     );
   }, [
     dispatch,
@@ -108,7 +108,7 @@ export function ProductCardHoverActions({
     onSale && regularPrice && salePrice
       ? Math.round(
           ((Number(regularPrice) - Number(salePrice)) / Number(regularPrice)) *
-            100
+            100,
         )
       : null;
 
@@ -121,8 +121,8 @@ export function ProductCardHoverActions({
     size === "compact"
       ? "text-xs md:text-sm"
       : size === "large"
-      ? "text-sm md:text-lg"
-      : "text-sm md:text-base";
+        ? "text-sm md:text-lg"
+        : "text-sm md:text-base";
 
   return (
     <>
@@ -299,7 +299,7 @@ export function ProductCardHoverActions({
             <div className="rounded-lg">
               {rule === "loggedInOnly" && !isLoggedIn ? (
                 <p className="text-[14px] text-muted-foreground">
-                  <Link href="/account/login" className="underline font-medium">
+                  <Link href="/login" className="underline font-medium">
                     Login
                   </Link>{" "}
                   to see pricing.

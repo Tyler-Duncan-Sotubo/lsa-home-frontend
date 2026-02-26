@@ -26,7 +26,7 @@ export function useRegister(callbackUrl: string) {
         });
 
         if (loginRes?.error) {
-          router.push("/account/login");
+          router.push("/login");
           return;
         }
 
@@ -35,7 +35,7 @@ export function useRegister(callbackUrl: string) {
         setError(e?.message || "Something went wrong. Please try again.");
       }
     },
-    [callbackUrl, router]
+    [callbackUrl, router],
   );
 
   return { register, error, setError };

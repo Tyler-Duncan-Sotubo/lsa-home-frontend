@@ -15,7 +15,7 @@
       "enabled": true,
       "detailsVariant": "V2"
     },
-    "pricing": { "showPriceInDetails": "loggedInOnly" },
+    "pricing": { "showPriceInDetails": "always" },
     "product": {
       "galleryVariant": "V2",
       "showWishlistButton": true,
@@ -109,116 +109,140 @@
           "href": "/shop",
           "sections": [
             {
-              "title": "Linens, Amenities & In-Room",
+              "title": "Linens & Amenities",
               "items": [
                 {
-                  "label": "Mattress & Beddings",
-                  "href": "/collections/hubs/all-bed"
+                  "label": "Linens and Amenities",
+                  "href": "/collections/hubs/linens-and-amenities"
+                },
+                { "label": "Amenities", "href": "/collections/amenities" },
+                {
+                  "label": "Disposable Amenities",
+                  "href": "/collections/disposable-amenities"
                 },
                 {
-                  "label": "Towels & Bathrobes",
-                  "href": "/collections/hubs/all-baths"
+                  "label": "Amenity Trays and Holders",
+                  "href": "/collections/amenity-trays-and-holders"
+                },
+
+                {
+                  "label": "Mattress and Beddings",
+                  "href": "/collections/hubs/mattress-and-beddings"
+                },
+                { "label": "Beddings", "href": "/collections/beddings" },
+                { "label": "Mattresses", "href": "/collections/mattresses" },
+                { "label": "Pillows", "href": "/collections/pillows" },
+                { "label": "Beds", "href": "/collections/beds" },
+
+                {
+                  "label": "Towels and Bathrobes",
+                  "href": "/collections/hubs/towels-and-bathrobes"
+                },
+                { "label": "Bathrobes", "href": "/collections/bathrobes" }
+              ]
+            },
+            {
+              "title": "In-Room (Room Appliances)",
+              "items": [
+                {
+                  "label": "Room Appliances",
+                  "href": "/collections/hubs/room-appliances"
                 },
                 {
-                  "label": "Hotel Toiletries & Disposable Amenities",
-                  "href": "/collections/hotel-toiletries"
+                  "label": "Alarm Clocks",
+                  "href": "/collections/alarm-clocks"
+                },
+                { "label": "Hair Dryers", "href": "/collections/hair-dryers" },
+                {
+                  "label": "Ironing Stations",
+                  "href": "/collections/ironing-stations"
                 },
                 {
-                  "label": "Amenity Trays & Holders",
-                  "href": "/collections/amenity-trays-holders"
+                  "label": "Kettles and Trays",
+                  "href": "/collections/kettles-and-trays"
                 },
-                {
-                  "label": "Kettles & Trays",
-                  "href": "/collections/kettles-trays"
-                },
-                { "label": "Mini Bars", "href": "/collections/mini-bars" },
                 {
                   "label": "Luggage Racks",
                   "href": "/collections/luggage-racks"
                 },
-                { "label": "Safes", "href": "/collections/safes" },
-                { "label": "Room Bins", "href": "/collections/room-bins" },
+                { "label": "Mini Bars", "href": "/collections/mini-bars" },
                 {
                   "label": "Room Accessories",
                   "href": "/collections/room-accessories"
                 },
+                { "label": "Room Bins", "href": "/collections/room-bins" },
                 {
-                  "label": "Ironing Station",
-                  "href": "/collections/ironing-station"
+                  "label": "Room Telephone",
+                  "href": "/collections/room-telephone"
                 },
-                { "label": "Hair Dryers", "href": "/collections/hair-dryers" }
+                { "label": "Safes", "href": "/collections/safes" },
+                { "label": "Scales", "href": "/collections/scales" }
               ]
             },
             {
               "title": "Public Area",
               "items": [
                 {
-                  "label": "Trolleys & Carts",
-                  "href": "/collections/trolleys-carts"
-                },
-                {
-                  "label": "Indoor & Outdoor Bins",
-                  "href": "/collections/indoor-outdoor-bins"
+                  "label": "Public Area",
+                  "href": "/collections/hubs/public-area"
                 },
                 {
                   "label": "Dispensers & Dryers",
                   "href": "/collections/dispensers-dryers"
                 },
-                { "label": "Signs", "href": "/collections/signs" },
+                {
+                  "label": "Hotel Cleaning Supplies",
+                  "href": "/collections/hotel-cleaning-supplies"
+                },
+                {
+                  "label": "Indoor and Outdoor Bins",
+                  "href": "/collections/indoor-and-outdoor-bins"
+                },
                 {
                   "label": "Reception Accessories",
                   "href": "/collections/reception-accessories"
                 },
                 {
-                  "label": "Hotel Cleaning Supplies",
-                  "href": "/collections/hotel-cleaning-supplies"
-                }
-              ]
-            },
-            {
-              "title": "Furniture & Kitchen",
-              "items": [
-                { "label": "Beds", "href": "/collections/beds" },
-                { "label": "Chairs", "href": "/collections/chairs" },
-                { "label": "Tables", "href": "/collections/tables" },
-                { "label": "Lecterns", "href": "/collections/lecterns" },
-                { "label": "Lighting", "href": "/collections/lighting" },
-                {
-                  "label": "Plates, Cutlery & Drinkware",
-                  "href": "/collections/plates-cutlery-drinkware"
+                  "label": "Trolleys and Carts",
+                  "href": "/collections/trolleys-and-carts"
                 },
+
+                { "label": "Furniture", "href": "/collections/hubs/furniture" },
+                { "label": "Tables", "href": "/collections/tables" },
+                { "label": "Chairs", "href": "/collections/chairs" },
+
+                { "label": "Kitchen", "href": "/collections/hubs/kitchen" },
                 { "label": "Buffet", "href": "/collections/buffet" },
                 {
-                  "label": "Mini Kitchen Equipment",
-                  "href": "/collections/mini-kitchen-equipment"
-                },
-                {
-                  "label": "Racks & Trolleys",
-                  "href": "/collections/racks-trolleys"
-                },
-                {
-                  "label": "Table & Kitchen Linen",
-                  "href": "/collections/table-kitchen-linen"
+                  "label": "Plates, Cutlery, Drinkware",
+                  "href": "/collections/plates-cutlery-drinkware"
                 },
                 {
                   "label": "Commercial Kitchen Equipment",
                   "href": "/collections/commercial-kitchen-equipment"
+                },
+                {
+                  "label": "Mini Kitchen Equipment",
+                  "href": "/collections/mini-kitchen-equipment"
                 }
               ]
             }
           ],
           "feature": {
-            "label": "30ml Bottle Bath Toiletries",
-            "href": "/collections/hotel-essentials",
+            "label": "Hotel Essentials",
+            "href": "/collections/hubs/room-appliances",
             "image": {
               "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/30g-bar-soap-hotel-amenity-2736647.webp",
-              "alt": "30ml Bottle Bath Toiletries"
+              "alt": "Hotel Essentials"
             },
             "description": "A curated range of linens, amenities, and in-room products designed for premium hospitality experiences."
           }
         },
-        { "label": "Bedding", "href": "/collections/hubs/all-bed" },
-        { "label": "Bath", "href": "/collections/hubs/all-baths" },
+        { "label": "Bedding", "href": "/collections/mattress-and-beddings" },
+        {
+          "label": "Room Appliances",
+          "href": "/collections/hubs/room-appliances"
+        },
         { "label": "Amenities", "href": "/collections/hubs/amenities" },
         { "label": "Catalogue", "href": "/catalogue" },
         { "label": "About Us", "href": "/about-us" },
@@ -369,7 +393,7 @@
               "description": "Consistent quality, dependable supply, and pricing designed for growing hotels.",
               "cta": {
                 "label": "View Bulk Solutions",
-                "href": "/solutions"
+                "href": "/collections"
               }
             }
           },
@@ -384,7 +408,7 @@
               "description": "Thoughtfully designed essentials that elevate your brand experience.",
               "cta": {
                 "label": "See Inspirations",
-                "href": "/inspiration"
+                "href": "/collections"
               }
             }
           }
@@ -1004,7 +1028,7 @@
             "description": "We offer everything you need to outfit hospitality spaces—quality, consistency, and efficient delivery.",
             "cta": {
               "label": "Download Catalogue",
-              "href": "https://cdn.shopify.com/s/files/1/0929/6438/9156/files/Serene_Product_Catalog.pdf?"
+              "href": "https://centa-hr.s3.eu-west-3.amazonaws.com/company-files/d84db62b-d13c-412d-8938-7f7caeba1b30/860b6a96-35b4-4a34-83d7-171384b54c60/1772146792411-Serene_Product_Catalog.pdf"
             },
             "className": "bg-white/95"
           },

@@ -94,7 +94,7 @@ export function CollectionPageClient({
           <ProductRail
             products={filteredProducts}
             sectionClassName="py-8"
-            // layout="wrap"
+            layout="wrap"
           />
         </div>
       ) : (

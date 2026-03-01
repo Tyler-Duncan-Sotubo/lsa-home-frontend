@@ -19,9 +19,10 @@ export const ProductRecommendationsTabbed = ({
 }: ProductRecommendationsTabbedProps) => {
   const hasRelated = relatedProducts.length > 0;
 
-  // If there are no related products, default to "recent" and hide the other tab.
-  const initialTab: "recent" | "collection" =
-    defaultTab ?? (hasRelated ? "collection" : "recent");
+  // ✅ If no related products, ALWAYS show "recent"
+  const initialTab: "recent" | "collection" = hasRelated
+    ? (defaultTab ?? "collection")
+    : "recent";
 
   return (
     <div className={className}>

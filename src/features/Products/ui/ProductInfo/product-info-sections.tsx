@@ -36,7 +36,7 @@ export function ProductInfoSections({ product }: ProductInfoSectionsProps) {
 
               <AccordionContent>
                 <div
-                  className="prose prose-sm max-w-none text-muted-foreground"
+                  className="prose prose-sm max-w-none text-muted-foreground text-base"
                   dangerouslySetInnerHTML={{ __html: value }}
                 />
               </AccordionContent>

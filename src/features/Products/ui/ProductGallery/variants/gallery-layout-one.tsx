@@ -45,8 +45,9 @@ export function GalleryLayoutOne({
 
   return (
     <div className="relative border-b md:border-b-0 md:h-162.5">
-      <div className="flex h-full">
-        {/* Thumbs (only if multiple images) */}
+      {/* mobile: column (thumbs under) | desktop: row (thumbs left) */}
+      <div className="flex h-full flex-col md:flex-row">
+        {/* ✅ Desktop thumbs (left) */}
         {hasMultiple && (
           <aside className="hidden md:flex flex-col gap-3 p-2 w-18 shrink-0 overflow-y-auto">
             {safeImages.slice(0, 9).map((thumbSrc, index) => (
@@ -131,6 +132,35 @@ export function GalleryLayoutOne({
             </>
           )}
         </div>
+
+        {/* ✅ Mobile thumbs (under main) */}
+        {hasMultiple && (
+          <div className="md:hidden px-2 pb-3">
+            <div className="flex gap-3 overflow-x-auto">
+              {safeImages.slice(0, 9).map((thumbSrc, index) => (
+                <button
+                  key={`${thumbSrc}-${index}`}
+                  onClick={() => onSelect(index)}
+                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md ${
+                    index === activeIndex ? "" : "opacity-70 hover:opacity-100"
+                  }`}
+                  aria-label={`Select image ${index + 1}`}
+                  type="button"
+                >
+                  <Image
+                    src={
+                      thumbSrc ??
+                      "https://centa-hr.s3.amazonaws.com/019bbc22-ee74-7bfa-a6af-0a801a3d2e24/no-image.jpeg"
+                    }
+                    alt={alt}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

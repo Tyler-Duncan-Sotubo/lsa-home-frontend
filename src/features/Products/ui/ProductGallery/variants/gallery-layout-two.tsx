@@ -37,7 +37,8 @@ export function GalleryLayoutTwo({
 
   return (
     <div className="relative border-b md:border-b-0 md:h-162.5">
-      <div className="flex h-full">
+      {/* mobile: column (thumbs under) | desktop: row (thumbs right) */}
+      <div className="flex h-full flex-col md:flex-row">
         {/* Main */}
         <div className="relative flex-1 flex items-center justify-center p-2">
           <div
@@ -46,12 +47,10 @@ export function GalleryLayoutTwo({
             onMouseEnter={() => setShowZoom(true)}
             onMouseLeave={() => setShowZoom(false)}
             onMouseMove={onMouseMove}
-            onTouchStart={() => setShowZoom(false)} // ✅ ADD THIS LINE
+            onTouchStart={() => setShowZoom(false)}
           >
-            {/* Base image */}
             <Image src={src} alt={alt} fill className="object-cover" priority />
 
-            {/* Zoom layer */}
             {showZoom && (
               <div
                 className="absolute inset-0 pointer-events-none"
@@ -86,26 +85,55 @@ export function GalleryLayoutTwo({
         </div>
 
         {/* Thumbs */}
-        <aside className="hidden md:flex flex-col gap-3 p-2 w-18 shrink-0 overflow-y-auto">
-          {images.slice(0, 9).map((src, index) => (
-            <button
-              key={`${src}-${index}`}
-              onClick={() => onSelect(index)}
-              className={`relative w-full aspect-square overflow-hidden ${
-                index === activeIndex
-                  ? "ring-2 ring-foreground"
-                  : "opacity-70 hover:opacity-100"
-              }`}
-            >
-              <Image
-                src={src || "/placeholder.png"}
-                alt={alt}
-                fill
-                className="object-cover"
-              />
-            </button>
-          ))}
-        </aside>
+        {images.length > 1 && (
+          <>
+            {/* ✅ Mobile thumbs (under main) */}
+            <div className="md:hidden px-2 pb-3">
+              <div className="flex gap-3 overflow-x-auto">
+                {images.slice(0, 9).map((thumbSrc, index) => (
+                  <button
+                    key={`${thumbSrc}-${index}`}
+                    onClick={() => onSelect(index)}
+                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md ${
+                      index === activeIndex
+                        ? ""
+                        : "opacity-70 hover:opacity-100"
+                    }`}
+                  >
+                    <Image
+                      src={thumbSrc || "/placeholder.png"}
+                      alt={alt}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* ✅ Desktop thumbs (right sidebar) */}
+            <aside className="hidden md:flex flex-col gap-3 p-2 w-18 shrink-0 overflow-y-auto">
+              {images.slice(0, 9).map((thumbSrc, index) => (
+                <button
+                  key={`${thumbSrc}-${index}`}
+                  onClick={() => onSelect(index)}
+                  className={`relative w-full aspect-square overflow-hidden ${
+                    index === activeIndex
+                      ? "ring-2 ring-foreground"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <Image
+                    src={thumbSrc || "/placeholder.png"}
+                    alt={alt}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </aside>
+          </>
+        )}
       </div>
     </div>
   );

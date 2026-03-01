@@ -201,6 +201,17 @@ export function ProductDetailsQuoteOne({
     );
   }, [variationIndex, selectionKey, product.variations]);
 
+  // ✅ STOCK: derive max qty from active variation stock (fallback: 10)
+  const maxQty = useMemo(() => {
+    const vAny = activeVariation as any | null;
+    const pAny = product as any;
+
+    if (vAny?.manage_stock) return Number(vAny.stock_quantity ?? 0);
+    if (pAny?.manage_stock) return Number(pAny.stock_quantity ?? 0);
+
+    return 10;
+  }, [activeVariation, product]);
+
   const isInStock = useMemo(() => {
     const vAny = activeVariation as any | null;
     const pAny = product as any;
@@ -359,7 +370,7 @@ export function ProductDetailsQuoteOne({
         <h1 className="text-lg md:text-2xl font-semibold">{product.name}</h1>
 
         <div
-          className="my-2 text-xs md:text-sm text-muted-foreground prose prose-sm
+          className="my-2 text-sm md:text-base text-muted-foreground prose prose-sm
              prose-p:mt-0 prose-p:mb-2"
           dangerouslySetInnerHTML={{ __html: product.description }}
         />
@@ -411,17 +422,16 @@ export function ProductDetailsQuoteOne({
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10">
-                <span className="h-2.5 w-2.5 rounded-full bg-destructive" />
+            // ✅ If there's no price, show "Preorder" instead of "Out of stock"
+            <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                <span className="h-2.5 w-2.5 rounded-full bg-primary" />
               </div>
 
               <div className="flex flex-col">
-                <p className="text-sm font-semibold text-destructive">
-                  Out of stock
-                </p>
+                <p className="text-sm font-semibold text-primary">Preorder</p>
                 <p className="text-xs text-muted-foreground">
-                  This option isn’t available right now. Try another option.
+                  This item is available for preorder.
                 </p>
               </div>
             </div>
@@ -490,6 +500,12 @@ export function ProductDetailsQuoteOne({
               />
             )}
           </div>
+
+          {isInStock && maxQty > 0 && maxQty <= 10 ? (
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Only {maxQty} left
+            </p>
+          ) : null}
 
           <div className="flex items-start gap-3 rounded-lg bg-muted/60 px-3 py-2">
             <div className="mt-0.75 h-6 w-6 rounded-full bg-primary/10" />

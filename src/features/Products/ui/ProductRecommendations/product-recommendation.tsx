@@ -21,12 +21,19 @@ export const ProductRecommendations = ({
 }: ProductRecommendationsProps) => {
   const variant = config?.recommendations?.variant ?? "STACKED";
   const defaultTab = config?.recommendations?.defaultTab;
+
+  // ✅ Exclude the current product from related products
+  const filteredRelatedProducts = relatedProducts.filter((p) => {
+    if (p?.slug && product?.slug) return p.slug !== product.slug;
+    return true;
+  });
+
   switch (variant) {
     case "TABBED":
       return (
         <ProductRecommendationsTabbed
           productSlug={product.slug}
-          relatedProducts={relatedProducts}
+          relatedProducts={filteredRelatedProducts}
           defaultTab={defaultTab}
           className={className}
         />
@@ -37,7 +44,7 @@ export const ProductRecommendations = ({
       return (
         <ProductRecommendationsStacked
           productSlug={product.slug}
-          relatedProducts={relatedProducts}
+          relatedProducts={filteredRelatedProducts}
           className={className}
         />
       );

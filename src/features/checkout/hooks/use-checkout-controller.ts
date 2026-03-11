@@ -116,7 +116,7 @@ export function useCheckoutController(checkoutId: string) {
   const firstNameField = useWatch({ control: form.control, name: "firstName" });
   const lastNameField = useWatch({ control: form.control, name: "lastName" });
   const phoneField = useWatch({ control: form.control, name: "phone" });
-
+  const email = form.getValues("email");
   const pickupState = useWatch({ control: form.control, name: "pickupState" });
   const pickupLocationId = useWatch({
     control: form.control,
@@ -188,8 +188,6 @@ export function useCheckoutController(checkoutId: string) {
   const refreshCheckout = async (oldCheckoutId: string) => {
     if (!oldCheckoutId) return null;
 
-    console.log("[checkout.refresh] refreshing checkout...", { oldCheckoutId });
-
     // prevent infinite loop per id
     if (refreshAttemptedRef.current === oldCheckoutId) return null;
     refreshAttemptedRef.current = oldCheckoutId;
@@ -201,8 +199,6 @@ export function useCheckoutController(checkoutId: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ checkoutId: oldCheckoutId }),
       });
-
-      console.log("[checkout.refresh] refreshed:", refreshed);
 
       const newId =
         refreshed?.checkoutId ??
@@ -225,7 +221,6 @@ export function useCheckoutController(checkoutId: string) {
       return newId;
     } catch (err: any) {
       toast.error(err?.message ?? "Unable to refresh checkout");
-      console.log("[checkout.refresh] error:", err);
       return null;
     } finally {
       setIsRefreshingCheckout(false);
@@ -266,7 +261,6 @@ export function useCheckoutController(checkoutId: string) {
         return;
       }
       toast.error(getErrMsg(err));
-      console.log("[checkout.shipping] error:", err);
     },
   });
 
@@ -386,16 +380,56 @@ export function useCheckoutController(checkoutId: string) {
       });
     },
 
-    onSuccess: (order: any, variables) => {
+    onSuccess: async (order: any, variables) => {
       const normalized = normalizePaymentMethod(variables.paymentMethod);
 
       dispatch(refreshCartAndHydrate());
 
-      if (normalized.paymentMethodType === "gateway") {
-        router.push(`/order/success/${order.id}`);
+      // Bank transfer / cash -> pending page
+      if (normalized.paymentMethodType !== "gateway") {
+        router.push(`/order/pending/${order.id}`);
         return;
       }
 
+      // Paystack gateway
+      if (normalized.paymentProvider === "paystack") {
+        try {
+          const paystack = await fetchJson("/api/paystack/initialize", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email,
+              amount: Number(order.total ?? order.totalAmount ?? 0),
+              currency: order.currency ?? "NGN",
+              reference: order.reference ?? order.orderNumber ?? order.id,
+              callbackUrl: `${window.location.origin}/order/pending/${order.id}`,
+              metadata: {
+                orderId: order.id,
+                orderNumber: order.orderNumber ?? null,
+              },
+            }),
+          });
+
+          const authorizationUrl =
+            paystack?.data?.authorizationUrl ??
+            paystack?.data?.data?.authorizationUrl;
+
+          if (!authorizationUrl) {
+            toast.error("Unable to start Paystack payment.");
+            router.push(`/order/${order.id}`);
+            return;
+          }
+
+          window.location.href = authorizationUrl;
+          return;
+        } catch (err: any) {
+          toast.error(getErrMsg(err) || "Unable to start Paystack payment.");
+          router.push(`/order/pending/${order.id}`);
+          return;
+        }
+      }
+
+      // Unknown gateway fallback
       router.push(`/order/pending/${order.id}`);
     },
 

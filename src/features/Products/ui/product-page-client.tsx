@@ -102,6 +102,7 @@ export function ProductPageClient({
   const productUiConfig = config.ui?.product;
   const showInfoSections =
     productUiConfig?.productDetails?.showInfoSections ?? true;
+  const siteName = config.store.name;
 
   return (
     <section className="py-8">
@@ -131,6 +132,7 @@ export function ProductPageClient({
               product={product}
               selectedColor={selectedColor}
               setSelectedColor={setSelectedColor}
+              siteName={siteName}
             />
           </SectionReveal>
         </div>

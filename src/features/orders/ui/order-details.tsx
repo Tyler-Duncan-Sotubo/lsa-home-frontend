@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStorefrontOrder } from "../hooks/use-order";
 import { LoadingProgress } from "@/shared/ui/loading/loading-progress";
+import { OrderPaystackVerifier } from "./order-paystack-verifier";
 
 type Props = {
   orderId: string;
@@ -37,12 +38,13 @@ export function OrderDetails({ orderId }: Props) {
 
   // Determine if this order is bank transfer
   const paymentMethodType = String(
-    order?.paymentMethodType ?? ""
+    order?.paymentMethodType ?? "",
   ).toLowerCase();
   const isBankTransfer = paymentMethodType === "bank_transfer";
 
   const isCash = order?.paymentMethodType === "cash";
-  const isGateway = order?.paymentMethodType === "gateway";
+  const isGateway =
+    String(order?.paymentMethodType ?? "").toLowerCase() === "gateway";
 
   const methods = paymentMethods?.methods ?? [];
   const cashMethod = methods.find((m: any) => m?.method === "cash");
@@ -53,7 +55,7 @@ export function OrderDetails({ orderId }: Props) {
     if (!isBankTransfer) return null;
 
     const bankTransferMethod = paymentMethods?.methods?.find(
-      (m: any) => m?.method === "bank_transfer"
+      (m: any) => m?.method === "bank_transfer",
     );
 
     const details = bankTransferMethod?.bankDetails;
@@ -237,7 +239,7 @@ export function OrderDetails({ orderId }: Props) {
                   payment={order?.payment ?? null}
                   onUploaded={async () => {
                     toast.success(
-                      "Proof of payment submitted. We’ll verify it shortly."
+                      "Proof of payment submitted. We’ll verify it shortly.",
                     );
                     qc.invalidateQueries({
                       queryKey: ["storefront-order", orderId],
@@ -255,16 +257,8 @@ export function OrderDetails({ orderId }: Props) {
               </p>
             </div>
           ) : isGateway ? (
-            <div className="mt-2 rounded-lg bg-muted/30 p-3">
-              <p className="text-sm">
-                {order?.payment?.status === "succeeded"
-                  ? "Payment received."
-                  : "Payment pending."}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                If you haven’t paid yet, return to checkout or use the payment
-                link.
-              </p>
+            <div className="space-y-3">
+              <OrderPaystackVerifier orderId={orderId} />
             </div>
           ) : (
             <div className="mt-2 rounded-lg bg-muted/30 p-3">

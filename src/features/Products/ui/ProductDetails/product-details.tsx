@@ -86,6 +86,7 @@ const ProductDetails = ({
           isModal={isModal}
           onAddedToCart={onAddedToCart}
           showInfoSections={showInfoSections}
+          siteName={siteName}
         />
       );
     }

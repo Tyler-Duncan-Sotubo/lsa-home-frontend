@@ -392,51 +392,51 @@ export function ProductDetailsQuoteOne({
         <Rating rating={rating} reviews={reviews} />
 
         {/* ================= PRICE BLOCK ================= */}
-        {canSee ? (
-          isPriceEligible ? (
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex flex-col">
-                {formattedSale && formattedRegular ? (
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm md:text-base line-through text-muted-foreground">
-                      {formattedRegular}
-                    </span>
-
-                    <span className="text-base md:text-lg font-semibold text-primary">
-                      {pricePrefix}
-                      {formattedSale}
-                    </span>
-
-                    {discountPercent && (
-                      <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-                        -{discountPercent}%
-                      </span>
-                    )}
-                  </div>
-                ) : formattedRegular ? (
-                  <span className="text-base md:text-lg font-semibold">
-                    {pricePrefix}
+        {canSee && (formattedSale || formattedRegular) ? (
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col">
+              {formattedSale && formattedRegular ? (
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm md:text-base line-through text-muted-foreground">
                     {formattedRegular}
                   </span>
-                ) : null}
-              </div>
+                  <span className="text-base md:text-lg font-semibold text-primary">
+                    {pricePrefix}
+                    {formattedSale}
+                  </span>
+                  {discountPercent && (
+                    <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                      -{discountPercent}%
+                    </span>
+                  )}
+                </div>
+              ) : formattedRegular ? (
+                <span className="text-base md:text-lg font-semibold">
+                  {pricePrefix}
+                  {formattedRegular}
+                </span>
+              ) : null}
             </div>
-          ) : (
-            // ✅ If there's no price, show "Preorder" instead of "Out of stock"
-            <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-              </div>
+          </div>
+        ) : null}
 
-              <div className="flex flex-col">
-                <p className="text-sm font-semibold text-primary">Preorder</p>
-                <p className="text-xs text-muted-foreground">
-                  This item is available for preorder.
-                </p>
-              </div>
+        {/* Preorder banner — shown independently of price */}
+        {!isPriceEligible ? (
+          <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+              <span className="h-2.5 w-2.5 rounded-full bg-primary" />
             </div>
-          )
-        ) : isPriceEligible ? (
+            <div className="flex flex-col">
+              <p className="text-sm font-semibold text-primary">Preorder</p>
+              <p className="text-xs text-muted-foreground">
+                This item is available for preorder.
+              </p>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Login to see price / quote-based pricing */}
+        {!canSee && isPriceEligible ? (
           <div className="rounded-lg py-2">
             {rule === "loggedInOnly" && !isLoggedIn ? (
               <p className="mt-1 text-base text-muted-foreground">
@@ -480,7 +480,7 @@ export function ProductDetailsQuoteOne({
               className="flex-1"
               type="button"
             >
-              Request Quote
+              Preorder / Request Quote
             </Button>
 
             {showWishListButton && (

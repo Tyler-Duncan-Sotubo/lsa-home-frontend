@@ -21,6 +21,7 @@ export type QuoteItem = {
 export type QuoteCustomer = {
   email: string;
   note?: string;
+  name?: string;
 };
 
 export type QuoteState = {
@@ -51,7 +52,7 @@ const initialState: QuoteState = {
   items: [],
   isOpen: false,
   step: 1,
-  customer: { email: "", note: "" },
+  customer: { email: "", name: "", note: "" },
 };
 
 const quoteSlice = createSlice({
@@ -70,6 +71,7 @@ const quoteSlice = createSlice({
 
       state.customer = {
         email: action.payload.customer?.email ?? "",
+        name: action.payload.customer?.name ?? "",
         note: action.payload.customer?.note ?? "",
       };
     },
@@ -202,7 +204,7 @@ const quoteSlice = createSlice({
     clearQuote(state) {
       state.items = [];
       state.step = 1;
-      state.customer = { email: "", note: "" };
+      state.customer = { email: "", name: "", note: "" };
     },
 
     openQuote(state) {
@@ -235,6 +237,10 @@ const quoteSlice = createSlice({
     setCustomerNote(state, action: PayloadAction<string>) {
       state.customer.note = action.payload;
     },
+
+    setCustomerName(state, action: PayloadAction<string>) {
+      state.customer.name = action.payload;
+    },
   },
 });
 
@@ -251,6 +257,7 @@ export const {
   prevStep,
   setCustomerEmail,
   setCustomerNote,
+  setCustomerName,
 } = quoteSlice.actions;
 
 export default quoteSlice.reducer;

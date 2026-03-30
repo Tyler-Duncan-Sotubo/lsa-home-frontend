@@ -28,6 +28,7 @@ import {
   setCustomerNote,
   updateQuoteQuantity,
   clearQuote,
+  setCustomerName,
 } from "@/store/quoteSlice";
 import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
@@ -178,6 +179,7 @@ export function QuoteSheet() {
       {
         customerEmail: emailToUse,
         customerNote: customer.note ?? undefined,
+        customerName: customer.name?.trim() || undefined,
         items: items.map((it) => ({
           productId: (it as any).productId ?? undefined,
           variantId: it.variantId ?? undefined,
@@ -491,6 +493,16 @@ export function QuoteSheet() {
                   </p>
 
                   <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Name</Label>
+                      <Input
+                        value={customer.name ?? ""}
+                        onChange={(e) =>
+                          dispatch(setCustomerName(e.target.value))
+                        }
+                        placeholder="John Smith"
+                      />
+                    </div>
                     <div className="space-y-2">
                       <Label>Email</Label>
                       <Input

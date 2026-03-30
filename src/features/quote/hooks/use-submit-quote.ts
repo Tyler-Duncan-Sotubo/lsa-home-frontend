@@ -4,6 +4,7 @@ import axios from "axios";
 type SubmitQuotePayload = {
   customerEmail: string;
   customerNote?: string;
+  customerName?: string;
   items: Array<{
     productId?: string;
     variantId?: string;

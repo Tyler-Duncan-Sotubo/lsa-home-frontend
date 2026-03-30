@@ -24,6 +24,8 @@ export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigRes
     "/api/storefront-config/config",
     { method: "GET", tags: ["storefront-config"] },
   );
+
+  console.debug("Fetched remote storefront config", res);
   if (!res.ok) {
     const err = res.error as any;
 

@@ -3,13 +3,18 @@
 import { headers } from "next/headers";
 
 export async function getStoreHostHeader() {
-  // Server
   try {
     const h = await headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host") ?? "";
-    return host ? { "X-Store-Host": host } : {};
+    const forwarded = h.get("x-forwarded-host");
+    const host = h.get("host");
+    console.log("[getStoreHostHeader]", {
+      forwarded,
+      host,
+      using: forwarded ?? host,
+    });
+    const resolved = forwarded ?? host ?? "";
+    return resolved ? { "X-Store-Host": resolved } : {};
   } catch {
-    // Client
     if (typeof window !== "undefined") {
       const host = window.location.hostname;
       return host ? { "X-Store-Host": host } : {};

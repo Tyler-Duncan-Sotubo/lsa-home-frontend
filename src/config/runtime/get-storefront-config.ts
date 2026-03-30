@@ -1,3 +1,4 @@
+import "server-only";
 import type { StorefrontConfigV1 } from "../types/types";
 import {
   fetchRemoteStorefrontConfig,

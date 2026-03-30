@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { storefrontFetchSafe } from "@/shared/api/fetch";
 import type { StorefrontConfigV1 } from "../types/types";
+import { getStoreHostHeader } from "@/shared/api/storefront-headers";
 
 export enum StorefrontConfigErrorCode {
   DOMAIN_NOT_FOUND = "DOMAIN_NOT_FOUND",
@@ -20,9 +21,18 @@ export type StorefrontConfigResult =
     };
 
 export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigResult> {
+  const hostHeader = await getStoreHostHeader();
+  const host = hostHeader["X-Store-Host"] ?? "";
+
   const res = await storefrontFetchSafe<StorefrontConfigV1>(
-    "/api/storefront-config/config",
-    { method: "GET", tags: ["storefront-config"] },
+    `/api/storefront-config/config?host=${encodeURIComponent(host)}`,
+    {
+      method: "GET",
+      cache: "no-store", // 🔴 critical
+      headers: Object.fromEntries(
+        Object.entries(hostHeader).filter(([, v]) => v !== undefined),
+      ), // ✅ pass header too
+    },
   );
 
   console.debug("Fetched remote storefront config", res);

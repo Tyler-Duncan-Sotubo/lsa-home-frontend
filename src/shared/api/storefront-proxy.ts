@@ -6,11 +6,16 @@ export async function proxyStorefront<T>(
 ): Promise<NextResponse> {
   try {
     const data = await fn();
+
     return NextResponse.json(data, {
-      headers: { "Cache-Control": "no-store" },
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
     });
   } catch (err: any) {
-    // If storefrontFetch throws a structured error, forward it
     const status =
       err?.status ??
       err?.statusCode ??
@@ -19,7 +24,7 @@ export async function proxyStorefront<T>(
       500;
 
     const payload =
-      (err?.error ?? err?.data ?? err?.response?.data ?? err?.message)
+      err?.error || err?.data || err?.response?.data || err?.message
         ? {
             message: err?.message ?? "Request failed",
             ...(typeof err?.error === "object" ? err.error : {}),
@@ -30,7 +35,12 @@ export async function proxyStorefront<T>(
 
     return NextResponse.json(payload, {
       status,
-      headers: { "Cache-Control": "no-store" },
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
     });
   }
 }

@@ -14,20 +14,10 @@ export type StorefrontFetchOpts = {
 
   headers?: Record<string, string>;
 
-  // ✅ cart auth (access)
   cartToken?: string | null;
-
-  // ✅ cart refresh (new)
   cartRefreshToken?: string | null;
-
-  // ✅ customer auth
   accessToken?: string | null;
 
-  /**
-   * ✅ NEW:
-   * When true, return { data, headers, status } so callers can read rotated tokens.
-   * Default false keeps existing behavior (returns data only).
-   */
   includeMeta?: boolean;
 };
 
@@ -38,10 +28,12 @@ function toQueryString(
 ) {
   if (!params) return "";
   const sp = new URLSearchParams();
+
   for (const [k, v] of Object.entries(params)) {
     if (v === undefined || v === null || v === "") continue;
     sp.set(k, String(v));
   }
+
   const s = sp.toString();
   return s ? `?${s}` : "";
 }
@@ -57,16 +49,14 @@ async function readError(res: Response) {
 }
 
 async function getIncomingHost(): Promise<string | null> {
-  // In Next.js App Router, this returns the headers of the incoming request
-  const h = await nextHeaders();
-
-  // Prefer forwarded host (CDN/proxy), fallback to host
-  const host = h.get("x-forwarded-host") || h.get("host") || null;
-
-  if (!host) return null;
-
-  // strip port
-  return host.split(":")[0].trim().toLowerCase();
+  try {
+    const h = await nextHeaders();
+    const host = h.get("x-forwarded-host") || h.get("host") || null;
+    if (!host) return null;
+    return host.split(":")[0].trim().toLowerCase();
+  } catch {
+    return null;
+  }
 }
 
 export async function storefrontFetch<T>(
@@ -81,7 +71,7 @@ export async function storefrontFetch<T>(
   path: string,
   opts: StorefrontFetchOpts = {},
 ): Promise<T | MetaResult<T>> {
-  const { baseUrl } = getStorefrontConfig();
+  const { baseUrl } = await getStorefrontConfig();
 
   const method = opts.method ?? "GET";
   const qs = toQueryString(opts.params);
@@ -93,21 +83,15 @@ export async function storefrontFetch<T>(
   const incomingHost = await getIncomingHost();
 
   const headers: Record<string, string> = {
-    // ✅ Domain-based tenancy header
     ...(incomingHost ? { "X-Store-Host": incomingHost } : {}),
-
     ...(opts.body ? { "Content-Type": "application/json" } : {}),
-
-    // ✅ for CartTokenGuard (access + refresh)
     ...(opts.cartToken ? { "X-Cart-Token": opts.cartToken } : {}),
     ...(opts.cartRefreshToken
       ? { "X-Cart-Refresh-Token": opts.cartRefreshToken }
       : {}),
-
     ...(opts.accessToken
       ? { Authorization: `Bearer ${opts.accessToken}` }
       : {}),
-
     ...opts.headers,
   };
 
@@ -135,10 +119,12 @@ export async function storefrontFetch<T>(
 
   if (!res.ok) {
     const errorBody = await readError(res);
+
     if (errorBody && typeof errorBody === "object") {
       (errorBody as any).status = res.status;
       (errorBody as any).statusCode ??= res.status;
     }
+
     throw (
       errorBody ?? {
         statusCode: res.status,

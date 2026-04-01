@@ -33,5 +33,5 @@ export function BlogListRenderer({
   if (variant === "V2") return <BlogListTwo posts={lite} />;
 
   // default V1
-  return <BlogListOne posts={lite} gridLimit={8} />;
+  return <BlogListOne posts={lite} gridLimit={8} className="w-full" />;
 }

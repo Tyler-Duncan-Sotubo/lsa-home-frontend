@@ -38,7 +38,11 @@ export function BlogListOne({
       {/* Top editorial row */}
       <section className="grid gap-6 lg:grid-cols-3">
         {/* Featured */}
-        <RevealFromSide direction="left" distance={22}>
+        <RevealFromSide
+          direction="left"
+          distance={22}
+          className="lg:col-span-2"
+        >
           <article className="overflow-hidden">
             <Link href={`${basePath}/${featured.slug}`} className="block">
               <div className="relative aspect-video w-full">

@@ -7,7 +7,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { NavItem } from "@/config/types/header-types";
 
-/** Match helpers */
 function normalizePath(p: string) {
   if (!p) return "/";
   const clean = p.split("?")[0].split("#")[0];
@@ -17,83 +16,76 @@ function normalizePath(p: string) {
 function isActivePath(pathname: string, href: string, exact?: boolean) {
   const current = normalizePath(pathname);
   const target = normalizePath(href);
-
   if (exact) return current === target;
   if (target === "/") return current === "/";
-
   return current === target || current.startsWith(target + "/");
 }
 
 type Props = {
   items: NavItem[];
-  specialItems?: Array<{
-    matchLabel: string;
-    className: string;
-  }>;
+  specialItems?: Array<{ matchLabel: string; className: string }>;
 };
 
 export function DesktopOne({ items, specialItems }: Props) {
   const pathname = usePathname();
-
   const [openLabel, setOpenLabel] = React.useState<string | null>(null);
 
-  const openItem = React.useMemo(
-    () => items.find((i) => i.label === openLabel && i.type === "mega"),
-    [items, openLabel],
-  ) as Extract<NavItem, { type: "mega" }> | undefined;
+  const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const getSpecialClass = (label: string) =>
     specialItems?.find((s) => s.matchLabel === label)?.className ?? "";
 
-  // ✅ hover-intent close delay so you can move from trigger -> panel without it collapsing
-  const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
-  const CLEAR_CLOSE_TIMER = React.useCallback(() => {
+  const clearCloseTimer = React.useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
   }, []);
 
-  const OPEN = React.useCallback(
+  const openMenu = React.useCallback(
     (label: string) => {
-      CLEAR_CLOSE_TIMER();
+      clearCloseTimer();
       setOpenLabel(label);
     },
-    [CLEAR_CLOSE_TIMER],
+    [clearCloseTimer],
   );
 
-  const SCHEDULE_CLOSE = React.useCallback(() => {
-    CLEAR_CLOSE_TIMER();
+  const scheduleClose = React.useCallback(() => {
+    clearCloseTimer();
     closeTimerRef.current = setTimeout(() => {
       setOpenLabel(null);
       closeTimerRef.current = null;
-    }, 140); // tweak 100–250ms if you want
-  }, [CLEAR_CLOSE_TIMER]);
+    }, 250); // Brooklinen-style delay — long enough to move mouse into panel
+  }, [clearCloseTimer]);
 
-  // Close on ESC
+  const closeAll = React.useCallback(() => {
+    clearCloseTimer();
+    setOpenLabel(null);
+  }, [clearCloseTimer]);
+
+  // ESC
   React.useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpenLabel(null);
-    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeAll();
+    };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [closeAll]);
 
-  // Close on route change (pathname changes)
+  // Route change
   React.useEffect(() => {
-    setOpenLabel(null);
-  }, [pathname]);
+    closeAll();
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Cleanup timer on unmount
+  // Unmount cleanup
   React.useEffect(() => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     };
   }, []);
 
-  // Mark mega trigger active if any of its links are active
   function isMegaActive(item: Extract<NavItem, { type: "mega" }>) {
     const hrefs: string[] = [
       ...(item.sections?.flatMap((s) => s.items.map((x) => x.href)) ?? []),
@@ -104,7 +96,6 @@ export function DesktopOne({ items, specialItems }: Props) {
 
   return (
     <div className="hidden md:block">
-      {/* Top nav row */}
       <div className="flex items-center justify-center gap-2">
         {items.map((item) => {
           const active =
@@ -120,65 +111,42 @@ export function DesktopOne({ items, specialItems }: Props) {
               <div
                 key={mega.label}
                 className="relative flex items-center"
-                // ✅ Use pointer events + delayed close
-                onPointerEnter={() => OPEN(mega.label)}
-                onPointerLeave={() => SCHEDULE_CLOSE()}
+                onMouseEnter={() => openMenu(mega.label)}
+                onMouseLeave={() => scheduleClose()}
               >
-                {/* ✅ Clickable label */}
-                <Link
-                  href={mega.href ?? "#"}
-                  onFocus={() => OPEN(mega.label)}
-                  className={[
-                    "px-3 py-1 cursor-pointer 2xl:text-base text-sm font-medium transition-all",
-                    "hover:underline hover:font-semibold",
-                    active ? "underline font-semibold" : "",
-                    getSpecialClass(mega.label),
-                  ].join(" ")}
-                  aria-current={active ? "page" : undefined}
-                >
-                  {mega.label}
-                </Link>
-
-                {/* ✅ Separate toggle (so you can still open menu without navigating) */}
+                {/*
+                  Label is a plain button — hover opens the panel.
+                  No chevron. No navigation from the label itself.
+                  "Shop all" lives inside the panel (Brooklinen pattern).
+                */}
                 <button
                   type="button"
-                  onClick={() =>
-                    isOpen ? setOpenLabel(null) : OPEN(mega.label)
-                  }
                   aria-expanded={isOpen}
                   aria-controls={`mega-${mega.label}`}
-                  className="p-1 rounded-md hover:bg-muted"
-                  title="Open menu"
+                  className={[
+                    "px-3 py-1 2xl:text-base text-sm font-medium transition-all",
+                    "hover:underline hover:font-semibold",
+                    active || isOpen ? "underline font-semibold" : "",
+                    getSpecialClass(mega.label),
+                  ].join(" ")}
                 >
-                  <span className="sr-only">Open {mega.label} menu</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M6 9l6 6 6-6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  {mega.label}
                 </button>
 
-                {/* ✅ Render overlay when this mega is open.
-                    It participates in "hover area" by calling OPEN/SCHEDULE_CLOSE. */}
-                {isOpen ? (
+                {isOpen && (
                   <MegaOverlay
                     id={`mega-${mega.label}`}
                     item={mega}
                     pathname={pathname}
-                    onClose={() => setOpenLabel(null)}
-                    onHoverEnter={() => OPEN(mega.label)}
-                    onHoverLeave={() => SCHEDULE_CLOSE()}
+                    onClose={closeAll}
+                    onMouseEnter={() => openMenu(mega.label)}
+                    onMouseLeave={() => scheduleClose()}
                   />
-                ) : null}
+                )}
               </div>
             );
           }
 
-          // simple link
           return (
             <Link
               key={item.label}
@@ -196,45 +164,37 @@ export function DesktopOne({ items, specialItems }: Props) {
           );
         })}
       </div>
-
-      {/* NOTE: we no longer render the overlay down here.
-          It's rendered next to the trigger so hover logic is centralized. */}
-      {openItem ? null : null}
     </div>
   );
 }
 
-/* ------------------ */
-/* Full-screen overlay */
-/* ------------------ */
+/* ─────────────────────────────────────────────── */
+/*  Mega overlay                                   */
+/* ─────────────────────────────────────────────── */
 
 function MegaOverlay({
   id,
   item,
   pathname,
   onClose,
-  onHoverEnter,
-  onHoverLeave,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   id: string;
   item: Extract<NavItem, { type: "mega" }>;
   pathname: string;
   onClose: () => void;
-  onHoverEnter: () => void;
-  onHoverLeave: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }) {
   return (
     <div
-      className="fixed inset-0 z-9999 pointer-events-auto"
+      className="fixed inset-0 z-[9999] pointer-events-auto"
       role="dialog"
       aria-label={`${item.label} menu`}
       aria-modal={false as any}
-      // ✅ keep open when hovering anywhere in overlay
-      onPointerEnter={onHoverEnter}
-      onPointerLeave={onHoverLeave}
     >
-      {/* ✅ Backdrop captures pointer so moving from trigger -> panel doesn't "fall through"
-          Click backdrop to close */}
+      {/* Backdrop — clicking outside closes */}
       <button
         type="button"
         aria-label="Close menu"
@@ -242,62 +202,81 @@ function MegaOverlay({
         onClick={onClose}
       />
 
-      {/* Panel: full width, anchored under header */}
-      <div className="absolute left-0 right-0 top-0 md:top-20 pointer-events-auto">
+      {/* Panel — sits flush under the header, no gap */}
+      <div
+        className="absolute left-0 right-0 top-[72px] pointer-events-auto"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
         <div id={id} className="bg-background border-t shadow-lg">
           <div className="mx-auto w-[95%] py-8">
-            {/* sections + divider + feature */}
             <div className="grid gap-8 lg:grid-cols-[2fr_1px_1fr] items-stretch">
-              {/* Left: sections */}
-              <div className="grid gap-8 md:grid-cols-3">
-                {(item.sections ?? []).map((sec) => (
-                  <div key={sec.title} className="space-y-3">
-                    <div className="text-base font-bold text-primary">
-                      {sec.title}
-                    </div>
-                    <ul className="space-y-2">
-                      {sec.items.map((link) => {
-                        const active = isActivePath(pathname, link.href, true);
-                        return (
-                          <li key={link.label}>
-                            <Link
-                              href={link.href}
-                              onClick={onClose}
-                              aria-current={active ? "page" : undefined}
-                              className={[
-                                "block rounded-md py-1 transition-all",
-                                active ? "font-bold" : "",
-                              ].join(" ")}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium hover:underline hover:font-semibold">
-                                  {link.label}
-                                </span>
-                                {link.badge ? (
-                                  <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase">
-                                    {link.badge}
-                                  </span>
-                                ) : null}
-                              </div>
+              {/* Left: sections + Shop all at top */}
+              <div className="space-y-6">
+                {/* Shop all — Brooklinen puts this first, prominent */}
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className="inline-block text-sm font-bold tracking-wide uppercase hover:underline"
+                  >
+                    Shop all {item.label} →
+                  </Link>
+                ) : null}
 
-                              {link.description ? (
-                                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                                  {link.description}
-                                </p>
-                              ) : null}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ))}
+                <div className="grid gap-8 md:grid-cols-3">
+                  {(item.sections ?? []).map((sec) => (
+                    <div key={sec.title} className="space-y-3">
+                      <div className="text-base font-bold text-primary">
+                        {sec.title}
+                      </div>
+                      <ul className="space-y-2">
+                        {sec.items.map((link) => {
+                          const active = isActivePath(
+                            pathname,
+                            link.href,
+                            true,
+                          );
+                          return (
+                            <li key={link.label}>
+                              <Link
+                                href={link.href}
+                                onClick={onClose}
+                                aria-current={active ? "page" : undefined}
+                                className={[
+                                  "block rounded-md py-1 transition-all",
+                                  active ? "font-bold" : "",
+                                ].join(" ")}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-medium hover:underline hover:font-semibold">
+                                    {link.label}
+                                  </span>
+                                  {link.badge ? (
+                                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase">
+                                      {link.badge}
+                                    </span>
+                                  ) : null}
+                                </div>
+                                {link.description ? (
+                                  <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                                    {link.description}
+                                  </p>
+                                ) : null}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Divider */}
               <div className="hidden lg:block bg-border" />
 
-              {/* Right: Featured tile */}
+              {/* Right: featured tile */}
               {item.feature ? (
                 <Link
                   href={item.feature.href}
@@ -312,7 +291,6 @@ function MegaOverlay({
                       className="object-cover"
                     />
                   </div>
-
                   <div className="py-4">
                     <div className="text-xl font-bold group-hover:underline">
                       {item.feature.label}

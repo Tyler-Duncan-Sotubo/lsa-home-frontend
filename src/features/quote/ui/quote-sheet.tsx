@@ -370,25 +370,16 @@ export function QuoteSheet() {
                         className="h-9 w-20 rounded-md bg-background px-2 text-xs shadow-sm ring-1 ring-border focus:outline-none focus:ring-2 focus:ring-primary/40"
                         min={minQty}
                         step={1}
-                        value={safeQty}
-                        onChange={(e) => {
-                          const raw = e.target.value;
-                          const next = Number(raw);
-                          if (raw === "" || Number.isNaN(next)) return;
-
-                          dispatch(
-                            updateQuoteQuantity({
-                              slug: it.slug,
-                              variantId: it.variantId ?? null,
-                              quantity: next,
-                            }),
-                          );
-                        }}
+                        key={`${it.slug}__${it.variantId ?? ""}__${safeQty}`} // ✅ resets when item changes
+                        defaultValue={safeQty}
                         onBlur={(e) => {
-                          const next = Number(e.target.value);
-                          const clamped = Number.isFinite(next)
-                            ? Math.max(minQty, next)
+                          const raw = Number(e.target.value);
+                          const clamped = Number.isFinite(raw)
+                            ? Math.max(minQty, raw)
                             : minQty;
+
+                          // reset input visually if invalid
+                          e.target.value = String(clamped);
 
                           if ((it.quantity ?? minQty) !== clamped) {
                             dispatch(

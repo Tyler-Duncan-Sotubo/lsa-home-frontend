@@ -50,7 +50,7 @@ export function ProductDetailsCartOne({
   showInfoSections = true,
   siteName,
 }: ProductDetailsPanelProps) {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState<string>("1");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const [selectedExtras, setSelectedExtras] = useState<
@@ -182,14 +182,14 @@ export function ProductDetailsCartOne({
     const cap = Math.min(10, Math.max(1, maxQty || 0));
     if (!isInStock || cap <= 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setQuantity(1);
+      setQuantity("1");
       return;
     }
-    setQuantity((q) => Math.min(Math.max(1, q), cap));
+    setQuantity((q) => String(Math.min(Math.max(1, Number(q)), cap)));
   }, [maxQty, isInStock, activeVariation?.id, isSerene]);
 
   const canAddToCart =
-    isInStock && quantity <= Math.min(10, Math.max(1, maxQty || 0));
+    isInStock && Number(quantity) <= Math.min(10, Math.max(1, maxQty || 0));
 
   const variationImageSrc = useMemo(() => {
     const hero = product.images?.[0]?.src ?? null;
@@ -324,7 +324,7 @@ export function ProductDetailsCartOne({
             <div className="flex items-center gap-2">
               <AddToCartButton
                 slug={product.slug}
-                quantity={quantity}
+                quantity={Number(quantity)}
                 onAddedToCart={onAddedToCart}
                 disabled={!canAddToCart}
                 variantId={activeVariation?.id as unknown as string}
@@ -347,7 +347,7 @@ export function ProductDetailsCartOne({
                         qtyOptionsCount,
                         Math.max(1, Number(e.target.value) || 1),
                       );
-                      setQuantity(val);
+                      setQuantity(String(val));
                     }}
                     className="h-10 w-20 rounded-md border bg-background px-3 text-xs font-medium"
                   />

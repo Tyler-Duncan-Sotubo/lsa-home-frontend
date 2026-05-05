@@ -256,68 +256,53 @@ export function CartDrawer() {
                           </span>
 
                           {isUnknownStock ? (
-                            // ✅ unknown stock => no selector (prevents random 10/1)
                             <div className="h-8 rounded-md border bg-background px-2 flex items-center text-xs font-medium">
                               {safeQty}
                             </div>
                           ) : (
-                            <div className="relative">
-                              <select
-                                className="
-    h-8 rounded-md border bg-background px-2 pr-6
-    text-xs font-medium
-  "
-                                value={safeQty}
-                                disabled={isOutOfStock || qtyOptions <= 0}
-                                onChange={async (e) => {
-                                  const picked = Number(e.target.value) || 1;
-                                  const nextQty = clamp(
-                                    picked,
-                                    1,
-                                    Math.max(1, rawMax!),
-                                  );
+                            <input
+                              type="number"
+                              min={1}
+                              max={rawMax ?? undefined}
+                              defaultValue={safeQty}
+                              disabled={isOutOfStock}
+                              onBlur={async (e) => {
+                                const picked = Math.min(
+                                  rawMax ?? Infinity,
+                                  Math.max(1, Number(e.target.value) || 1),
+                                );
 
-                                  // 🛑 no-op guard (prevents useless API + toast)
-                                  if (nextQty === item.quantity) return;
+                                if (picked === item.quantity) return;
 
-                                  const action = await dispatch(
-                                    setQtyAndSync({
-                                      slug: item.slug,
-                                      variantId: item.variantId ?? null,
-                                      quantity: nextQty,
-                                    }),
-                                  );
+                                const action = await dispatch(
+                                  setQtyAndSync({
+                                    slug: item.slug,
+                                    variantId: item.variantId ?? null,
+                                    quantity: picked,
+                                  }),
+                                );
 
-                                  // ❌ error toast
-                                  if (setQtyAndSync.rejected.match(action)) {
-                                    const msg =
-                                      (action.payload as any)?.message ??
-                                      (action.error as any)?.message ??
-                                      "Unable to update quantity";
+                                if (setQtyAndSync.rejected.match(action)) {
+                                  const msg =
+                                    (action.payload as any)?.message ??
+                                    (action.error as any)?.message ??
+                                    "Unable to update quantity";
+                                  toast.error(msg);
+                                  // reset input to current qty on failure
+                                  e.target.value = String(item.quantity);
+                                  return;
+                                }
 
-                                    toast.error(msg);
-                                    return;
-                                  }
+                                toast.success(
+                                  picked === 1
+                                    ? "Quantity updated"
+                                    : `Quantity updated to ${picked}`,
+                                );
 
-                                  // ✅ success toast
-                                  toast.success(
-                                    nextQty === 1
-                                      ? "Quantity updated"
-                                      : `Quantity updated to ${nextQty}`,
-                                  );
-
-                                  await refreshCheckoutIfOnCheckout();
-                                }}
-                              >
-                                {Array.from({ length: qtyOptions }).map(
-                                  (_, i) => (
-                                    <option key={i + 1} value={i + 1}>
-                                      {i + 1}
-                                    </option>
-                                  ),
-                                )}
-                              </select>
-                            </div>
+                                await refreshCheckoutIfOnCheckout();
+                              }}
+                              className="h-8 w-16 rounded-md border bg-background px-2 text-xs font-medium"
+                            />
                           )}
                         </div>
                       </div>

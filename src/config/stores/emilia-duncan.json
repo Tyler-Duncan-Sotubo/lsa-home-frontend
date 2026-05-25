@@ -1,0 +1,536 @@
+{
+  "version": 1,
+  "store": {
+    "id": "emilia-duncan",
+    "name": "Emilia Duncan",
+    "locale": "en-GB",
+    "currency": {
+      "code": "GBP",
+      "locale": "en-GB",
+      "fractionDigits": 2
+    }
+  },
+  "ui": {
+    "quickView": {
+      "enabled": true,
+      "detailsVariant": "V2"
+    },
+    "pricing": { "showPriceInDetails": "always" },
+    "product": {
+      "galleryVariant": "V2",
+      "showWishlistButton": true,
+      "productDetails": {
+        "context": "QUOTE",
+        "variant": "V2",
+        "showInfoSections": false
+      },
+      "recommendations": {
+        "variant": "TABBED",
+        "defaultTab": "collection"
+      },
+      "productCardVariant": "HOVER_ACTIONS"
+    },
+    "account": {
+      "headerNav": {
+        "showRewardIcon": false,
+        "showWishlistIcon": false,
+        "showOurStoresIcon": false
+      }
+    }
+  },
+  "theme": {
+    "assets": {
+      "logoUrl": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd79-d05d-76d2-aaa1-c0acf8035324-logo.png"
+    },
+    "mode": { "default": "light", "strategy": "class", "darkClass": "dark" },
+    "fonts": {
+      "sans": "Cormorant Garamond, Georgia, ui-serif, serif",
+      "heading": "Cormorant Garamond, Georgia, ui-serif, serif",
+      "mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+    },
+    "colors": {
+      "light": {
+        "background": "oklch(0.99 0 0)",
+        "foreground": "oklch(0.12 0 0)",
+        "primary": "oklch(0.55 0 0)",
+        "primaryForeground": "oklch(0.98 0 0)",
+        "secondary": "oklch(0.95 0 0)",
+        "secondaryForeground": "oklch(0.25 0 0)"
+      },
+      "dark": {
+        "background": "oklch(0.145 0 0)",
+        "foreground": "oklch(0.985 0 0)",
+        "primary": "oklch(0.75 0 0)",
+        "primaryForeground": "oklch(0.12 0 0)"
+      }
+    },
+    "radius": { "base": "0.25rem" },
+    "components": {
+      "button": { "radius": "none" },
+      "card": { "radius": "none" }
+    }
+  },
+  "seo": {
+    "title": "Emilia Duncan | Luxury Bridal & Wedding Makeup Artist",
+    "description": "Emilia Duncan is a luxury bridal and wedding makeup artist creating timeless, elegant looks for your most important day.",
+    "siteName": "Emilia Duncan",
+    "canonicalBaseUrl": "https://emiliaduncan.co.uk",
+    "favicon": {
+      "svg": "/favicons/emilia-duncan.svg",
+      "png": "/favicons/emilia-duncan.png",
+      "ico": "/favicons/favicon.ico",
+      "appleTouch": "/favicons/apple-touch-icon.png"
+    },
+    "ogImage": {
+      "url": "/images/og.jpg",
+      "alt": "Emilia Duncan – Luxury Bridal Makeup Artist"
+    }
+  },
+  "header": {
+    "topBar": {
+      "enabled": false,
+      "autoplay": {
+        "enabled": true,
+        "intervalMs": 10000
+      },
+      "slides": [{ "text": "NOW BOOKING 2026 & 2027 BRIDES" }]
+    },
+    "nav": {
+      "enabled": true,
+      "variant": "V1",
+      "items": [
+        { "label": "Home", "href": "/" },
+        { "label": "About", "href": "/about-us" },
+        { "label": "Testimonials", "href": "/testimonials" },
+        { "label": "Contact", "href": "/contact" },
+        { "label": "Book Now", "href": "/book" }
+      ],
+      "icons": {
+        "search": false,
+        "account": false,
+        "wishlist": false,
+        "cart": false,
+        "quote": false
+      }
+    }
+  },
+  "footer": {
+    "variant": "V2",
+    "brand": {
+      "logoUrl": "/images/emilia-duncan-logo-white.png",
+      "blurb": "Emilia Duncan is a luxury bridal makeup artist creating timeless, elegant looks for brides across London, Croydon, and beyond."
+    },
+    "columns": [
+      {
+        "title": "Services",
+        "links": [
+          { "label": "Bridal Packages", "href": "/bridal/packages" },
+          { "label": "Bridal Trials", "href": "/bridal/trials" },
+          { "label": "Bridal Party", "href": "/bridal/party" },
+          { "label": "Editorial", "href": "/services/editorial" },
+          { "label": "Events & Occasions", "href": "/services/events" }
+        ]
+      },
+      {
+        "title": "Information",
+        "links": [
+          { "label": "About Emilia", "href": "/about" },
+          { "label": "Gallery", "href": "/gallery" },
+          { "label": "Testimonials", "href": "/testimonials" },
+          { "label": "Bridal FAQ", "href": "/bridal/faq" },
+          { "label": "Contact", "href": "/contact" }
+        ]
+      }
+    ],
+    "contacts": {
+      "title": "Get In Touch",
+      "lines": [
+        "hello@emiliaduncan.co.uk",
+        "Mon – Sat, 9am – 6pm",
+        "London & Croydon, UK"
+      ]
+    },
+    "newsletter": {
+      "enabled": true,
+      "title": "Stay Inspired",
+      "description": "Bridal inspiration, tips, and exclusive offers — straight to your inbox.",
+      "placeholder": "Your email address",
+      "ctaLabel": "Subscribe"
+    },
+    "social": [
+      {
+        "platform": "instagram",
+        "href": "https://www.instagram.com/emiliaduncanmakeup/"
+      },
+      {
+        "platform": "facebook",
+        "href": "https://www.facebook.com/emiliaduncanmakeup/"
+      },
+      {
+        "platform": "pinterest",
+        "href": "https://www.pinterest.co.uk/emiliaduncan/"
+      }
+    ],
+    "bottomBar": {
+      "leftText": "© {year} Emilia Duncan. All rights reserved.",
+      "rightText": "Luxury Bridal Makeup Artist · London & Croydon"
+    },
+    "whatsapp": {
+      "enabled": true,
+      "title": "Chat with Emilia",
+      "intro": "Hi there! 👋 Interested in bridal makeup? Send a message — I'd love to hear about your wedding day.",
+      "note": "I typically reply within a few hours.",
+      "agents": [
+        {
+          "name": "Emilia Duncan",
+          "role": "Bridal Makeup Artist",
+          "phone": "447700000000",
+          "prefill": "Hi Emilia! I'm enquiring about bridal makeup for my wedding."
+        }
+      ],
+      "position": "bottom-right"
+    },
+    "appFooter": {
+      "enabled": true,
+      "includeRoutes": [
+        "/",
+        "/collections*",
+        "/pages*",
+        "/products*",
+        "/wishlist*",
+        "/cart*"
+      ],
+      "excludeRoutes": ["/checkout*"],
+      "items": [
+        { "type": "shop", "href": "/collections", "onActive": "openFilter" },
+        { "type": "category", "href": "/collections" },
+        { "type": "wishlist", "href": "/wishlist" },
+        { "type": "cart", "href": "/cart", "openDrawer": true },
+        {
+          "type": "custom",
+          "label": "Checkout",
+          "action": "checkout",
+          "href": "/checkout",
+          "showOnRoutes": ["/cart*"]
+        }
+      ]
+    }
+  },
+  "pages": {
+    "home": {
+      "hero": {
+        "variant": "V4",
+        "image": {
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd62-aca8-7bdf-a90d-127e13fd44ca-SnapInsta.to_475551405_17865702795327722_8901680687412819020_n.jpg",
+          "alt": "Emilia Duncan bridal makeup",
+          "position": "right",
+          "accent": {
+            "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd89-2ede-7d4a-9168-53c4f4eeb4bc-SnapInsta.to_476580676_17865703059327722_8495680340133268471_n-1.jpg",
+            "alt": "Bridal makeup close-up"
+          }
+        },
+        "content": {
+          "eyebrow": "Luxury Bridal Makeup Artist",
+          "heading": "Your Most Beautiful Day Begins Here",
+          "description": "Timeless, elegant makeup artistry crafted for the modern bride. Covering London, Croydon & beyond.",
+          "cta": {
+            "label": "View Bridal Packages",
+            "href": "/bridal/packages"
+          },
+          "secondaryCta": {
+            "label": "See the Gallery",
+            "href": "/gallery"
+          },
+          "tagline": "Now booking 2026 · Complimentary trials available"
+        },
+        "badge": {
+          "text": "Award Winning · Bridal Specialist ·",
+          "subtext": "Est. 2023"
+        },
+        "bottomStrip": {
+          "enabled": true,
+          "text": "Bridal Trials Available · London & Croydon · Now Booking 2026",
+          "className": "bg-primary text-primary-foreground"
+        },
+        "layout": {
+          "heightClass": "min-h-[85svh]",
+          "contentAlign": "center",
+          "split": "55/45"
+        }
+      },
+      "sections": [
+        {
+          "type": "localGallery",
+          "enabled": true,
+          "title": "Real Brides",
+          "subtitle": "A glimpse into the moments we've had the honour of being part of.",
+          "handle": "emiliaduncanmakeup",
+          "ctaLabel": "View Full Gallery",
+          "ctaHref": "/gallery",
+          "maxItems": 9,
+          "layout": {
+            "columns": 3,
+            "gap": "4px",
+            "aspectRatio": "1/1"
+          },
+          "adminPath": "/admin/gallery",
+          "dataPath": "/api/gallery",
+          "seed": [
+            {
+              "id": "seed-1",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd4e-fab2-7eb5-86e5-fd8d8d1be78e-SnapInsta.to_476600255_17865692520327722_661566850615509507_n.jpg",
+              "type": "image",
+              "caption": "Soft bridal glow ✨"
+            },
+            {
+              "id": "seed-v1",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQMrhpaEWPdTjaba4EZs3AmJOxq46iPSNJeYViOaMSSYfP8-VYdBVEGHgtFn76tCv4Y18Z3S_wAN3_hRD-U_dp9CD2T7in7JY2xqg3U.mp4",
+              "type": "video",
+              "caption": "Getting ready ✨"
+            },
+            {
+              "id": "seed-2",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd4f-2ce0-7f76-a54e-ca7388ca52b7-SnapInsta.to_605394088_17975886719967737_1528017005512318951_n.jpg",
+              "type": "image",
+              "caption": "Timeless elegance 💄"
+            },
+
+            {
+              "id": "seed-3",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd54-5d8d-7991-9f1c-8270428ad93b-SnapInsta.to_651901757_17918642733122620_3393662507200547370_n.jpg",
+              "type": "image",
+              "caption": "Golden hour glam 🌅"
+            },
+            {
+              "id": "seed-4",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd54-45b4-73d5-8283-a1c4d9215e43-SnapInsta.to_627466565_18154028602433071_7486044668596885228_n.jpg",
+              "type": "image",
+              "caption": "Flawless finish 🌸"
+            },
+            {
+              "id": "seed-v2",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQNLikbT_3WFoLFspZMYjMXz2R6kGX_T21KU1Vvylp5qTLJ-6pQbSjT5HnjM-peFESajKbN3sERXxx3iCh1d5Gx_ufVgfzD3oE2YteU.mp4",
+              "type": "video",
+              "caption": "Behind the scenes 🎬"
+            },
+            {
+              "id": "seed-5",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd5b-b8ae-78c0-b08d-9cd87fb43754-SnapInsta.to_504007657_17953844066967737_1805946092402246050_n.jpg",
+              "type": "image",
+              "caption": "Romantic tones 💕"
+            },
+            {
+              "id": "seed-6",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd5b-a167-7c3d-ba67-5c7b6c9a0bd5-SnapInsta.to_503807551_17953843658967737_2998717515805288933_n.jpg",
+              "type": "image",
+              "caption": "Glowing skin always wins"
+            },
+            {
+              "id": "seed-v3",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQPwrWpDEBX5X0-gAXrZRPNowl9F5-WrWH5zXVO4Idbk5dskj0JoNHptVRr6ZKs1206YWRpwYHdXnBAC5jDxJOhxYfX583tUM0aL55c.mp4",
+              "type": "video",
+              "caption": "The final look 👰"
+            }
+          ]
+        }
+      ],
+      "contact": {
+        "type": "contact",
+        "title": "Start Your Bridal Journey",
+        "subtitle": "Get in touch to check availability and discuss your wedding day vision.",
+        "info": {
+          "email": ["hello@emiliaduncan.co.uk"]
+        },
+        "form": {
+          "enabled": true,
+          "fields": ["name", "email", "phone", "message"],
+          "submitLabel": "Send Enquiry",
+          "successMessage": "Thank you! Emilia will be in touch within 48 hours."
+        },
+        "layout": {
+          "variant": "compact",
+          "image": {
+            "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd4e-fab2-7eb5-86e5-fd8d8d1be78e-SnapInsta.to_476600255_17865692520327722_661566850615509507_n.jpg",
+            "alt": "Emilia Duncan bridal makeup artist"
+          }
+        }
+      }
+    },
+    "about": {
+      "version": 1,
+      "seo": {
+        "title": "About Emilia Duncan | Luxury Bridal Makeup Artist",
+        "description": "Learn about Emilia Duncan — a luxury bridal makeup artist with over a decade of experience creating timeless, elegant looks for brides across London and Croydon."
+      },
+      "sections": [
+        {
+          "type": "aboutHero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "/images/about-hero.jpg",
+              "alt": "Emilia Duncan Bridal Makeup Artist",
+              "overlayClassName": "bg-black/45"
+            }
+          },
+          "content": {
+            "title": "About Emilia",
+            "description": "A luxury bridal makeup artist with over a decade of experience, dedicated to making every bride feel effortlessly, authentically beautiful on her wedding day."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "aboutSplit",
+          "enabled": true,
+          "image": {
+            "src": "/images/emilia-portrait.jpg",
+            "alt": "Emilia Duncan"
+          },
+          "content": {
+            "title": "A Passion for Bridal Beauty",
+            "paragraphs": [
+              "Emilia Duncan has spent over ten years perfecting her craft — working with brides across London, Croydon, and beyond to create makeup looks that are timeless, elegant, and completely personal.",
+              "Every bride is different, and Emilia believes deeply in celebrating that. From the very first consultation through to the wedding morning itself, her approach is calm, collaborative, and entirely focused on bringing your vision to life.",
+              "Whether you're dreaming of a natural, dewy look or full glamour, Emilia has the expertise and the artistry to make it happen — flawlessly."
+            ],
+            "cta": {
+              "label": "Enquire About Your Date",
+              "href": "/contact"
+            }
+          },
+          "layout": {
+            "imagePosition": "left",
+            "align": "left",
+            "backgroundClassName": "bg-background"
+          }
+        },
+        {
+          "type": "aboutValues",
+          "enabled": true,
+          "title": "The Emilia Duncan Promise",
+          "subtitle": "What every bride can expect from day one.",
+          "items": [
+            {
+              "key": "artistry",
+              "title": "Exceptional Artistry",
+              "description": "Over a decade of experience and continual training means your makeup is always in the most skilled hands."
+            },
+            {
+              "key": "personalised",
+              "title": "Completely Personalised",
+              "description": "No two brides are the same. Every look is built around your features, your style, and your wedding vision."
+            },
+            {
+              "key": "calm",
+              "title": "A Calm, Enjoyable Experience",
+              "description": "Your wedding morning should be relaxed and joyful. Emilia brings calm professionalism to every appointment."
+            }
+          ],
+          "layout": {
+            "backgroundClassName": "bg-secondary",
+            "columns": 3
+          }
+        }
+      ]
+    },
+    "contact": {
+      "version": 1,
+      "seo": {
+        "title": "Contact | Emilia Duncan Bridal Makeup Artist",
+        "description": "Get in touch with Emilia Duncan to check availability and start planning your bridal makeup."
+      },
+      "sections": [
+        {
+          "type": "Hero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "/images/contact-hero.jpg",
+              "alt": "Emilia Duncan bridal makeup",
+              "overlayClassName": "bg-black/45"
+            }
+          },
+          "content": {
+            "eyebrow": "Let's Talk",
+            "title": "Get In Touch",
+            "description": "Check availability, ask questions, or start planning your perfect bridal look."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "contact",
+          "title": "Contact Details",
+          "info": {
+            "email": ["hello@emiliaduncan.co.uk"],
+            "locations": [
+              {
+                "label": "BASED IN",
+                "address": "Croydon & London, United Kingdom"
+              }
+            ],
+            "social": [
+              {
+                "platform": "instagram",
+                "handle": "@emiliaduncanmakeup",
+                "href": "https://www.instagram.com/emiliaduncanmakeup/"
+              }
+            ]
+          },
+          "form": {
+            "enabled": true,
+            "fields": ["name", "email", "phone", "message"],
+            "submitLabel": "Send Enquiry",
+            "successMessage": "Thank you for getting in touch! Emilia will respond within 48 hours."
+          },
+          "layout": {
+            "variant": "full",
+            "top": { "columns": 2, "order": ["details", "form"] }
+          }
+        }
+      ]
+    },
+    "blog": {
+      "version": 1,
+      "listVariant": "V1",
+      "post": {
+        "version": 1,
+        "variant": "V1",
+        "ui": {
+          "showShare": true,
+          "showCoverImage": true
+        }
+      },
+      "seo": {
+        "title": "Blog | Emilia Duncan",
+        "description": "Bridal beauty inspiration, makeup tips, and real wedding stories from Emilia Duncan."
+      },
+      "sections": [
+        {
+          "type": "blog-list",
+          "title": "Bridal Inspiration",
+          "description": "Tips, trends, and real bride stories from Emilia.",
+          "variant": "featured",
+          "showHeroPost": true,
+          "featuredCount": 1
+        },
+        {
+          "type": "blog-list",
+          "title": "All Posts",
+          "variant": "grid",
+          "columns": 3,
+          "showExcerpt": true
+        }
+      ]
+    }
+  }
+}

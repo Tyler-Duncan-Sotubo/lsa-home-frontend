@@ -20,7 +20,8 @@ export type HomeSectionV1 =
   | BrandCarouselSectionV1
   | LatestProductsSectionV1
   | OnSaleProductsSectionV1
-  | BestSellersProductsSectionV1;
+  | BestSellersProductsSectionV1
+  | LocalGallerySectionV1; // ← add this
 
 export type TopCategoriesSectionV1 = {
   type: "topCategories";
@@ -183,7 +184,7 @@ export type HappyCustomersSectionV1 = {
     TestimonialSlideV1,
     TestimonialSlideV1,
     TestimonialSlideV1,
-    TestimonialSlideV1
+    TestimonialSlideV1,
   ]; // exactly 4
 
   autoplay?: {
@@ -241,4 +242,39 @@ export type BestSellersProductsSectionV1 = {
   limit?: number;
   windowDays?: number;
   layout?: { sectionClassName?: string };
+};
+
+export type LocalGalleryItemV1 = {
+  id: string;
+  url: string;
+  type: "image" | "video";
+  caption?: string;
+  instagramUrl?: string;
+  poster?: string;
+};
+
+export type LocalGallerySectionV1 = {
+  type: "localGallery";
+  enabled?: boolean;
+
+  title?: string;
+  subtitle?: string;
+
+  handle?: string; // social handle shown in the header, e.g. "emiliaduncanmakeup"
+
+  ctaLabel?: string; // e.g. "View Full Gallery"
+  ctaHref?: string; // e.g. "/gallery"
+
+  maxItems?: number; // default 9
+
+  layout?: {
+    columns?: 3 | 4; // default 3
+    gap?: string; // e.g. "4px", default "4px"
+    aspectRatio?: string; // e.g. "1/1", default "1/1"
+  };
+
+  adminPath?: string; // e.g. "/admin/gallery"
+  dataPath?: string; // e.g. "/api/gallery"
+
+  seed?: LocalGalleryItemV1[]; // shown before any uploads exist
 };

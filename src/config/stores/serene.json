@@ -110,11 +110,8 @@
           "sections": [
             {
               "title": "Linens & Amenities",
+              "href": "/collections/hubs/linens-and-amenities",
               "items": [
-                {
-                  "label": "Linens and Amenities",
-                  "href": "/collections/hubs/linens-and-amenities"
-                },
                 { "label": "Amenities", "href": "/collections/amenities" },
                 {
                   "label": "Disposable Amenities",
@@ -124,7 +121,6 @@
                   "label": "Amenity Trays and Holders",
                   "href": "/collections/amenity-trays-and-holders"
                 },
-
                 {
                   "label": "Mattress and Beddings",
                   "href": "/collections/hubs/mattress-and-beddings"
@@ -133,7 +129,6 @@
                 { "label": "Mattresses", "href": "/collections/mattresses" },
                 { "label": "Pillows", "href": "/collections/pillows" },
                 { "label": "Beds", "href": "/collections/beds" },
-
                 {
                   "label": "Towels and Bathrobes",
                   "href": "/collections/hubs/towels-and-bathrobes"
@@ -143,11 +138,8 @@
             },
             {
               "title": "In-Room (Room Appliances)",
+              "href": "/collections/hubs/room-appliances",
               "items": [
-                {
-                  "label": "Room Appliances",
-                  "href": "/collections/hubs/room-appliances"
-                },
                 {
                   "label": "Alarm Clocks",
                   "href": "/collections/alarm-clocks"
@@ -181,11 +173,8 @@
             },
             {
               "title": "Public Area",
+              "href": "/collections/hubs/public-area",
               "items": [
-                {
-                  "label": "Public Area",
-                  "href": "/collections/hubs/public-area"
-                },
                 {
                   "label": "Dispensers & Dryers",
                   "href": "/collections/dispensers-dryers"
@@ -206,11 +195,9 @@
                   "label": "Trolleys and Carts",
                   "href": "/collections/trolleys-and-carts"
                 },
-
                 { "label": "Furniture", "href": "/collections/hubs/furniture" },
                 { "label": "Tables", "href": "/collections/tables" },
                 { "label": "Chairs", "href": "/collections/chairs" },
-
                 { "label": "Kitchen", "href": "/collections/hubs/kitchen" },
                 { "label": "Buffet", "href": "/collections/buffet" },
                 {

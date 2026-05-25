@@ -6,7 +6,9 @@ import {
 } from "./runtime-config";
 
 export async function getStorefrontConfig(): Promise<StorefrontConfigV1> {
-  const forceLocal = process.env.STOREFRONT_CONFIG_FORCE_LOCAL === "true";
+  const forceLocal =
+    process.env.NEXT_PUBLIC_FORCE_LOCAL_STORE_CONFIG === "true";
+
   if (forceLocal) return loadLocalStorefrontConfig("default");
 
   const result = await fetchRemoteStorefrontConfig();
@@ -31,7 +33,12 @@ export async function getStorefrontConfig(): Promise<StorefrontConfigV1> {
   }
 }
 
-type LocalPreset = "default" | "maintenance" | "not-found";
+type LocalPreset =
+  | "default"
+  | "maintenance"
+  | "not-found"
+  | "emilia-duncan"
+  | "serene";
 
 export async function loadLocalStorefrontConfig(
   preset: LocalPreset,

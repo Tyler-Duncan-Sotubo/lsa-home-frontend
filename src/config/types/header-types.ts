@@ -76,6 +76,7 @@ export type NavSectionItem = {
 
 export type NavSection = {
   title: string;
+  href?: string;
   items: NavSectionItem[];
 };
 

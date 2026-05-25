@@ -18,8 +18,7 @@ import {
   ProductRailSkeleton,
   TopCategoriesSkeleton,
 } from "@/features/skeletons/ index";
-
-// ✅ skeletons (server-safe)
+import LocalGallery from "./local-gallery";
 
 export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
   if (!sections?.length) return null;
@@ -27,7 +26,6 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
   return (
     <div className="space-y-12">
       {sections.map((section, idx) => {
-        // optional: stable key (better than idx if you have an id)
         const key = `${section.type}-${idx}`;
 
         switch (section.type) {
@@ -50,7 +48,6 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
 
           case "productTabs":
             if (section.enabled === false) return null;
-            // if this one fetches server-side data too, wrap it as well
             return <ProductTabsRailSection key={key} config={section} />;
 
           case "testimonials":
@@ -71,7 +68,6 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
 
           case "featuredProduct":
             if (section.enabled === false) return null;
-            // wrap only if it awaits
             return <FeaturedProductSection key={key} config={section} />;
 
           case "latestProducts":
@@ -103,6 +99,13 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
                 <BestSellersProductsSection config={section} />
               </Suspense>
             );
+
+          case "localGallery":
+            if (section.enabled === false) return null;
+            console.warn(
+              "Rendering local gallery section. Ensure that the images are optimized for web and that the number of images is reasonable to avoid performance issues.",
+            );
+            return <LocalGallery key={key} config={section} />;
 
           default:
             return null;

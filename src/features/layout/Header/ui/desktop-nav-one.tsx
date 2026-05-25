@@ -152,7 +152,7 @@ export function DesktopOne({ items, specialItems }: Props) {
               key={item.label}
               href={(item as any).href}
               className={[
-                "px-3 py-1 2xl:text-base text-sm font-medium transition-all",
+                "px-3 py-1 2xl:text-lg text-base font-medium transition-all",
                 "hover:underline hover:font-semibold",
                 active ? "font-semibold underline" : "",
                 getSpecialClass(item.label),
@@ -189,7 +189,7 @@ function MegaOverlay({
 }) {
   return (
     <div
-      className="fixed inset-0 z-[9999] pointer-events-auto"
+      className="fixed inset-0 z-9999 pointer-events-auto"
       role="dialog"
       aria-label={`${item.label} menu`}
       aria-modal={false as any}
@@ -204,7 +204,7 @@ function MegaOverlay({
 
       {/* Panel — sits flush under the header, no gap */}
       <div
-        className="absolute left-0 right-0 top-[72px] pointer-events-auto"
+        className="absolute left-0 right-0 top-18 pointer-events-auto"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -224,13 +224,23 @@ function MegaOverlay({
                   </Link>
                 ) : null}
 
-                <div className="grid gap-8 md:grid-cols-3">
+                <div className="grid gap-8 md:grid-cols-3 space-y-3">
                   {(item.sections ?? []).map((sec) => (
                     <div key={sec.title} className="space-y-3">
-                      <div className="text-base font-bold text-primary">
-                        {sec.title}
-                      </div>
-                      <ul className="space-y-2">
+                      {sec.href ? (
+                        <Link
+                          href={sec.href}
+                          onClick={onClose}
+                          className="text-base font-bold text-primary hover:underline"
+                        >
+                          {sec.title} →
+                        </Link>
+                      ) : (
+                        <div className="text-base font-bold text-primary">
+                          {sec.title}
+                        </div>
+                      )}
+                      <ul className="space-y-2 mt-2">
                         {sec.items.map((link) => {
                           const active = isActivePath(
                             pathname,

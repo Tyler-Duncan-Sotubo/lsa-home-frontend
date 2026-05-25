@@ -32,9 +32,9 @@ export function HeaderIcons({ icons, onSearchClick }: Props) {
 
   const showSearch = icons?.search ?? true;
   const showAccount = icons?.account ?? true;
-  const showWishlist = icons?.wishlist ?? true;
-  const showCart = icons?.cart ?? true;
-  const showQuote = icons?.quote ?? true;
+  const showWishlist = icons?.wishlist === true && wishlistCount > 0;
+  const showCart = icons?.cart === true; // cart drawer handles its own count
+  const showQuote = icons?.quote === true && quoteCount > 0;
 
   return (
     <div className="flex items-center gap-1">

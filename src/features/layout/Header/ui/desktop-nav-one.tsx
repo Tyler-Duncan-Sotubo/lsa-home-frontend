@@ -124,7 +124,7 @@ export function DesktopOne({ items, specialItems }: Props) {
                   aria-expanded={isOpen}
                   aria-controls={`mega-${mega.label}`}
                   className={[
-                    "px-3 py-1 2xl:text-base text-sm font-medium transition-all",
+                    "px-3 py-1 2xl:text-lg text-base font-medium transition-all",
                     "hover:underline hover:font-semibold",
                     active || isOpen ? "underline font-semibold" : "",
                     getSpecialClass(mega.label),

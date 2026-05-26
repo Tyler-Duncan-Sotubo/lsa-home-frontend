@@ -7,7 +7,6 @@ import {
   LuUserRound,
   LuUserPlus,
   LuLogIn,
-  LuGift,
   LuHeart,
   LuStore,
   LuLogOut,
@@ -85,15 +84,6 @@ export function AccountDropdown() {
               </Link>
             </DropdownMenuItem>
           </>
-        )}
-
-        {navRules.showRewardIcon && (
-          <DropdownMenuItem asChild>
-            <Link href="/rewards" className="flex items-center gap-2">
-              <LuGift className="size-4" />
-              My rewards
-            </Link>
-          </DropdownMenuItem>
         )}
 
         {navRules.showWishlistIcon && (

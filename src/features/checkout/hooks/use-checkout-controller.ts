@@ -128,30 +128,14 @@ export function useCheckoutController(checkoutId: string) {
     name: "paymentMethod",
   }) as "bank" | "cash" | `gateway:${string}` | "" | undefined;
 
-  // minimal readiness
-  const readyForShipping =
-    deliveryMethod === "shipping" &&
-    !!countryField?.trim() &&
-    !!stateField?.trim() &&
-    !!address1Field?.trim() &&
-    !!firstNameField?.trim() &&
-    !!lastNameField?.trim() &&
-    !!phoneField?.trim();
-
-  const canCalculateShipping = readyForShipping;
-
-  const shippingKey = JSON.stringify({
-    deliveryMethod,
-    countryField,
-    stateField,
-    cityField,
-    address1Field,
-    firstNameField,
-    lastNameField,
-    phoneField,
+  const shippingOptionId = useWatch({
+    control: form.control,
+    name: "shippingOptionId",
   });
 
-  const debouncedShippingKey = useDebouncedValue(shippingKey, 450);
+  const canCalculateShipping =
+    deliveryMethod === "pickup" ||
+    (deliveryMethod === "shipping" && !!shippingOptionId?.trim());
 
   // -----------------------------
   // Query: checkout
@@ -180,6 +164,29 @@ export function useCheckoutController(checkoutId: string) {
       ),
     staleTime: 60_000,
   });
+
+  // -----------------------------
+  // Query: shipping options (debounced so free-text state doesn't fire on every keystroke)
+  // -----------------------------
+  const debouncedState = useDebouncedValue(stateField, 600);
+
+  const shippingOptionsQuery = useQuery({
+    queryKey: ["shippingOptions", debouncedState],
+    enabled: deliveryMethod === "shipping" && !!debouncedState?.trim(),
+    queryFn: () =>
+      fetchJson(
+        `/api/checkout/shipping-options?state=${encodeURIComponent(debouncedState!)}`,
+      ),
+    staleTime: 60_000,
+  });
+
+  const shippingOptions: Array<{
+    id: string;
+    name: string;
+    states: string[];
+    area?: string;
+    price: number;
+  }> = shippingOptionsQuery.data?.data ?? shippingOptionsQuery.data ?? [];
 
   // -----------------------------
   // Refresh checkout helper
@@ -318,20 +325,27 @@ export function useCheckoutController(checkoutId: string) {
 
   const isCalculatingShipping = setShippingMutation.isPending;
 
-  // Auto-shipping update (debounced)
+  // Reset shipping option when state changes
+  useEffect(() => {
+    if (deliveryMethod !== "shipping") return;
+    form.setValue("shippingOptionId", "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedState, deliveryMethod]);
+
+  // Fire setShipping when customer picks a shipping option
   useEffect(() => {
     if (isRefreshingCheckout) return;
     if (!checkout?.id) return;
-    if (!readyForShipping) return;
+    if (deliveryMethod !== "shipping") return;
+    if (!shippingOptionId?.trim()) return;
 
     const v = form.getValues();
 
-    const dto = {
+    setShippingMutation.mutate({
       checkoutId: checkout.id,
       deliveryMethodType: "shipping",
-      countryCode: v.country,
-      state: v.state,
-      area: v.city,
+      countryCode: form.getValues("country") || "NG",
+      shippingOptionId,
       shippingAddress: {
         firstName: v.firstName,
         lastName: v.lastName,
@@ -344,16 +358,9 @@ export function useCheckoutController(checkoutId: string) {
         country: v.country,
         email: v.email,
       },
-    };
-
-    setShippingMutation.mutate(dto);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    debouncedShippingKey,
-    checkout?.id,
-    readyForShipping,
-    isRefreshingCheckout,
-  ]);
+  }, [shippingOptionId, checkout?.id, deliveryMethod, isRefreshingCheckout]);
 
   // -----------------------------
   // Mutation: complete checkout
@@ -532,6 +539,10 @@ export function useCheckoutController(checkoutId: string) {
 
     pickupLocations: pickupLocationsQuery.data ?? [],
     isLoadingPickupLocations: pickupLocationsQuery.isLoading,
+
+    shippingOptions,
+    isLoadingShippingOptions: shippingOptionsQuery.isLoading,
+    isSettingShipping: setShippingMutation.isPending,
 
     isSettingPickup: setPickupMutation.isPending,
 

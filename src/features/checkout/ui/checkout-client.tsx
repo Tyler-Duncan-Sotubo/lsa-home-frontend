@@ -28,6 +28,9 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
     pickupLocations,
     isLoadingPickupLocations,
     isSettingPickup,
+    shippingOptions,
+    isLoadingShippingOptions,
+    isSettingShipping,
   } = useCheckoutController(checkoutId);
 
   if (isLoading) return <LoadingProgress />;
@@ -59,6 +62,9 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
                 pickupLocations={pickupLocations}
                 isLoadingPickupLocations={isLoadingPickupLocations}
                 isSettingPickup={isSettingPickup}
+                shippingOptions={shippingOptions}
+                isLoadingShippingOptions={isLoadingShippingOptions}
+                isSettingShipping={isSettingShipping}
               />
               <CheckoutPaymentSection form={form} isSubmitting={isSubmitting} />
 

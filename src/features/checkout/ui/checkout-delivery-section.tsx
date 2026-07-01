@@ -28,6 +28,14 @@ import { Card, CardContent } from "@/shared/ui/card";
 // icons
 import { Loader2, MapPin, Truck } from "lucide-react";
 
+type ShippingOption = {
+  id: string;
+  name: string;
+  states: string[];
+  area?: string;
+  price: number;
+};
+
 interface CheckoutDeliverySectionProps {
   form: CheckoutFormInstance;
   pickupLocations: Array<{
@@ -40,10 +48,21 @@ interface CheckoutDeliverySectionProps {
   }>;
   isLoadingPickupLocations: boolean;
   isSettingPickup: boolean;
+  shippingOptions: ShippingOption[];
+  isLoadingShippingOptions: boolean;
+  isSettingShipping: boolean;
 }
 
 function prettyState(s: string) {
   return (s ?? "").replace(/_/g, " ");
+}
+
+function formatNGN(n: number) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 0,
+  }).format(n);
 }
 
 export function CheckoutDeliverySection({
@@ -51,6 +70,9 @@ export function CheckoutDeliverySection({
   pickupLocations,
   isLoadingPickupLocations,
   isSettingPickup,
+  shippingOptions,
+  isLoadingShippingOptions,
+  isSettingShipping,
 }: CheckoutDeliverySectionProps) {
   const deliveryMethod = useWatch({
     control: form.control,
@@ -61,6 +83,7 @@ export function CheckoutDeliverySection({
     control: form.control,
     name: "pickupLocationId",
   });
+  const stateField = useWatch({ control: form.control, name: "state" });
 
   const isPickup = deliveryMethod === "pickup";
   const isShipping = deliveryMethod === "shipping";
@@ -386,7 +409,7 @@ export function CheckoutDeliverySection({
 
                 {selectedPickupId ? (
                   <p className="text-xs text-muted-foreground">
-                    We’ll prepare your order for pickup at the selected
+                    We&apos;ll prepare your order for pickup at the selected
                     location.
                   </p>
                 ) : null}
@@ -491,6 +514,81 @@ export function CheckoutDeliverySection({
               </FormItem>
             )}
           />
+
+          {/* Shipping option picker — only shown once state is typed */}
+          {stateField?.trim() && (
+            <FormField
+              control={form.control}
+              name="shippingOptionId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm">Shipping option</FormLabel>
+                  <FormControl>
+                    {isLoadingShippingOptions ? (
+                      <div className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Loading options…
+                      </div>
+                    ) : shippingOptions.length === 0 ? (
+                      <p className="py-2 text-sm text-muted-foreground">
+                        No shipping options available for this location.
+
+                      </p>
+                    ) : (
+                      <div className={cn("divide-y rounded-lg border overflow-hidden", isSettingShipping && "opacity-60 pointer-events-none")}>
+                        {shippingOptions.map((opt) => {
+                          const selected = field.value === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => field.onChange(opt.id)}
+                              className={cn(
+                                "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors",
+                                selected
+                                  ? "bg-primary/5"
+                                  : "hover:bg-muted/40"
+                              )}
+                            >
+                              {/* radio dot */}
+                              <span
+                                className={cn(
+                                  "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                                  selected
+                                    ? "border-primary"
+                                    : "border-muted-foreground/40"
+                                )}
+                              >
+                                {selected && (
+                                  <span className="h-2 w-2 rounded-full bg-primary" />
+                                )}
+                              </span>
+
+                              <span className="flex-1 min-w-0">
+                                <span className="block text-sm font-medium leading-tight">
+                                  {opt.name}
+                                </span>
+                                {opt.area && (
+                                  <span className="block text-xs text-muted-foreground">
+                                    {opt.states[0]} · {opt.area}
+                                  </span>
+                                )}
+                              </span>
+
+                              <span className={cn("text-sm font-semibold shrink-0", selected ? "text-primary" : "text-foreground")}>
+                                {formatNGN(opt.price)}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
       )}
     </section>

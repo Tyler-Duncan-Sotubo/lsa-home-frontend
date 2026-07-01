@@ -22,6 +22,7 @@ export const checkoutDefaultValues: CheckoutFormValues = {
   deliveryMethod: "shipping",
   paymentMethod: "paystack",
   pickupState: "",
+  shippingOptionId: "",
 };
 
 export function useCheckoutForm(): CheckoutFormInstance {

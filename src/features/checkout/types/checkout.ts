@@ -23,6 +23,9 @@ export const checkoutSchema = z
     pickupState: z.string(),
     pickupLocationId: z.string().optional(),
 
+    // shipping option (customer-selected)
+    shippingOptionId: z.string().optional(),
+
     paymentMethod: z.union([
       z.literal("bank"),
       z.literal("cash"),

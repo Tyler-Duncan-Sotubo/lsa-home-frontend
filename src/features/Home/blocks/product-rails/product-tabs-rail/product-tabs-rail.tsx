@@ -1,4 +1,4 @@
-// src/features/Home/sections/product-tabs-rail-section.tsx
+// src/features/Home/blocks/product-tabs-rail/product-tabs-rail.tsx
 import type { ProductTabsSectionV1 } from "@/config/types/pages/Home/home-sections.types";
 import type { Product } from "@/features/Products/types/products";
 import { ProductRailTabs } from "@/features/Products/ui/ProductTabsRail/product-rail-tabs";

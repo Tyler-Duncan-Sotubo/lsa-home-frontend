@@ -2,7 +2,7 @@
 
 import { CatalogueSectionV1 } from "@/config/types/pages/Catalogue/catalogue-page.types";
 import HeroCardSection from "../Hero/hero-card-section";
-import AboutSplitSection from "../About/about-split-section";
+import AboutSplitSection from "../About/blocks/splits/about-split/about-split";
 import { CatalogueList } from "./catalogue-list-section";
 
 export function CatalogueSections({

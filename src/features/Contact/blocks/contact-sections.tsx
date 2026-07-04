@@ -2,8 +2,8 @@
 
 import type { ContactPageSectionV1 } from "@/config/types/pages/Contact/contact-sections.types";
 
-import HeroSection from "../Hero/hero-section";
-import { ContactSection } from "./contact-section-full";
+import HeroSection from "../../Hero/hero-section";
+import { ContactSection } from "./contact-form/contact-full/contact-full";
 
 export function ContactSections({
   sections,

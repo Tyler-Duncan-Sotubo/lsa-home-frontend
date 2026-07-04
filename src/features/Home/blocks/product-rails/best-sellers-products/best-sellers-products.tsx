@@ -1,4 +1,4 @@
-// src/features/Home/sections/best-sellers-products-section.tsx
+// src/features/Home/blocks/best-sellers-products/best-sellers-products.tsx
 import type { BestSellersProductsSectionV1 } from "@/config/types/pages/Home/home-sections.types";
 import type { Product } from "@/features/Products/types/products";
 import { ProductRail } from "@/features/Products/ui/ProductRail/product-rail";

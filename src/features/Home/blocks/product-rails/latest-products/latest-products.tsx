@@ -1,4 +1,4 @@
-// src/features/Home/sections/latest-products-section.tsx
+// src/features/Home/blocks/latest-products/latest-products.tsx
 import type { LatestProductsSectionV1 } from "@/config/types/pages/Home/home-sections.types";
 import type { Product } from "@/features/Products/types/products";
 import { ProductRail } from "@/features/Products/ui/ProductRail/product-rail";

@@ -1,24 +1,24 @@
-// src/features/Home/sections/home-sections.tsx
+// src/features/Home/blocks/home-sections.tsx
 import { Suspense } from "react";
 import type { HomeSectionV1 } from "@/config/types/pages/Home/home-sections.types";
 
-import TopCategories from "./top-categories";
-import BrandCarousel from "./brand-carousel";
-import { FeatureShowcaseSection } from "./feature-showcase-section";
-import { TestimonialsSection } from "./testimonials-section";
-import { HappyCustomersSection } from "./happy-customers-section";
-import { FeaturedProductSection } from "./featured-product-section";
-import ProductTabsRailSection from "./product-tabs-rail-section";
-import LatestProductsSection from "./latest-products-section";
-import OnSaleProductsSection from "./on-sale-products-section";
-import BestSellersProductsSection from "./best-sellers-products-section";
-import ProductCategoryGridSection from "./product-category-grid-section";
+import TopCategories from "./categories/top-categories/top-categories";
+import BrandCarousel from "./brand-carousel/brand-carousel";
+import { FeatureShowcaseSection } from "./feature-showcase/feature-showcase";
+import { TestimonialsSection } from "./social-proof/testimonials/testimonials";
+import { HappyCustomersSection } from "./social-proof/happy-customers/happy-customers";
+import { FeaturedProductSection } from "./product-rails/featured-product/featured-product";
+import ProductTabsRailSection from "./product-rails/product-tabs-rail/product-tabs-rail";
+import LatestProductsSection from "./product-rails/latest-products/latest-products";
+import OnSaleProductsSection from "./product-rails/on-sale-products/on-sale-products";
+import BestSellersProductsSection from "./product-rails/best-sellers-products/best-sellers-products";
+import ProductCategoryGridSection from "./categories/product-category-grid/product-category-grid";
 import {
   CategoryGridSkeleton,
   ProductRailSkeleton,
   TopCategoriesSkeleton,
-} from "@/features/skeletons/ index";
-import LocalGallery from "./local-gallery";
+} from "@/features/skeletons";
+import LocalGallery from "./local-gallery/local-gallery";
 
 export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
   if (!sections?.length) return null;

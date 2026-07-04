@@ -1,4 +1,4 @@
-// src/features/Home/sections/on-sale-products-section.tsx
+// src/features/Home/blocks/on-sale-products/on-sale-products.tsx
 import type { OnSaleProductsSectionV1 } from "@/config/types/pages/Home/home-sections.types";
 import type { Product } from "@/features/Products/types/products";
 import { ProductRail } from "@/features/Products/ui/ProductRail/product-rail";

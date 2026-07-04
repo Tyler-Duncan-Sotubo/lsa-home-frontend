@@ -1,12 +1,12 @@
 "use client";
 
 import { AboutSectionV1 } from "@/config/types/pages/About/about-sections.types";
-import AboutHeroSection from "../Hero/hero-section";
-import AboutSplitSection from "./about-split-section";
-import AboutValuesSection from "./about-values-section";
-import AboutSuppliesScrollerSection from "./about-supplies-scroller-section";
-import AboutStatsSplitSection from "./about-stats-split-section";
-import BrandGrid from "./brand-grid";
+import AboutHeroSection from "../../Hero/hero-section";
+import AboutSplitSection from "./splits/about-split/about-split";
+import AboutValuesSection from "./about-values/about-values";
+import AboutSuppliesScrollerSection from "./about-supplies-scroller/about-supplies-scroller";
+import AboutStatsSplitSection from "./splits/about-stats-split/about-stats-split";
+import BrandGrid from "./brand-grid/brand-grid";
 
 export function AboutSections({ sections }: { sections?: AboutSectionV1[] }) {
   if (!sections?.length) return null;

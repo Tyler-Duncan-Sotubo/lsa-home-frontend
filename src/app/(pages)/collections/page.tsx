@@ -5,7 +5,7 @@ import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import CollectionsGridClient from "@/features/Collections/ui/collections-grid.client";
-import { CollectionsGridSkeleton } from "@/features/skeletons/ index";
+import { CollectionsGridSkeleton } from "@/features/skeletons/collections-grid.skeleton";
 import { getRequestBaseUrl } from "@/shared/seo/get-request-base-url";
 
 export async function generateMetadata(): Promise<Metadata> {

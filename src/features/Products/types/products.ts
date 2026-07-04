@@ -87,6 +87,16 @@ export type WooProductApi = {
 
   // ✅ product-level weight (string in Woo)
   weight?: string | null;
+
+  // ✅ present only when type === "bundle" — the products this bundle
+  // is made of, so the storefront can show what's included.
+  bundle_components?: {
+    product_id: string;
+    name: string;
+    slug: string;
+    quantity: number;
+    image: { id: string; src: string; alt: string | null } | null;
+  }[];
 };
 
 // ✅ App-wide product type used in components

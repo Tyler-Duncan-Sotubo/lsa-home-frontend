@@ -4,6 +4,12 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useGetCustomerActivity } from "../hooks/use-customer-activity";
+import { useGetLoyaltyBalance } from "@/features/Account/credits/hooks/use-loyalty-balance";
+import { useMoney } from "@/shared/hooks/use-money";
+import {
+  getOrderStatusClasses,
+  orderStatusLabel,
+} from "@/shared/utils/order-status";
 
 function Tile({
   title,
@@ -50,20 +56,19 @@ export function AccountDashboardClient() {
   const user = session?.user;
 
   const { data, isLoading, isError } = useGetCustomerActivity();
+  const { data: loyalty, isLoading: isLoyaltyLoading } =
+    useGetLoyaltyBalance();
+  const formatMoney = useMoney();
 
   const orders = data?.orders ?? [];
   const quotes = data?.quotes ?? [];
   const products = data?.products ?? [];
   const reviews = data?.reviews ?? [];
 
-  // ✅ Filters requested:
-  const pendingPaymentOrders = orders.filter(
-    (o) => o.status === "pending_payment"
-  );
   const newQuotes = quotes.filter((q) => q.status === "new"); // excludes converted
 
   // counts for summary tile
-  const pendingCount = pendingPaymentOrders.length;
+  const ordersCount = orders.length;
   const newQuotesCount = newQuotes.length;
 
   return (
@@ -101,19 +106,19 @@ export function AccountDashboardClient() {
                 <div>Loading…</div>
               ) : isError ? (
                 <div className="text-destructive">Failed to load.</div>
-              ) : pendingCount === 0 && newQuotesCount === 0 ? (
-                <div>No pending payments or new quotes.</div>
+              ) : ordersCount === 0 && newQuotesCount === 0 ? (
+                <div>No orders or new quotes yet.</div>
               ) : (
                 <div className="space-y-3">
-                  {/* Pending payment orders */}
-                  {pendingCount > 0 ? (
+                  {/* Recent orders */}
+                  {ordersCount > 0 ? (
                     <div>
                       <div className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Pending payment
+                        Recent orders
                       </div>
 
                       <div className="mt-2 space-y-2">
-                        {pendingPaymentOrders.slice(0, 3).map((o) => (
+                        {orders.slice(0, 3).map((o) => (
                           <div
                             key={o.id}
                             className="flex items-center justify-between gap-3"
@@ -127,9 +132,13 @@ export function AccountDashboardClient() {
                               </div>
                             </div>
 
-                            <div className="text-xs font-medium text-primary">
-                              Pay now
-                            </div>
+                            <span
+                              className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-medium capitalize ${getOrderStatusClasses(
+                                o.status ?? "",
+                              )}`}
+                            >
+                              {orderStatusLabel(o.status ?? "")}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -172,7 +181,7 @@ export function AccountDashboardClient() {
             footer={
               !isLoading && !isError ? (
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>{pendingCount} pending payment</span>
+                  <span>{ordersCount} recent order(s)</span>
                   <span>{newQuotesCount} new quote(s)</span>
                 </div>
               ) : null
@@ -228,7 +237,7 @@ export function AccountDashboardClient() {
             }
           />
         </Link>
-        {/* LEFT custom credits tile stays but now uses real counts for extra info */}
+        {/* My Credits — real loyalty balance */}
         <div
           className={[
             "group bg-white px-5 py-8 transition-all min-h-45 flex flex-col justify-between ",
@@ -236,7 +245,11 @@ export function AccountDashboardClient() {
           ].join(" ")}
         >
           <div className="flex justify-between items-center mb-2">
-            <p className="text-3xl font-extrabold">₦0</p>
+            <p className="text-3xl font-extrabold">
+              {isLoyaltyLoading
+                ? "…"
+                : formatMoney(loyalty?.valueMajor ?? 0)}
+            </p>
             <Link
               href={"/account/credits"}
               className="text-primary text-sm underline font-medium"
@@ -244,7 +257,9 @@ export function AccountDashboardClient() {
               Read More
             </Link>
           </div>
-          0 Credits Available
+          {isLoyaltyLoading
+            ? "Loading…"
+            : `${(loyalty?.points ?? 0).toLocaleString()} Credits Available`}
         </div>
 
         {/* MY REVIEWS tile → show latest 2 reviews */}

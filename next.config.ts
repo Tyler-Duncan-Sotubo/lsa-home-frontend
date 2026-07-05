@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       "lsahome.co",
       "www.brooklinen.com",
       "lsahome.instawp.site",
+      "d12c1lxe8klbdd.cloudfront.net",
     ],
   },
 };

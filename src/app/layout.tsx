@@ -8,11 +8,10 @@ import { AuthProvider } from "@/shared/providers/auth-provider";
 import { QueryProvider } from "@/shared/providers/query-provider";
 import { Suspense } from "react";
 import ScrollToTop from "@/shared/ui/scroll-to-top";
-import { SiteFooter } from "@/features/layout/Footer/site-footer";
 import { AnalyticsTagLoader } from "@/shared/analytics/analytics-tag-loader";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { ThemeProvider } from "@/config/theme/ThemeProvider";
-import { HeaderComposition } from "@/features/layout/Header/composition/header-composition";
+import { SiteHeaderSwitch, SiteFooterSwitch } from "@/features/layout/site-chrome";
 import { QuoteSheet } from "@/features/quote/ui/quote-sheet";
 import { Toaster } from "@/shared/ui/sonner";
 import { RuntimeConfigHydrator } from "@/config/runtime/RuntimeConfigHydrator";
@@ -58,7 +57,7 @@ export default async function RootLayout({
               )}
 
               {!isSystemPage && <QuoteSheet />}
-              {!isSystemPage && <HeaderComposition config={config} />}
+              {!isSystemPage && <SiteHeaderSwitch config={config} />}
               <RuntimeConfigHydrator config={config} />
 
               <Suspense
@@ -78,7 +77,7 @@ export default async function RootLayout({
                 </main>
               </Suspense>
 
-              {!isSystemPage && <SiteFooter config={config} />}
+              {!isSystemPage && <SiteFooterSwitch config={config} />}
               <Toaster position="top-right" />
             </QueryProvider>
           </AppProviders>

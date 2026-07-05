@@ -154,3 +154,25 @@ export type ListProductsQuery = {
 };
 
 export type ProductCardSize = "compact" | "default" | "large";
+
+// ✅ Premium bundle detail (GET .../products/storefront/:slug/bundle) —
+// distinct from the lightweight `bundle_components` field on Product above.
+export type BundleComponentDetail = {
+  componentProductId: string;
+  name: string;
+  slug: string;
+  image: { id: string; src: string; alt: string | null } | null;
+  quantity: number;
+  attributes: WooAttribute[];
+  variations: WooVariation[];
+};
+
+export type BundleDetail = {
+  id: string;
+  name: string;
+  slug: string;
+  discountPercent: number;
+  priceRange: { min: number; max: number };
+  valueTotal: number;
+  components: BundleComponentDetail[];
+};

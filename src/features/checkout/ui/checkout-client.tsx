@@ -9,8 +9,15 @@ import { CheckoutOrderSummary } from "@/features/checkout/ui/checkout-order-summ
 
 import { useCheckoutController } from "@/features/checkout/hooks/use-checkout-controller";
 import { LoadingProgress } from "@/shared/ui/loading/loading-progress";
+import type { Product } from "@/features/Products/types/products";
 
-export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
+export function CheckoutClient({
+  checkoutId,
+  relatedProducts = [],
+}: {
+  checkoutId: string;
+  relatedProducts?: Product[];
+}) {
   const {
     form,
     items,
@@ -36,9 +43,9 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
   if (isLoading) return <LoadingProgress />;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="mx-auto flex w-[95%] max-w-6xl flex-col gap-6 py-6 md:flex-row">
-        <div className="flex items-center justify-between md:hidden">
+    <div className="min-h-screen bg-muted/30 text-foreground">
+      <main className="mx-auto flex w-[95%] max-w-6xl flex-col gap-6 py-6 md:flex-row md:py-10">
+        <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 shadow-sm md:hidden">
           <button
             type="button"
             className="text-sm font-medium underline underline-offset-4"
@@ -49,7 +56,7 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
           <span className="text-sm font-semibold">{mobileAmount}</span>
         </div>
 
-        <section className="flex-1 space-y-8">
+        <section className="flex-1 space-y-6">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -66,7 +73,11 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
                 isLoadingShippingOptions={isLoadingShippingOptions}
                 isSettingShipping={isSettingShipping}
               />
-              <CheckoutPaymentSection form={form} isSubmitting={isSubmitting} />
+              <CheckoutPaymentSection
+                form={form}
+                isSubmitting={isSubmitting}
+                canProceedToPayment={canCalculateShipping}
+              />
 
               <div className="flex flex-col gap-3 border-t pt-4">
                 <p className="text-xs text-muted-foreground">
@@ -93,6 +104,7 @@ export function CheckoutClient({ checkoutId }: { checkoutId: string }) {
           isSummaryOpen={isSummaryOpen}
           canCalculateShipping={canCalculateShipping}
           isPickup={deliveryMethod === "pickup"}
+          relatedProducts={relatedProducts}
         />
       </main>
     </div>

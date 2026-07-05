@@ -24,9 +24,11 @@ import { NG_REGION_CODES } from "@/shared/constants/ng-regions";
 
 // shadcn
 import { Card, CardContent } from "@/shared/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 
 // icons
 import { Loader2, MapPin, Truck } from "lucide-react";
+import { CheckoutStepHeading } from "./checkout-step-heading";
 
 type ShippingOption = {
   id: string;
@@ -89,17 +91,19 @@ export function CheckoutDeliverySection({
   const isShipping = deliveryMethod === "shipping";
 
   return (
-    <section className="space-y-5 rounded-lg border bg-card md:p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold">Delivery</h2>
-
-        {isPickup && isSettingPickup ? (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            <span>Saving pickup…</span>
-          </div>
-        ) : null}
-      </div>
+    <section className="p-4 space-y-5 border shadow-sm rounded-xl bg-card md:p-6">
+      <CheckoutStepHeading
+        step={2}
+        title="Delivery"
+        action={
+          isPickup && isSettingPickup ? (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <span>Saving pickup…</span>
+            </div>
+          ) : null
+        }
+      />
 
       {/* Delivery method cards */}
       <FormField
@@ -109,109 +113,59 @@ export function CheckoutDeliverySection({
           <FormItem>
             <FormLabel className="text-sm">Choose a delivery method</FormLabel>
             <FormControl>
-              <div className="grid gap-3 md:grid-cols-2">
-                <button
-                  type="button"
-                  onClick={() => field.onChange("shipping")}
-                  className={cn(
-                    "text-left",
-                    isSettingPickup && "pointer-events-none"
-                  )}
-                >
+              <RadioGroup
+                value={field.value}
+                onValueChange={field.onChange}
+                className={cn(
+                  "grid gap-3 md:grid-cols-2",
+                  isSettingPickup && "pointer-events-none opacity-60",
+                )}
+              >
+                <label htmlFor="delivery-shipping" className="cursor-pointer">
                   <Card
                     className={cn(
                       "transition",
                       field.value === "shipping"
                         ? "border-primary ring-1 ring-primary"
-                        : "hover:border-muted-foreground/30"
+                        : "hover:border-muted-foreground/30",
                     )}
                   >
                     <CardContent className="flex items-start gap-3">
-                      <div
-                        className={cn(
-                          "mt-0.5 flex h-9 w-9 items-center justify-center rounded-md border",
-                          field.value === "shipping"
-                            ? "border-primary bg-primary/5"
-                            : "bg-muted/40"
-                        )}
-                      >
-                        <Truck className="h-4 w-4" />
-                      </div>
+                      <RadioGroupItem
+                        value="shipping"
+                        id="delivery-shipping"
+                        className="mt-1"
+                      />
 
                       <div className="flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-semibold">
-                            Ship to address
-                          </p>
-                          <span
-                            className={cn(
-                              "rounded-full border px-2 py-0.5 text-[11px]",
-                              field.value === "shipping"
-                                ? "border-primary text-primary"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {field.value === "shipping" ? "Selected" : "Select"}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Delivery to your doorstep.
-                        </p>
+                        <p className="text-sm font-semibold">Ship to address</p>
                       </div>
                     </CardContent>
                   </Card>
-                </button>
+                </label>
 
-                <button
-                  type="button"
-                  onClick={() => field.onChange("pickup")}
-                  className={cn(
-                    "text-left",
-                    isSettingPickup && "pointer-events-none"
-                  )}
-                >
+                <label htmlFor="delivery-pickup" className="cursor-pointer">
                   <Card
                     className={cn(
                       "transition",
                       field.value === "pickup"
                         ? "border-primary ring-1 ring-primary"
-                        : "hover:border-muted-foreground/30"
+                        : "hover:border-muted-foreground/30",
                     )}
                   >
                     <CardContent className="flex items-start gap-3">
-                      <div
-                        className={cn(
-                          "mt-0.5 flex h-9 w-9 items-center justify-center rounded-md border",
-                          field.value === "pickup"
-                            ? "border-primary bg-primary/5"
-                            : "bg-muted/40"
-                        )}
-                      >
-                        <MapPin className="h-4 w-4" />
-                      </div>
-
+                      <RadioGroupItem
+                        value="pickup"
+                        id="delivery-pickup"
+                        className="mt-1"
+                      />
                       <div className="flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-semibold">Pick up</p>
-                          <span
-                            className={cn(
-                              "rounded-full border px-2 py-0.5 text-[11px]",
-                              field.value === "pickup"
-                                ? "border-primary text-primary"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {field.value === "pickup" ? "Selected" : "Select"}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Collect from a nearby pickup point.
-                        </p>
+                        <p className="text-sm font-semibold">Pick up</p>
                       </div>
                     </CardContent>
                   </Card>
-                </button>
-              </div>
+                </label>
+              </RadioGroup>
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -267,7 +221,7 @@ export function CheckoutDeliverySection({
                   onValueChange={field.onChange}
                 >
                   <FormControl>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-14">
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
@@ -316,7 +270,7 @@ export function CheckoutDeliverySection({
                     ) : isLoadingPickupLocations ? (
                       <Card className="border-dashed">
                         <CardContent className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           Loading pickup points…
                         </CardContent>
                       </Card>
@@ -329,77 +283,60 @@ export function CheckoutDeliverySection({
                         </CardContent>
                       </Card>
                     ) : (
-                      pickupLocations.map((loc) => {
-                        const selected = field.value === loc.id;
-                        return (
-                          <button
-                            key={loc.id}
-                            type="button"
-                            disabled={isSettingPickup}
-                            onClick={() => field.onChange(loc.id)}
-                            className={cn(
-                              "w-full text-left",
-                              isSettingPickup &&
-                                "pointer-events-none opacity-60"
-                            )}
-                          >
-                            <Card
-                              className={cn(
-                                "transition",
-                                selected
-                                  ? "border-primary ring-1 ring-primary"
-                                  : "hover:border-muted-foreground/30"
-                              )}
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        className={cn(
+                          "space-y-2",
+                          isSettingPickup && "pointer-events-none opacity-60",
+                        )}
+                      >
+                        {pickupLocations.map((loc) => {
+                          const selected = field.value === loc.id;
+                          const inputId = `pickup-point-${loc.id}`;
+                          return (
+                            <label
+                              key={loc.id}
+                              htmlFor={inputId}
+                              className="block cursor-pointer"
                             >
-                              <CardContent className="flex items-start gap-2">
-                                <div
-                                  className={cn(
-                                    "mt-0.5 flex h-9 w-9 items-center justify-center rounded-md border",
-                                    selected
-                                      ? "border-primary bg-primary/5"
-                                      : "bg-muted/40"
-                                  )}
-                                >
-                                  <MapPin className="h-4 w-4" />
-                                </div>
+                              <Card
+                                className={cn(
+                                  "transition",
+                                  selected
+                                    ? "border-primary ring-1 ring-primary"
+                                    : "hover:border-muted-foreground/30",
+                                )}
+                              >
+                                <CardContent className="flex items-start gap-2">
+                                  <RadioGroupItem value={loc.id} id={inputId} />
 
-                                <div className="flex-1">
-                                  <div className="flex items-start justify-between gap-2">
-                                    <div>
-                                      <p className="text-sm font-semibold">
+                                  <div className="flex-1">
+                                    <p className="text-xs">
+                                      <span className="font-semibold">
                                         {loc.name}
-                                      </p>
-                                      <p className="mt-1 text-xs text-muted-foreground">
-                                        {loc.address1}
+                                      </span>
+                                      <span className="text-muted-foreground">
+                                        {" "}
+                                        — {loc.address1}
                                         {loc.address2
                                           ? `, ${loc.address2}`
                                           : ""}{" "}
                                         • {prettyState(loc.state)}
+                                      </span>
+                                    </p>
+                                    {loc.instructions ? (
+                                      <p className="mt-1 text-xs text-muted-foreground">
+                                        {loc.instructions}
                                       </p>
-                                      {loc.instructions ? (
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                          {loc.instructions}
-                                        </p>
-                                      ) : null}
-                                    </div>
-
-                                    <span
-                                      className={cn(
-                                        "mt-0.5 rounded-full border px-2 py-0.5 text-[11px]",
-                                        selected
-                                          ? "border-primary text-primary"
-                                          : "text-muted-foreground"
-                                      )}
-                                    >
-                                      {selected ? "Selected" : "Select"}
-                                    </span>
+                                    ) : null}
                                   </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </button>
-                        );
-                      })
+                                </CardContent>
+                              </Card>
+                            </label>
+                          );
+                        })}
+                      </RadioGroup>
                     )}
                   </div>
                 </FormControl>
@@ -520,49 +457,42 @@ export function CheckoutDeliverySection({
             <FormField
               control={form.control}
               name="shippingOptionId"
+              rules={{ required: "Please select a shipping option" }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm">Shipping option</FormLabel>
                   <FormControl>
                     {isLoadingShippingOptions ? (
                       <div className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="w-4 h-4 animate-spin" />
                         Loading options…
                       </div>
                     ) : shippingOptions.length === 0 ? (
                       <p className="py-2 text-sm text-muted-foreground">
                         No shipping options available for this location.
-
                       </p>
                     ) : (
-                      <div className={cn("divide-y rounded-lg border overflow-hidden", isSettingShipping && "opacity-60 pointer-events-none")}>
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        className={cn(
+                          "gap-0 divide-y rounded-lg border overflow-hidden",
+                          isSettingShipping && "opacity-60 pointer-events-none",
+                        )}
+                      >
                         {shippingOptions.map((opt) => {
                           const selected = field.value === opt.id;
+                          const inputId = `shipping-option-${opt.id}`;
                           return (
-                            <button
+                            <label
                               key={opt.id}
-                              type="button"
-                              onClick={() => field.onChange(opt.id)}
+                              htmlFor={inputId}
                               className={cn(
-                                "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors",
-                                selected
-                                  ? "bg-primary/5"
-                                  : "hover:bg-muted/40"
+                                "flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors",
+                                selected ? "bg-primary/5" : "hover:bg-muted/40",
                               )}
                             >
-                              {/* radio dot */}
-                              <span
-                                className={cn(
-                                  "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                                  selected
-                                    ? "border-primary"
-                                    : "border-muted-foreground/40"
-                                )}
-                              >
-                                {selected && (
-                                  <span className="h-2 w-2 rounded-full bg-primary" />
-                                )}
-                              </span>
+                              <RadioGroupItem value={opt.id} id={inputId} />
 
                               <span className="flex-1 min-w-0">
                                 <span className="block text-sm font-medium leading-tight">
@@ -575,13 +505,18 @@ export function CheckoutDeliverySection({
                                 )}
                               </span>
 
-                              <span className={cn("text-sm font-semibold shrink-0", selected ? "text-primary" : "text-foreground")}>
+                              <span
+                                className={cn(
+                                  "text-sm font-semibold shrink-0",
+                                  selected ? "text-primary" : "text-foreground",
+                                )}
+                              >
                                 {formatNGN(opt.price)}
                               </span>
-                            </button>
+                            </label>
                           );
                         })}
-                      </div>
+                      </RadioGroup>
                     )}
                   </FormControl>
                   <FormMessage />

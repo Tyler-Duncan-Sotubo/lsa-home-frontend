@@ -4,6 +4,8 @@
 
 import { cn } from "@/lib/utils";
 import { CartItemRow } from "./cart-item-row";
+import { CartUpsellRail } from "@/features/cart/ui/cart-upsell-rail";
+import type { Product } from "@/features/Products/types/products";
 
 interface CheckoutOrderSummaryProps {
   items: any[]; // or your CartItem type
@@ -13,6 +15,7 @@ interface CheckoutOrderSummaryProps {
   isSummaryOpen: boolean;
   canCalculateShipping: boolean;
   isPickup: boolean; // 👈 NEW
+  relatedProducts?: Product[];
 }
 
 export function CheckoutOrderSummary({
@@ -23,6 +26,7 @@ export function CheckoutOrderSummary({
   isSummaryOpen,
   canCalculateShipping,
   isPickup,
+  relatedProducts = [],
 }: CheckoutOrderSummaryProps) {
   return (
     <aside
@@ -33,10 +37,26 @@ export function CheckoutOrderSummary({
     >
       <div
         className={cn(
-          "mb-4 rounded-lg border bg-card p-4 md:mb-0 md:block",
+          "mb-4 rounded-xl border bg-card p-4 shadow-sm md:mb-0 md:block md:p-6",
           !isSummaryOpen && "hidden md:block"
         )}
       >
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-semibold">Order summary</h2>
+          {items.length > 0 &&
+            (() => {
+              const itemCount = items.reduce(
+                (sum, it) => sum + Number(it.quantity ?? 0),
+                0
+              );
+              return (
+                <span className="text-xs text-muted-foreground">
+                  {itemCount} item{itemCount === 1 ? "" : "s"}
+                </span>
+              );
+            })()}
+        </div>
+
         {/* Items list */}
         <div className="md:max-h-100 space-y-3 overflow-y-auto border-b pb-3 text-sm">
           {items.length === 0 ? (
@@ -91,6 +111,15 @@ export function CheckoutOrderSummary({
             <span>{formattedTotal}</span>
           </div>
         </div>
+
+        {relatedProducts.length > 0 && (
+          <div className="mt-5 border-t pt-4">
+            <CartUpsellRail
+              title="You may also like"
+              products={relatedProducts}
+            />
+          </div>
+        )}
       </div>
     </aside>
   );

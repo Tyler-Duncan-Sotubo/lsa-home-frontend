@@ -16,6 +16,8 @@ export interface AddToCartButtonProps {
   image?: string | null;
   unitPrice: number;
   maxQty?: number | null;
+  attributes?: Record<string, string | null>;
+  description?: string | null;
 
   className?: string;
   size?: "sm" | "lg" | "default";
@@ -35,6 +37,8 @@ export function AddToCartButton({
   onAddedToCart,
   disabled = false,
   maxQty,
+  attributes,
+  description = null,
 }: AddToCartButtonProps) {
   const dispatch = useAppDispatch();
 
@@ -48,6 +52,8 @@ export function AddToCartButton({
         image,
         unitPrice,
         maxQty,
+        attributes,
+        description,
       }),
     );
 

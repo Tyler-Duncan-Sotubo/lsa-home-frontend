@@ -8,27 +8,6 @@ type ApiCartResponse = {
   subtotal: number;
 };
 
-// in refreshCartAndHydrate thunk
-function mapServerCartToItems(cart: any) {
-  const items = cart?.items ?? [];
-  if (!Array.isArray(items)) return [];
-
-  return items.map((it: any) => ({
-    slug: it.slug,
-    variantId: it.variantId ?? null,
-    quantity: Number(it.quantity ?? 1),
-
-    name: it.name ?? "",
-    image: it.image ?? null,
-    unitPrice: Number(it.unitPrice ?? 0),
-
-    // optional extras
-    priceHtml: null,
-    attributes: undefined,
-    weightKg: it.weightKg ?? undefined,
-  }));
-}
-
 export const refreshCartAndHydrate = createAsyncThunk(
   "cart/refreshCartAndHydrate",
   async (_, { dispatch, rejectWithValue }) => {
@@ -75,6 +54,7 @@ export const refreshCartAndHydrate = createAsyncThunk(
           weightKg: it?.weightKg == null ? undefined : Number(it.weightKg),
           attributes: it?.attributes ?? undefined,
           priceHtml: it?.priceHtml ?? undefined,
+          bundleSelections: it?.metadata?.bundleSelections ?? null,
         };
       });
 

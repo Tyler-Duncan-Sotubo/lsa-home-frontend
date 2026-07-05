@@ -7,6 +7,7 @@ import { FormField, FormItem, FormControl } from "@/shared/ui/form";
 import { cn } from "@/lib/utils";
 import type { CheckoutFormInstance } from "@/features/checkout/types/checkout";
 import { Card, CardContent } from "@/shared/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 import { FaCreditCard, FaUniversity } from "react-icons/fa";
 import { HiLockClosed } from "react-icons/hi";
 import { FiCopy, FiCheck } from "react-icons/fi";
@@ -19,10 +20,14 @@ import type {
   ApiPaymentMethod,
 } from "../types/payment-methods.type";
 import Image from "next/image";
+import { CheckoutStepHeading } from "./checkout-step-heading";
 
 interface CheckoutPaymentSectionProps {
   form: CheckoutFormInstance;
   isSubmitting?: boolean;
+  // false while a shipping option (or pickup point) hasn't been chosen yet —
+  // paying before that would let an order through with no fulfillment plan.
+  canProceedToPayment?: boolean;
 }
 
 const GATEWAY_LOGOS: Record<string, string> = {
@@ -36,7 +41,7 @@ function GatewayIcon({ provider }: { provider: string }) {
   const src = GATEWAY_LOGOS[provider];
   if (src) {
     return (
-      <div className="relative h-14 w-20">
+      <div className="relative w-20 h-14">
         <Image
           src={src}
           alt={`${provider} logo`}
@@ -46,7 +51,7 @@ function GatewayIcon({ provider }: { provider: string }) {
       </div>
     );
   }
-  return <FaCreditCard className="h-10 w-10" />;
+  return <FaCreditCard className="w-10 h-10" />;
 }
 
 function CopyRow({ label, value }: { label: string; value: string }) {
@@ -63,10 +68,10 @@ function CopyRow({ label, value }: { label: string; value: string }) {
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border bg-muted/30 px-3 py-2">
+    <div className="flex items-center justify-between gap-3 px-3 py-2 border rounded-md bg-muted/30">
       <div className="min-w-0">
         <p className="text-[11px] text-muted-foreground">{label}</p>
-        <p className="truncate text-sm font-medium">{value}</p>
+        <p className="text-sm font-medium truncate">{value}</p>
       </div>
 
       <button
@@ -75,9 +80,9 @@ function CopyRow({ label, value }: { label: string; value: string }) {
         className="inline-flex items-center gap-2 rounded-md border bg-background px-2.5 py-1.5 text-xs transition hover:bg-muted"
       >
         {copied ? (
-          <FiCheck className="h-4 w-4" />
+          <FiCheck className="w-4 h-4" />
         ) : (
-          <FiCopy className="h-4 w-4" />
+          <FiCopy className="w-4 h-4" />
         )}
         {copied ? "Copied" : "Copy"}
       </button>
@@ -92,44 +97,40 @@ function TitleCase(s: string) {
 }
 
 function MethodCard(props: {
+  value: string;
   selected: boolean;
   title: string;
   description: string;
   icon: React.ReactNode;
-  onClick: () => void;
 }) {
-  const { selected, title, description, icon, onClick } = props;
+  const { value, selected, title, description, icon } = props;
+  const inputId = `payment-method-${value}`;
+
   return (
-    <button type="button" onClick={onClick} className="w-full text-left">
+    <label htmlFor={inputId} className="block cursor-pointer">
       <div
         className={cn(
-          "flex items-center justify-between rounded-md border p-4 transition",
+          "flex items-center gap-3 rounded-md border py-1 px-3 transition",
           selected
-            ? "border-primary ring-1 ring-primary bg-primary/5"
-            : "hover:border-muted-foreground/30"
+            ? "border-primary ring-1 ring-primary bg-white"
+            : "hover:border-muted-foreground/30",
         )}
       >
-        <div className="flex items-center gap-3">
-          <div className="flex h-14 w-20 items-center justify-center">
-            {icon}
-          </div>
+        <RadioGroupItem value={value} id={inputId} />
 
-          <div>
-            <p className="text-lg font-semibold">{title}</p>
-            <p className="text-xs text-muted-foreground">{description}</p>
-          </div>
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <p className="text-sm font-semibold whitespace-nowrap">{title}</p>
+          <span className="text-xs text-muted-foreground">·</span>
+          <p className="text-xs truncate text-muted-foreground">
+            {description}
+          </p>
         </div>
 
-        <span
-          className={cn(
-            "rounded-full border px-2 py-0.5 text-[11px]",
-            selected ? "border-primary text-primary" : "text-muted-foreground"
-          )}
-        >
-          {selected ? "Selected" : "Select"}
-        </span>
+        <div className="flex items-center justify-center w-20 h-14 shrink-0">
+          {icon}
+        </div>
       </div>
-    </button>
+    </label>
   );
 }
 
@@ -145,6 +146,7 @@ function isValidPaymentValue(v: unknown) {
 export function CheckoutPaymentSection({
   form,
   isSubmitting = false,
+  canProceedToPayment = true,
 }: CheckoutPaymentSectionProps) {
   const { data, isLoading, isError } = usePaymentMethods();
 
@@ -154,10 +156,10 @@ export function CheckoutPaymentSection({
   }, [data]);
 
   const gateways = methods.filter(
-    (m): m is ApiGateway => m.method === "gateway"
+    (m): m is ApiGateway => m.method === "gateway",
   );
   const bankTransfer = methods.find(
-    (m): m is ApiBankTransfer => m.method === "bank_transfer"
+    (m): m is ApiBankTransfer => m.method === "bank_transfer",
   );
   const cash = methods.find((m): m is ApiCash => m.method === "cash");
 
@@ -173,10 +175,10 @@ export function CheckoutPaymentSection({
     const next = gateways[0]?.provider
       ? (`gateway:${gateways[0].provider}` as const)
       : bankTransfer
-      ? "bank"
-      : cash
-      ? "cash"
-      : "";
+        ? "bank"
+        : cash
+          ? "cash"
+          : "";
 
     if (next)
       form.setValue("paymentMethod" as any, next as any, {
@@ -187,13 +189,16 @@ export function CheckoutPaymentSection({
 
   const selectedValue = form.watch("paymentMethod") as unknown;
   const canPayNow =
-    !isLoading && methods.length > 0 && isValidPaymentValue(selectedValue);
+    !isLoading &&
+    methods.length > 0 &&
+    isValidPaymentValue(selectedValue) &&
+    canProceedToPayment;
 
   return (
-    <section className="space-y-4 rounded-lg border bg-card p-4 md:p-6 mt-6">
+    <section className="p-4 mt-6 space-y-4 border shadow-sm rounded-xl bg-card md:p-6">
       <div className="space-y-1">
-        <h2 className="text-base font-semibold">Payment</h2>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <CheckoutStepHeading step={3} title="Payment" />
+        <div className="flex items-center gap-1 my-4 text-xs text-muted-foreground">
           <HiLockClosed className="h-3.5 w-3.5" />
           <span>All transactions are secure and encrypted.</span>
         </div>
@@ -222,13 +227,17 @@ export function CheckoutPaymentSection({
             const isCash = val === "cash";
             const isGatewaySelected = val.startsWith("gateway:");
             const gatewayProvider = isGatewaySelected
-              ? val.split(":")[1] ?? ""
+              ? (val.split(":")[1] ?? "")
               : "";
 
             return (
               <FormItem>
                 <FormControl>
-                  <div className="space-y-3">
+                  <RadioGroup
+                    value={val}
+                    onValueChange={field.onChange}
+                    className="space-y-3"
+                  >
                     {/* Gateways */}
                     {gateways.map((g) => {
                       const value = `gateway:${g.provider}`;
@@ -243,11 +252,11 @@ export function CheckoutPaymentSection({
                       return (
                         <MethodCard
                           key={value}
+                          value={value}
                           selected={selected}
                           title={title}
                           description={description}
                           icon={<GatewayIcon provider={g.provider} />}
-                          onClick={() => field.onChange(value)}
                         />
                       );
                     })}
@@ -267,16 +276,16 @@ export function CheckoutPaymentSection({
                     {bankTransfer ? (
                       <div className="space-y-2">
                         <MethodCard
+                          value="bank"
                           selected={isBank}
                           title="Bank transfer"
                           description="Transfer directly to our bank account"
-                          icon={<FaUniversity className="h-5 w-5" />}
-                          onClick={() => field.onChange("bank")}
+                          icon={<FaUniversity className="w-5 h-5" />}
                         />
 
                         {isBank && bankDetails && (
                           <Card className="border-primary/30">
-                            <CardContent className="space-y-3 p-4">
+                            <CardContent className="p-4 space-y-3">
                               <p className="text-sm font-semibold">
                                 Bank account details
                               </p>
@@ -300,7 +309,7 @@ export function CheckoutPaymentSection({
                                 </p>
                               ) : null}
 
-                              <p className="text-red-500 text-sm">
+                              <p className="text-sm text-red-500">
                                 Proof of payment will be required to process
                                 your order.
                               </p>
@@ -319,13 +328,13 @@ export function CheckoutPaymentSection({
                     {/* Cash */}
                     {cash ? (
                       <MethodCard
+                        value="cash"
                         selected={isCash}
                         title="Cash"
                         description={
                           cash.note ?? "Pay with cash on delivery/pickup."
                         }
-                        icon={<MdAttachMoney className="h-6 w-6" />}
-                        onClick={() => field.onChange("cash")}
+                        icon={<MdAttachMoney className="w-6 h-6" />}
                       />
                     ) : null}
 
@@ -336,7 +345,7 @@ export function CheckoutPaymentSection({
                         another.
                       </div>
                     ) : null}
-                  </div>
+                  </RadioGroup>
                 </FormControl>
               </FormItem>
             );
@@ -344,9 +353,15 @@ export function CheckoutPaymentSection({
         />
       )}
 
+      {!canProceedToPayment && (
+        <p className="text-xs font-medium text-destructive">
+          Select a shipping option or pickup point above to continue.
+        </p>
+      )}
+
       <Button
         type="submit"
-        className="h-12 w-full font-bold text-base"
+        className="w-full h-12 text-base font-bold"
         isLoading={isSubmitting}
         disabled={!canPayNow || isSubmitting}
       >

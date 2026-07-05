@@ -63,6 +63,13 @@ export function CartDrawer() {
     return m?.[1] ?? null;
   }, [pathname]);
 
+  // ✅ You're already looking at the full cart on this page — popping the
+  // slider on top of it is redundant. Checkout has its own order summary,
+  // so the slider shouldn't cover it either (e.g. when adding an upsell item).
+  const isOnCartPage = pathname === "/cart";
+  const isOnCheckoutPage = Boolean(pathname?.startsWith("/checkout"));
+  const suppressDrawer = isOnCartPage || isOnCheckoutPage;
+
   function useSyncCheckout() {
     const qc = useQueryClient();
 
@@ -86,7 +93,7 @@ export function CartDrawer() {
 
   return (
     <Sheet
-      open={isOpen}
+      open={isOpen && !suppressDrawer}
       onOpenChange={(open) => dispatch(open ? openCart() : closeCart())}
     >
       <Button
@@ -95,6 +102,7 @@ export function CartDrawer() {
         className="relative flex h-10 w-10 items-center justify-center rounded-md hover:bg-muted"
         aria-label="Cart"
         onClick={() => {
+          if (suppressDrawer) return;
           dispatch(openCart());
           dispatch(refreshCartAndHydrate());
         }}
@@ -199,6 +207,54 @@ export function CartDrawer() {
                             >
                               {item.name ?? item.slug}
                             </Link>
+
+                            {item.description && (
+                              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                                {item.description}
+                              </p>
+                            )}
+
+                            {item.attributes && (
+                              <div className="mt-1 flex flex-col gap-0.5 text-xs text-muted-foreground">
+                                {Object.entries(
+                                  item.attributes as Record<
+                                    string,
+                                    string | null
+                                  >,
+                                )
+                                  .filter(([, v]) => v)
+                                  .map(([k, v]) => (
+                                    <span key={k}>
+                                      <span className="capitalize">{k}:</span>{" "}
+                                      {v}
+                                    </span>
+                                  ))}
+                              </div>
+                            )}
+
+                            {item.bundleSelections &&
+                              item.bundleSelections.length > 0 && (
+                                <ul className="mt-2 flex flex-col gap-1 border-l pl-3 text-xs text-muted-foreground">
+                                  {item.bundleSelections.map((sel: any) => (
+                                    <li key={sel.componentProductId}>
+                                      <span className="font-medium text-foreground">
+                                        {sel.componentName ?? "Item"}
+                                      </span>
+                                      {sel.attributes &&
+                                        Object.values(sel.attributes).some(
+                                          Boolean,
+                                        ) && (
+                                          <span>
+                                            {" — "}
+                                            {Object.values(sel.attributes)
+                                              .filter(Boolean)
+                                              .join(" / ")}
+                                          </span>
+                                        )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
 
                             <div className="mt-2 text-base font-semibold">
                               <span>{currencyFormatter.format(lineTotal)}</span>
@@ -351,6 +407,14 @@ export function CartDrawer() {
                 Checkout
               </Link>
             </Button>
+
+            <Link
+              href="/cart"
+              className="block text-center text-sm underline underline-offset-4"
+              onClick={() => dispatch(closeCart())}
+            >
+              View full cart
+            </Link>
           </div>
         )}
       </SheetContent>

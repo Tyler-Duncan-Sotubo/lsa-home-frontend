@@ -15,19 +15,26 @@ export function useRegister(callbackUrl: string) {
       setError(null);
 
       try {
-        await registerAccount(values);
+        const data = await registerAccount(values);
 
-        // Auto-login (credentials)
+        // Auto-login (credentials) — the provider's authorize() expects the
+        // customer + tokens payload we already have, not email/password.
         const loginRes = await signIn("credentials", {
           redirect: false,
-          email: values.email,
-          password: values.password,
-          callbackUrl,
+          customer: JSON.stringify(data.customer),
+          tokens: JSON.stringify(data.tokens),
         });
 
         if (loginRes?.error) {
           router.push("/login");
           return;
+        }
+
+        // ✅ Claim / merge guest cart into the new customer's cart (best-effort)
+        try {
+          await fetch("/api/cart/claim", { method: "POST" });
+        } catch {
+          // ignore: don't block registration
         }
 
         router.push(callbackUrl);

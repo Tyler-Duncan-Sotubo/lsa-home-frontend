@@ -332,6 +332,12 @@ export function ProductDetailsCartOne({
                 image={variationImageSrc}
                 unitPrice={Number(salePrice ?? regularPrice ?? 0)}
                 maxQty={maxQty}
+                description={product.short_description}
+                attributes={{
+                  ...(effectiveColor ? { Color: effectiveColor } : {}),
+                  ...(effectiveSize ? { Size: effectiveSize } : {}),
+                  ...selectedExtras,
+                }}
               />
 
               <div className="relative">

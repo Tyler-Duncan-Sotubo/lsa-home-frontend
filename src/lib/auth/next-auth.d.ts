@@ -18,6 +18,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: StorefrontCustomer;
     backendTokens: BackendTokens;
+    error?: "RefreshAccessTokenError";
   }
 }
 
@@ -26,5 +27,6 @@ declare module "next-auth/jwt" {
     user: StorefrontCustomer;
     backendTokens: BackendTokens;
     accessTokenExpires: number;
+    error?: "RefreshAccessTokenError";
   }
 }

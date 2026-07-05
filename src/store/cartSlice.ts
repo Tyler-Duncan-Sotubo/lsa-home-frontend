@@ -2,6 +2,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 
+export type BundleSelectionSnapshot = {
+  componentProductId: string;
+  componentName?: string | null;
+  componentSlug?: string | null;
+  componentImage?: string | null;
+  variantId: string;
+  variantTitle?: string | null;
+  attributes?: Record<string, string>;
+  quantity?: number;
+};
+
 export type CartItem = {
   slug: string;
   variantId?: string | null;
@@ -17,7 +28,12 @@ export type CartItem = {
   // optional
   priceHtml?: string | null;
   attributes?: Record<string, string | null>;
+  description?: string | null;
   weightKg?: number;
+
+  // present only on bundle line items — snapshot of what the customer
+  // picked per component, for display in the cart/checkout UI.
+  bundleSelections?: BundleSelectionSnapshot[] | null;
 };
 
 export type CartState = {
@@ -82,8 +98,11 @@ const cartSlice = createSlice({
 
             priceHtml: raw?.priceHtml ?? prev?.priceHtml ?? null,
             attributes: raw?.attributes ?? prev?.attributes,
+            description: raw?.description ?? prev?.description ?? null,
             weightKg:
               typeof raw?.weightKg === "number" ? raw.weightKg : prev?.weightKg,
+            bundleSelections:
+              raw?.bundleSelections ?? prev?.bundleSelections ?? null,
           } as CartItem;
         })
         .filter((it) => it.slug && it.quantity > 0);
@@ -98,6 +117,10 @@ const cartSlice = createSlice({
         image = null,
         unitPrice,
         maxQty = null,
+        priceHtml = null,
+        attributes,
+        description = null,
+        weightKg,
       } = action.payload;
 
       const key = buildKey(slug, variantId);
@@ -118,6 +141,10 @@ const cartSlice = createSlice({
         existing.name = name;
         existing.image = image;
         existing.unitPrice = unitPrice;
+        existing.priceHtml = priceHtml ?? existing.priceHtml;
+        existing.attributes = attributes ?? existing.attributes;
+        existing.description = description ?? existing.description;
+        existing.weightKg = weightKg ?? existing.weightKg;
 
         state.items.splice(index, 1);
         if (existing.quantity > 0) state.items.unshift(existing);
@@ -132,6 +159,10 @@ const cartSlice = createSlice({
             image,
             unitPrice,
             maxQty,
+            priceHtml,
+            attributes,
+            description,
+            weightKg,
           });
         }
       }

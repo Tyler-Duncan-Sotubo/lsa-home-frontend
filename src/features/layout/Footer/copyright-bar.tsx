@@ -71,7 +71,7 @@ export const CopyrightBar = ({
   const hasContent = Boolean(leftText || showPayments);
 
   return (
-    <section className="w-full border-t border-secondary/20 py-2 text-center text-xs text-secondary">
+    <section className="w-full py-2 text-xs text-center border-t border-secondary/20 text-secondary">
       {hasContent && (
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <p className="text-sm font-bold">{leftText ?? defaultLeft}</p>
@@ -91,7 +91,7 @@ export const CopyrightBar = ({
                         key={method}
                         aria-label={label}
                         title={label}
-                        className="h-10 w-10 opacity-80"
+                        className="w-10 h-10 opacity-80"
                       />
                     );
                   }
@@ -100,7 +100,7 @@ export const CopyrightBar = ({
                     return (
                       <span
                         key={method}
-                        className="relative h-12 w-12 opacity-80"
+                        className="relative w-12 h-12 opacity-80"
                         title={label}
                         aria-label={label}
                       >
@@ -116,7 +116,7 @@ export const CopyrightBar = ({
                   }
 
                   return null;
-                }
+                },
               )}
             </div>
           )}

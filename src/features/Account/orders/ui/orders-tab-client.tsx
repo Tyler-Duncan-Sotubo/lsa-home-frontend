@@ -4,34 +4,13 @@ import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
 import { usePriceDisplay } from "@/shared/hooks/use-price-display";
+import {
+  getOrderStatusClasses,
+  orderStatusLabel,
+} from "@/shared/utils/order-status";
 import type { ListCustomerOrdersResponse } from "../actions/orders";
-
-function getStatusClasses(status: string) {
-  const normalized = status.toLowerCase();
-
-  if (normalized === "completed") {
-    return "bg-emerald-100 text-emerald-800 border-emerald-200";
-  }
-
-  if (normalized === "on-hold") {
-    return "bg-amber-100 text-amber-800 border-amber-200";
-  }
-
-  if (normalized === "processing") {
-    return "bg-blue-100 text-blue-800 border-blue-200";
-  }
-
-  if (
-    normalized === "cancelled" ||
-    normalized === "canceled" ||
-    normalized === "failed"
-  ) {
-    return "bg-red-100 text-red-800 border-red-200";
-  }
-
-  return "bg-slate-100 text-slate-800 border-slate-200";
-}
 
 export default function OrdersTabClient({
   initialData,
@@ -43,187 +22,193 @@ export default function OrdersTabClient({
 
   if (!orders.length) {
     return (
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Your Orders</h1>
-        <p className="text-sm text-muted-foreground">
-          You don&apos;t have any orders yet.
+      <div className="max-w-md py-20 mx-auto text-center md:py-28">
+        <h1 className="text-3xl font-semibold tracking-tight">No orders yet</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          When you place an order, it&apos;ll show up here so you can track it,
+          reorder, or leave a review.
         </p>
+        <Button asChild className="h-12 px-10 mt-8">
+          <Link href="/">Start shopping</Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 mb-10">
+    <div className="mb-10 space-y-8">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/account">
-          <Button variant="link" className="p-0">
-            Your Account
-          </Button>
+        <Link href="/account" className="hover:text-foreground hover:underline">
+          Your Account
         </Link>
-        <IoChevronForward />
-        <p>Your Orders</p>
+        <IoChevronForward className="h-3.5 w-3.5" />
+        <p className="text-foreground">Your Orders</p>
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold">Your Orders</h1>
-        <p className="text-sm text-muted-foreground">
-          Track, return, or buy items again.
+        <h1 className="text-3xl font-semibold tracking-tight">Your Orders</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Track, reorder, or review items from past orders.
         </p>
       </div>
 
-      <div className="space-y-10">
-        {orders.map((order) => (
-          <div
-            key={order.id}
-            className="rounded-lg border bg-background p-4 sm:p-5 space-y-4"
-          >
-            {/* top meta row */}
-            <div className="flex flex-wrap gap-4 justify-between border-b pb-3 text-xs sm:text-sm">
-              <div>
-                <div className="font-semibold">Order placed</div>
-                <div>{new Date(order.createdAt).toLocaleDateString()}</div>
-              </div>
+      <div className="space-y-6">
+        {orders.map((order) => {
+          const detailHref = `/order/pending/${order.id}`;
+          const canReorder = order.status === "paid";
 
-              <div>
-                <div className="font-semibold">Total</div>
-                {/* totalMinor -> naira */}
-                <div>{formatPrice(String(order.totalMinor ?? 0))}</div>
-              </div>
+          return (
+            <div key={order.id} className="border shadow-sm rounded-xl bg-card">
+              {/* meta row */}
+              <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b">
+                <div className="flex flex-wrap text-xs gap-x-8 gap-y-2 sm:text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Order placed</p>
+                    <p className="font-medium">
+                      {new Date(order.createdAt).toLocaleDateString("en-NG", {
+                        dateStyle: "medium",
+                      })}
+                    </p>
+                  </div>
 
-              <div className="text-left sm:text-right">
-                <div className="font-semibold">
-                  Order #{order.orderNumber ?? order.id}
+                  <div>
+                    <p className="text-muted-foreground">Total</p>
+                    <p className="font-medium">
+                      {formatPrice(String(order.totalMinor ?? 0))}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-muted-foreground">Order number</p>
+                    <p className="font-medium">
+                      {order.orderNumber ?? order.id}
+                    </p>
+                  </div>
                 </div>
-                <div className="mt-1">
-                  <span
+
+                <div className="flex items-center gap-3">
+                  <Badge
+                    variant="outline"
                     className={cn(
-                      "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide",
-                      getStatusClasses(order.status)
+                      "capitalize",
+                      getOrderStatusClasses(order.status),
                     )}
                   >
-                    {order.status}
-                  </span>
+                    {orderStatusLabel(order.status)}
+                  </Badge>
+
+                  <Button asChild size="sm">
+                    <Link href={detailHref}>View order</Link>
+                  </Button>
                 </div>
               </div>
-            </div>
 
-            {/* items */}
-            {order.items?.length ? (
-              <div className="space-y-3">
-                {order.items.map((item) => {
-                  const imageUrl = item.imageUrl ?? undefined;
+              {/* items */}
+              {order.items?.length ? (
+                <div className="divide-y">
+                  {order.items.map((item) => {
+                    const imageUrl = item.imageUrl ?? undefined;
 
-                  // ✅ product route: /products/:id (fallback to slug, then no-link)
-                  const productHref = item.product?.id
-                    ? `/products/${item.product.slug}`
-                    : null;
-
-                  const productName =
-                    item.product?.name?.trim() || item.name || "Item";
-
-                  // ✅ item.totalMinor expected from API (minor units)
-                  const itemTotal =
-                    item.totalMinor != null
-                      ? formatPrice(String(Number(item.totalMinor) / 100))
+                    const productHref = item.product?.id
+                      ? `/products/${item.product.slug}`
                       : null;
 
-                  return (
-                    <div
-                      key={item.id}
-                      className="flex flex-col sm:flex-row gap-3 sm:gap-4"
-                    >
-                      {/* image */}
-                      {imageUrl ? (
-                        productHref ? (
-                          <Link
-                            href={productHref}
-                            className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted flex items-center justify-center"
-                          >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={imageUrl}
-                              alt={productName}
-                              className="h-full w-full object-cover"
-                            />
-                          </Link>
-                        ) : (
-                          <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted flex items-center justify-center">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={imageUrl}
-                              alt={productName}
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                        )
-                      ) : null}
+                    const productName =
+                      item.product?.name?.trim() || item.name || "Item";
 
-                      {/* info */}
-                      <div className="flex-1">
-                        {productHref ? (
+                    const itemTotal =
+                      item.totalMinor != null
+                        ? formatPrice(String(Number(item.totalMinor) / 100))
+                        : null;
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center"
+                      >
+                        {imageUrl ? (
                           <Link
-                            href={productHref}
-                            className="text-sm font-medium leading-snug hover:underline"
+                            href={productHref ?? "#"}
+                            className="flex items-center justify-center w-20 h-20 overflow-hidden rounded-lg shrink-0 bg-muted"
                           >
-                            {productName}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={imageUrl}
+                              alt={productName}
+                              className="object-cover w-full h-full"
+                            />
                           </Link>
                         ) : (
-                          <div className="text-sm font-medium leading-snug">
-                            {productName}
+                          <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted text-[10px] text-muted-foreground">
+                            No image
                           </div>
                         )}
 
-                        <div className="text-xs text-muted-foreground mt-1">
-                          Qty: {item.quantity}
+                        <div className="flex-1 min-w-0">
+                          {productHref ? (
+                            <Link
+                              href={productHref}
+                              className="text-sm font-medium leading-snug hover:underline"
+                            >
+                              {productName}
+                            </Link>
+                          ) : (
+                            <p className="text-sm font-medium leading-snug">
+                              {productName}
+                            </p>
+                          )}
+
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Qty: {item.quantity}
+                          </p>
                         </div>
 
-                        {itemTotal ? (
-                          <div className="text-sm font-semibold mt-2">
-                            {itemTotal}
+                        <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end sm:justify-center">
+                          {itemTotal && (
+                            <span className="text-sm font-semibold">
+                              {itemTotal}
+                            </span>
+                          )}
+
+                          <div className="flex gap-2">
+                            <Button
+                              asChild={canReorder && !!productHref}
+                              size="sm"
+                              disabled={!canReorder || !productHref}
+                              className="h-8 text-xs rounded-full"
+                            >
+                              {canReorder && productHref ? (
+                                <Link href={productHref}>Order again</Link>
+                              ) : (
+                                <span>Order again</span>
+                              )}
+                            </Button>
+
+                            <Button
+                              asChild={canReorder && !!productHref}
+                              variant="clean"
+                              size="sm"
+                              disabled={!canReorder || !productHref}
+                              className="h-8 text-xs rounded-full"
+                            >
+                              {canReorder && productHref ? (
+                                <Link href={`${productHref}#reviews`}>
+                                  Write a review
+                                </Link>
+                              ) : (
+                                <span>Write a review</span>
+                              )}
+                            </Button>
                           </div>
-                        ) : null}
+                        </div>
                       </div>
-
-                      {/* actions -> all go to product/id */}
-                      <div className="flex sm:flex-col gap-2 sm:items-stretch">
-                        {productHref && order.status === "paid" ? (
-                          <>
-                            <Link href={productHref}>
-                              <button className="border rounded-full px-3 py-1 text-xs font-medium hover:bg-muted w-full">
-                                Order again
-                              </button>
-                            </Link>
-
-                            <Link href={`${productHref}#reviews`}>
-                              <button className="border rounded-full px-3 py-1 text-xs hover:bg-muted w-full">
-                                Write a review
-                              </button>
-                            </Link>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              disabled
-                              className="border rounded-full px-3 py-1 text-xs font-medium opacity-50 cursor-not-allowed"
-                            >
-                              Order again
-                            </button>
-                            <button
-                              disabled
-                              className="border rounded-full px-3 py-1 text-xs opacity-50 cursor-not-allowed"
-                            >
-                              Write a review
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null}
-          </div>
-        ))}
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

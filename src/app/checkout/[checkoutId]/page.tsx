@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { CheckoutClient } from "@/features/checkout/ui/checkout-client";
 import { buildMetadata } from "@/shared/seo/build-metadata";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
+import { getUpsellProducts } from "@/features/Products/actions/get-upsell-products";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStorefrontConfig();
@@ -21,5 +24,9 @@ export default async function CheckoutPage({
   params: Promise<{ checkoutId: string }>;
 }) {
   const { checkoutId } = await params;
-  return <CheckoutClient checkoutId={checkoutId} />;
+  const relatedProducts = await getUpsellProducts(2);
+
+  return (
+    <CheckoutClient checkoutId={checkoutId} relatedProducts={relatedProducts} />
+  );
 }

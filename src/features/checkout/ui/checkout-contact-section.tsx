@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import type { CheckoutFormInstance } from "@/features/checkout/types/checkout";
+import { CheckoutStepHeading } from "./checkout-step-heading";
 
 interface CheckoutContactSectionProps {
   form: CheckoutFormInstance;
@@ -35,19 +36,21 @@ export function CheckoutContactSection({ form }: CheckoutContactSectionProps) {
   }, [isAuthenticated, userEmail, form]);
 
   return (
-    <section className="space-y-4 rounded-lg border bg-card p-4 md:p-6 mb-6">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-base font-semibold">Contact</h2>
-
-        {!isAuthenticated && (
-          <Link
-            href="/account/login"
-            className="text-sm underline underline-offset-4"
-          >
-            Sign in
-          </Link>
-        )}
-      </div>
+    <section className="space-y-4 rounded-xl border bg-card p-4 shadow-sm md:p-6 mb-6">
+      <CheckoutStepHeading
+        step={1}
+        title="Contact"
+        action={
+          !isAuthenticated && (
+            <Link
+              href="/account/login"
+              className="text-sm underline underline-offset-4"
+            >
+              Sign in
+            </Link>
+          )
+        }
+      />
 
       {/* If user is authenticated, show their details instead of the full form */}
       {isAuthenticated ? (

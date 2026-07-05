@@ -423,7 +423,9 @@ export function useCheckoutController(checkoutId: string) {
 
           if (!authorizationUrl) {
             toast.error("Unable to start Paystack payment.");
-            router.push(`/order/${order.id}`);
+            // ✅ /order/[orderId] isn't a real route (only
+            // /order/pending/[orderId] is) — this used to 404.
+            router.push(`/order/pending/${order.id}`);
             return;
           }
 
@@ -479,6 +481,13 @@ export function useCheckoutController(checkoutId: string) {
     if (deliveryMethod === "pickup" && !pickupLocationId) {
       form.setError("pickupLocationId" as any, {
         message: "Select a pickup point",
+      });
+      return;
+    }
+
+    if (deliveryMethod === "shipping" && !shippingOptionId?.trim()) {
+      form.setError("shippingOptionId" as any, {
+        message: "Select a shipping option",
       });
       return;
     }

@@ -2,6 +2,34 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { addToCart, updateCartQuantity, removeFromCart } from "./cartSlice";
 import { refreshCartAndHydrate } from "./cart-refresh-thunk";
+import { getBrowserQueryClient } from "@/shared/providers/query-client";
+
+// Checkout has already snapshotted its own line items from the cart, so
+// mutating the cart while on a checkout page (e.g. the "You may also like"
+// rail) won't show up there until we push a resync of that snapshot.
+async function resyncCheckoutIfOnCheckoutPage() {
+  if (typeof window === "undefined") return;
+
+  const match = window.location.pathname.match(/^\/checkout\/([^/]+)/);
+  const checkoutId = match?.[1];
+  if (!checkoutId) return;
+
+  try {
+    const res = await fetch(`/api/checkout/${checkoutId}/sync`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if (!res.ok) return;
+
+    const updatedCheckout = await res.json();
+    getBrowserQueryClient()?.setQueryData(
+      ["checkout", checkoutId],
+      updatedCheckout,
+    );
+  } catch {
+    // best-effort — the checkout page's own polling/refetch will catch up
+  }
+}
 
 export type CartUIPayload = {
   slug: string;
@@ -15,6 +43,7 @@ export type CartUIPayload = {
   maxQty?: number | null;
   priceHtml?: string | null;
   attributes?: Record<string, any>;
+  description?: string | null;
   weightKg?: number;
 };
 
@@ -54,6 +83,7 @@ export const addToCartAndSync = createAsyncThunk(
 
       // 2️⃣ reconcile once on success
       dispatch(refreshCartAndHydrate());
+      await resyncCheckoutIfOnCheckoutPage();
 
       return { ok: true };
     } catch (err: any) {
@@ -68,6 +98,55 @@ export const addToCartAndSync = createAsyncThunk(
       return rejectWithValue({
         status: err?.status,
         message: err?.message ?? "Unable to add item to cart",
+      });
+    }
+  },
+);
+
+export type AddBundleToCartInput = {
+  bundleProductId: string;
+  quantity: number;
+  selections: { componentProductId: string; variantId: string }[];
+};
+
+async function callBundleApi(body: AddBundleToCartInput) {
+  const res = await fetch("/api/cart/bundle-items", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw {
+      status: res.status,
+      message: data?.error?.message ?? "Unable to add bundle to cart",
+      data,
+    };
+  }
+
+  return data;
+}
+
+// Unlike addToCartAndSync, there's no optimistic dispatch here — a bundle's
+// price/line id is server-computed from the customer's selections, so there
+// is nothing sensible to render locally before the server responds.
+export const addBundleToCartAndSync = createAsyncThunk(
+  "cart/addBundleToCartAndSync",
+  async (input: AddBundleToCartInput, { dispatch, rejectWithValue }) => {
+    try {
+      await callBundleApi(input);
+
+      dispatch(refreshCartAndHydrate());
+      await resyncCheckoutIfOnCheckoutPage();
+
+      return { ok: true };
+    } catch (err: any) {
+      return rejectWithValue({
+        status: err?.status,
+        message: err?.message ?? "Unable to add bundle to cart",
       });
     }
   },

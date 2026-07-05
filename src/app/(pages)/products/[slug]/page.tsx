@@ -5,10 +5,12 @@ import { cache } from "react";
 import { ProductJsonLd } from "@/shared/seo/product-json-ld";
 import { BreadcrumbJsonLd } from "@/shared/seo/breadcrumb-json-ld";
 import { ProductPageClient } from "@/features/Products/ui/product-page-client";
+import { BundlePageClient } from "@/features/Products/ui/ProductDetails/variants/Bundle/bundle-page-client";
 import {
   getProductBySlugWithVariations as _getProductBySlugWithVariations,
   listProducts,
 } from "@/features/Products/actions/products";
+import { getBundleDetailBySlug } from "@/features/Products/actions/get-bundle-detail";
 import { getProductReviews } from "@/features/reviews/actions/get-product-reviews";
 import { productToSeo } from "@/shared/seo/product-to-seo";
 import { buildMetadata } from "@/shared/seo/build-metadata";
@@ -95,6 +97,30 @@ export default async function ProductPage({
         })
       : Promise.resolve([]),
   ]);
+
+  if (product.type === "bundle") {
+    const bundle = await getBundleDetailBySlug(slug);
+    if (!bundle) return notFound();
+
+    return (
+      <>
+        <BreadcrumbJsonLd
+          items={[
+            { name: "Home", url: (await getRequestBaseUrl()) || "/" },
+            { name: product.name, url: `/products/${product.slug}` },
+          ]}
+        />
+        <BundlePageClient
+          bundle={bundle}
+          product={product}
+          reviews={reviews}
+          relatedProducts={relatedProducts}
+          config={config}
+          user={null}
+        />
+      </>
+    );
+  }
 
   const baseUrl = await getRequestBaseUrl();
 

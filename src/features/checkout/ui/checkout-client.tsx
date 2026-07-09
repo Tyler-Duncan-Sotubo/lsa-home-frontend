@@ -28,6 +28,7 @@ export function CheckoutClient({
     canCalculateShipping,
     formattedSubtotal,
     formattedShipping,
+    formattedDiscount,
     formattedTotal,
     mobileAmount,
     onSubmit,
@@ -38,6 +39,11 @@ export function CheckoutClient({
     shippingOptions,
     isLoadingShippingOptions,
     isSettingShipping,
+    appliedDiscountCodeId,
+    applyDiscountCode,
+    isApplyingDiscountCode,
+    removeDiscountCode,
+    isRemovingDiscountCode,
   } = useCheckoutController(checkoutId);
 
   if (isLoading) return <LoadingProgress />;
@@ -100,11 +106,17 @@ export function CheckoutClient({
           items={items}
           formattedSubtotal={formattedSubtotal}
           formattedShipping={formattedShipping}
+          formattedDiscount={formattedDiscount}
           formattedTotal={formattedTotal}
           isSummaryOpen={isSummaryOpen}
           canCalculateShipping={canCalculateShipping}
           isPickup={deliveryMethod === "pickup"}
           relatedProducts={relatedProducts}
+          appliedDiscountCodeId={appliedDiscountCodeId}
+          onApplyDiscountCode={applyDiscountCode}
+          isApplyingDiscountCode={isApplyingDiscountCode}
+          onRemoveDiscountCode={removeDiscountCode}
+          isRemovingDiscountCode={isRemovingDiscountCode}
         />
       </main>
     </div>

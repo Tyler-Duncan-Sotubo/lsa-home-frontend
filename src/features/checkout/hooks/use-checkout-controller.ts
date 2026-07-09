@@ -247,6 +247,47 @@ export function useCheckoutController(checkoutId: string) {
   }, [checkoutQuery.error, checkoutId, isRefreshingCheckout]);
 
   // -----------------------------
+  // Mutation: discount code
+  // -----------------------------
+  const syncCheckoutAfterDiscount = async () => {
+    if (!checkoutId) return;
+    const updated = await fetchJson(`/api/checkout/${checkoutId}/sync`, {
+      method: "POST",
+    });
+    qc.setQueryData(["checkout", checkoutId], updated);
+  };
+
+  const applyDiscountCodeMutation = useMutation({
+    mutationFn: (code: string) =>
+      fetchJson("/api/cart/discount-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      }),
+    onSuccess: async () => {
+      await syncCheckoutAfterDiscount();
+    },
+    onError: async (err: any) => {
+      if (isExpiredCheckout(err)) {
+        await refreshCheckout(checkoutId);
+        return;
+      }
+      toast.error(getErrMsg(err));
+    },
+  });
+
+  const removeDiscountCodeMutation = useMutation({
+    mutationFn: () =>
+      fetchJson("/api/cart/discount-code", { method: "DELETE" }),
+    onSuccess: async () => {
+      await syncCheckoutAfterDiscount();
+    },
+    onError: async (err: any) => {
+      toast.error(getErrMsg(err));
+    },
+  });
+
+  // -----------------------------
   // Mutation: set shipping
   // -----------------------------
   const setShippingMutation = useMutation({
@@ -460,12 +501,18 @@ export function useCheckoutController(checkoutId: string) {
   const items = checkout?.items ?? [];
   const subtotal = Number(checkout?.subtotal ?? 0);
   const shippingTotal = Number(checkout?.shippingTotal ?? 0);
-  const total = Number(checkout?.total ?? subtotal + shippingTotal);
+  const discountTotal = Number(checkout?.discountTotal ?? 0);
+  const total = Number(checkout?.total ?? subtotal + shippingTotal - discountTotal);
+  const appliedDiscountCodeId = checkout?.appliedDiscountCodeId ?? null;
 
   const formattedSubtotal = useMemo(() => formatNGN(subtotal), [subtotal]);
   const formattedShipping = useMemo(
     () => (deliveryMethod === "pickup" ? null : formatNGN(shippingTotal)),
     [deliveryMethod, shippingTotal],
+  );
+  const formattedDiscount = useMemo(
+    () => (discountTotal > 0 ? formatNGN(discountTotal) : null),
+    [discountTotal],
   );
   const formattedTotal = useMemo(() => formatNGN(total), [total]);
 
@@ -536,8 +583,16 @@ export function useCheckoutController(checkoutId: string) {
     // formatted
     formattedSubtotal,
     formattedShipping,
+    formattedDiscount,
     formattedTotal,
     mobileAmount,
+
+    // discount code
+    appliedDiscountCodeId,
+    applyDiscountCode: applyDiscountCodeMutation.mutateAsync,
+    isApplyingDiscountCode: applyDiscountCodeMutation.isPending,
+    removeDiscountCode: removeDiscountCodeMutation.mutateAsync,
+    isRemovingDiscountCode: removeDiscountCodeMutation.isPending,
 
     // actions
     onSubmit,

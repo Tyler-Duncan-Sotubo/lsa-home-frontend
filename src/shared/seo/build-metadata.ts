@@ -63,9 +63,18 @@ export function buildMetadata({
       }
     : undefined;
 
-  // ✅ OG image: page-level first, fallback to global
+  // ✅ OG image: page-level first, fallback to global, then to the store's
+  // favicon — merchants can't set a dedicated share image yet, so without
+  // this Facebook/Twitter/WhatsApp previews show a generic default icon
+  // instead of anything store-branded.
   const ogImageRaw = seo.ogImage ?? globalSeo?.ogImage ?? null;
-  const ogImageUrl = ogImageRaw ? resolveUrl(ogImageRaw.url, base) : null;
+  const faviconFallbackUrl = resolveUrl(
+    faviconSource?.png ?? faviconSource?.appleTouch ?? faviconSource?.svg,
+    base,
+  );
+  const ogImageUrl = ogImageRaw
+    ? resolveUrl(ogImageRaw.url, base)
+    : (faviconFallbackUrl ?? null);
 
   return {
     metadataBase: base ? new URL(base) : undefined,
@@ -85,8 +94,9 @@ export function buildMetadata({
               {
                 url: ogImageUrl,
                 alt: ogImageRaw?.alt ?? title,
-                width: ogImageRaw?.width ?? 1200,
-                height: ogImageRaw?.height ?? 630,
+                ...(ogImageRaw
+                  ? { width: ogImageRaw.width ?? 1200, height: ogImageRaw.height ?? 630 }
+                  : {}), // favicon fallback: let the platform infer actual (usually square) dimensions
               },
             ],
           }

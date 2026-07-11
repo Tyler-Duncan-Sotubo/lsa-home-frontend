@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { trackEvent } from "@/shared/analytics/track";
 import { addToCart, updateCartQuantity, removeFromCart } from "./cartSlice";
 import { refreshCartAndHydrate } from "./cart-refresh-thunk";
 import { getBrowserQueryClient } from "@/shared/providers/query-client";
@@ -84,6 +85,11 @@ export const addToCartAndSync = createAsyncThunk(
       // 2️⃣ reconcile once on success
       dispatch(refreshCartAndHydrate());
       await resyncCheckoutIfOnCheckoutPage();
+
+      trackEvent("add_to_cart", {
+        path: window.location.pathname,
+        meta: { slug: input.slug, quantity: input.quantity },
+      });
 
       return { ok: true };
     } catch (err: any) {

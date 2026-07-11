@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { Button } from "@/shared/ui/button";
 import { useThankYou } from "../hooks/use-thank-you";
+import { useEffect } from "react";
+import { trackEvent } from "@/shared/analytics/track";
 
 interface ThankYouClientProps {
   orderId?: string;
@@ -11,6 +13,10 @@ interface ThankYouClientProps {
 
 export function ThankYouClient({ orderId }: ThankYouClientProps) {
   const { hasOrderId } = useThankYou({ orderId });
+
+  useEffect(() => {
+    if (orderId) trackEvent("purchase", { orderId, path: "/order/thank-you" });
+  }, [orderId]);
 
   return (
     <main className="min-h-[60vh] w-[95%] max-w-3xl mx-auto py-12 flex flex-col items-center justify-center text-center">

@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { trackEvent } from "@/shared/analytics/track";
+
 import Link from "next/link";
 import { Form } from "@/shared/ui/form";
 import { CheckoutContactSection } from "@/features/checkout/ui/checkout-contact-section";
@@ -18,6 +21,10 @@ export function CheckoutClient({
   checkoutId: string;
   relatedProducts?: Product[];
 }) {
+  useEffect(() => {
+    trackEvent("begin_checkout", { checkoutId, path: "/checkout" });
+  }, [checkoutId]);
+
   const {
     form,
     items,

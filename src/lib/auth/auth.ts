@@ -39,6 +39,10 @@ async function refreshBackendTokens(
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
+  // Multi-tenant: storefronts serve many merchant domains, so auth URLs
+  // (sign-in/sign-out redirects, callbacks) must derive from the request
+  // host — a fixed AUTH_URL would send every store to one domain.
+  trustHost: true,
 
   providers: [
     Credentials({

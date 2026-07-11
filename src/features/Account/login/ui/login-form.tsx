@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 
 import { Button } from "@/shared/ui/button";
+import { GoogleSignInButton } from "./google-sign-in-button";
 import { Input } from "@/shared/ui/input";
 import {
   Form,
@@ -86,6 +87,14 @@ export function LoginForm({ onSubmit, error, isSubmitting }: Props) {
         >
           Sign in
         </Button>
+
+        <div className="flex items-center gap-3 py-1">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-xs text-muted-foreground">or</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <GoogleSignInButton next="/account" />
 
         <p className="pt-2 text-center text-xs text-muted-foreground">
           Don&apos;t have an account?{" "}

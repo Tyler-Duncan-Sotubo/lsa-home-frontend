@@ -61,7 +61,14 @@ export function AccountDropdown() {
               </Link>
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem
+              onClick={async () => {
+                // redirect client-side so multi-tenant domains stay put —
+                // server-derived URLs break behind the proxy
+                await signOut({ redirect: false });
+                window.location.assign("/");
+              }}
+            >
               <div className="flex items-center gap-2">
                 <LuLogOut className="size-4" />
                 Sign out

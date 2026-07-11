@@ -20,12 +20,11 @@ function CompleteInner() {
     const next =
       nextRaw.startsWith("/") && !nextRaw.startsWith("//") ? nextRaw : "/";
 
-    if (!code) {
-      setError("Missing sign-in code");
-      return;
-    }
-
     (async () => {
+      if (!code) {
+        setError("Missing sign-in code");
+        return;
+      }
       try {
         const res = await fetch("/api/auth/google/redeem", {
           method: "POST",

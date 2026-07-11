@@ -187,7 +187,15 @@ export function CartUpsellRail({
   products: Product[];
   className?: string;
 }) {
-  const picks = products.slice(0, 2);
+  // Only recommend purchasable products — an out-of-stock pick routes the
+  // customer into the request-quote flow, which has no place mid-checkout
+  const inStock = products.filter((p) => {
+    if (p.stock_status === "outofstock") return false;
+    if (p.in_stock === false) return false;
+    if (p.manage_stock && (p.stock_quantity ?? 0) <= 0) return false;
+    return true;
+  });
+  const picks = inStock.slice(0, 2);
   const [index, setIndex] = useState(0);
 
   if (!picks.length) return null;

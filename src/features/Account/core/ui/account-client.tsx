@@ -85,10 +85,9 @@ export function AccountClient({
                             type="button"
                             onClick={
                               item.action === "logout"
-                                ? () => {
-                                    signOut({
-                                      callbackUrl: "/login",
-                                    });
+                                ? async () => {
+                                    await signOut({ redirect: false });
+                                    window.location.assign("/login");
                                   }
                                 : undefined
                             }

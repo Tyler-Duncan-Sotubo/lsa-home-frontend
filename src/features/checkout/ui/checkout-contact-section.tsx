@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { GoogleSignInButton } from "@/features/Account/login/ui/google-sign-in-button";
 
 import { Input } from "@/shared/ui/input";
 import {
@@ -20,6 +22,7 @@ interface CheckoutContactSectionProps {
 }
 
 export function CheckoutContactSection({ form }: CheckoutContactSectionProps) {
+  const pathname = usePathname();
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
   const userEmail = session?.user?.email ?? "";
@@ -95,6 +98,15 @@ export function CheckoutContactSection({ form }: CheckoutContactSectionProps) {
               </FormItem>
             )}
           />
+
+          <div className="flex items-center gap-3 py-1">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          {/* returns to this checkout with the session (and email) in place */}
+          <GoogleSignInButton next={pathname ?? "/"} />
 
           <FormField
             control={form.control}

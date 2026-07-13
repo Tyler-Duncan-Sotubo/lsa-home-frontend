@@ -10,7 +10,7 @@ export async function getSitemapBaseUrl(): Promise<string> {
 
   if (!host) {
     // Absolute fallback – should basically never happen
-    return "https://mycenta.com";
+    return "https://salescenta.com";
   }
 
   return `${proto}://${host}`;

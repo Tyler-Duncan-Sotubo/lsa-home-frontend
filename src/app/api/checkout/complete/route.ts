@@ -16,7 +16,13 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => null);
-  const { checkoutId, paymentMethodType, paymentProvider } = body ?? {};
+  const {
+    checkoutId,
+    paymentMethodType,
+    paymentProvider,
+    customerName,
+    customerPhone,
+  } = body ?? {};
 
   if (!checkoutId) {
     return NextResponse.json({ error: "Missing checkoutId" }, { status: 400 });
@@ -51,6 +57,7 @@ export async function POST(req: Request) {
         method: "PATCH",
         cartToken,
         cache: "no-store",
+        body: { paymentMethodType },
       },
     );
 
@@ -64,6 +71,9 @@ export async function POST(req: Request) {
         body: {
           paymentMethodType,
           paymentProvider: paymentProvider ?? null,
+          ...(paymentMethodType === "whatsapp"
+            ? { customerName, customerPhone }
+            : {}),
         },
       },
     );

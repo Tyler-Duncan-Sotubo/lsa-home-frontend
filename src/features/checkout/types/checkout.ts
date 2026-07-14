@@ -6,7 +6,12 @@ import type { UseFormReturn } from "react-hook-form";
 export const checkoutSchema = z
   .object({
     // contact
-    email: z.email("Please enter a valid email address"),
+    email: z
+      .string()
+      .optional()
+      .refine((v) => !v?.trim() || z.email().safeParse(v).success, {
+        message: "Please enter a valid email address",
+      }),
     marketingOptIn: z.boolean(),
 
     // shipping fields (make optional at base level)
@@ -30,20 +35,33 @@ export const checkoutSchema = z
       z.literal("bank"),
       z.literal("cash"),
       z.literal("pos"),
+      z.literal("whatsapp"),
       z.string().regex(/^gateway:[a-z0-9_-]+$/i, "Invalid gateway method"),
     ]),
     deliveryMethod: z.enum(["shipping", "pickup"]),
   })
   .superRefine((v, ctx) => {
+    const isWhatsApp = v.paymentMethod === "whatsapp";
+
+    // Every other payment method needs a real email for order updates;
+    // WhatsApp reaches the customer via phone instead.
+    if (!isWhatsApp && !v.email?.trim()) {
+      ctx.addIssue({ code: "custom", path: ["email"], message: "Required" });
+    }
+
     if (v.deliveryMethod === "shipping") {
-      const req = [
-        ["country", v.country],
-        ["state", v.state],
-        ["address1", v.address1],
-        ["firstName", v.firstName],
-        ["lastName", v.lastName],
-        ["phone", v.phone],
-      ] as const;
+      // WhatsApp only needs the delivery method decided, not the detailed
+      // address fields — name/phone are covered by its own block below.
+      const req = isWhatsApp
+        ? []
+        : ([
+            ["country", v.country],
+            ["state", v.state],
+            ["address1", v.address1],
+            ["firstName", v.firstName],
+            ["lastName", v.lastName],
+            ["phone", v.phone],
+          ] as const);
 
       for (const [field, val] of req) {
         if (!val?.trim()) {
@@ -66,6 +84,22 @@ export const checkoutSchema = z
           path: ["pickupLocationId"],
           message: "Select a pickup point",
         });
+      }
+    }
+
+    // WhatsApp checkout needs a name and phone regardless of delivery
+    // method — pickup orders don't otherwise collect these.
+    if (isWhatsApp) {
+      const req = [
+        ["firstName", v.firstName],
+        ["lastName", v.lastName],
+        ["phone", v.phone],
+      ] as const;
+
+      for (const [field, val] of req) {
+        if (!val?.trim()) {
+          ctx.addIssue({ code: "custom", path: [field], message: "Required" });
+        }
       }
     }
   });

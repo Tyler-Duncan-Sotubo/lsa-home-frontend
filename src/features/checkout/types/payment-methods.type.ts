@@ -20,4 +20,13 @@ export type ApiCash = {
   note?: string | null;
 };
 
-export type ApiPaymentMethod = ApiGateway | ApiBankTransfer | ApiCash;
+export type ApiWhatsApp = {
+  method: "whatsapp";
+  available: true;
+};
+
+export type ApiPaymentMethod =
+  | ApiGateway
+  | ApiBankTransfer
+  | ApiCash
+  | ApiWhatsApp;

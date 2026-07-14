@@ -3,21 +3,30 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/shared/ui/button";
-import { FormField, FormItem, FormControl } from "@/shared/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage,
+} from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
 import { cn } from "@/lib/utils";
 import type { CheckoutFormInstance } from "@/features/checkout/types/checkout";
 import { Card, CardContent } from "@/shared/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
-import { FaCreditCard, FaUniversity } from "react-icons/fa";
+import { FaCreditCard, FaUniversity, FaWhatsapp } from "react-icons/fa";
 import { HiLockClosed } from "react-icons/hi";
 import { FiCopy, FiCheck } from "react-icons/fi";
 import { MdAttachMoney } from "react-icons/md";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import { usePaymentMethods } from "../hooks/use-payment-methods";
 import type {
   ApiBankTransfer,
   ApiCash,
   ApiGateway,
   ApiPaymentMethod,
+  ApiWhatsApp,
 } from "../types/payment-methods.type";
 import Image from "next/image";
 import { CheckoutStepHeading } from "./checkout-step-heading";
@@ -139,6 +148,7 @@ function isValidPaymentValue(v: unknown) {
   if (typeof v !== "string") return false;
   if (v === "bank") return true;
   if (v === "cash") return true;
+  if (v === "whatsapp") return true;
   if (v.startsWith("gateway:") && v.split(":")[1]?.trim()) return true;
   return false;
 }
@@ -162,6 +172,9 @@ export function CheckoutPaymentSection({
     (m): m is ApiBankTransfer => m.method === "bank_transfer",
   );
   const cash = methods.find((m): m is ApiCash => m.method === "cash");
+  const whatsapp = methods.find(
+    (m): m is ApiWhatsApp => m.method === "whatsapp",
+  );
 
   const bankDetails = bankTransfer?.bankDetails ?? null;
 
@@ -178,14 +191,16 @@ export function CheckoutPaymentSection({
         ? "bank"
         : cash
           ? "cash"
-          : "";
+          : whatsapp
+            ? "whatsapp"
+            : "";
 
     if (next)
       form.setValue("paymentMethod" as any, next as any, {
         shouldValidate: true,
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [methods.length, gateways.length, !!bankTransfer, !!cash]);
+  }, [methods.length, gateways.length, !!bankTransfer, !!cash, !!whatsapp]);
 
   const selectedValue = form.watch("paymentMethod") as unknown;
   const canPayNow =
@@ -194,10 +209,17 @@ export function CheckoutPaymentSection({
     isValidPaymentValue(selectedValue) &&
     canProceedToPayment;
 
+  const submitLabel =
+    selectedValue === "whatsapp"
+      ? "Continue on WhatsApp"
+      : selectedValue === "bank" || selectedValue === "cash"
+        ? "Place order"
+        : "Pay now";
+
   return (
     <section className="p-4 mt-6 space-y-4 border shadow-sm rounded-xl bg-card md:p-6">
       <div className="space-y-1">
-        <CheckoutStepHeading step={3} title="Payment" />
+        <CheckoutStepHeading step={4} title="Payment" />
         <div className="flex items-center gap-1 my-4 text-xs text-muted-foreground">
           <HiLockClosed className="h-3.5 w-3.5" />
           <span>All transactions are secure and encrypted.</span>
@@ -225,6 +247,7 @@ export function CheckoutPaymentSection({
 
             const isBank = val === "bank";
             const isCash = val === "cash";
+            const isWhatsApp = val === "whatsapp";
             const isGatewaySelected = val.startsWith("gateway:");
             const gatewayProvider = isGatewaySelected
               ? (val.split(":")[1] ?? "")
@@ -325,6 +348,115 @@ export function CheckoutPaymentSection({
                       </div>
                     ) : null}
 
+                    {/* WhatsApp */}
+                    {whatsapp ? (
+                      <div className="space-y-2">
+                        <MethodCard
+                          value="whatsapp"
+                          selected={isWhatsApp}
+                          title="WhatsApp"
+                          description="Order via WhatsApp — pay directly with the seller"
+                          icon={
+                            <FaWhatsapp
+                              className="w-8 h-8"
+                              style={{ color: "#25d366" }}
+                            />
+                          }
+                        />
+
+                        {isWhatsApp && (
+                          <Card className="border-primary/30">
+                            <CardContent className="p-4 space-y-3">
+                              <p className="text-sm font-semibold">
+                                Your details
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                We&apos;ll create your order and open WhatsApp
+                                so you can confirm with the seller.
+                              </p>
+
+                              <div className="grid grid-cols-2 gap-3">
+                                <FormField
+                                  control={form.control}
+                                  name="firstName"
+                                  render={({ field: nameField }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-xs">
+                                        First name
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          {...nameField}
+                                          value={nameField.value ?? ""}
+                                          placeholder="First name"
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name="lastName"
+                                  render={({ field: nameField }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-xs">
+                                        Last name
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          {...nameField}
+                                          value={nameField.value ?? ""}
+                                          placeholder="Last name"
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+
+                              <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field: phoneField }) => {
+                                  const phoneVal = String(
+                                    phoneField.value ?? "",
+                                  );
+                                  const showInvalid =
+                                    phoneVal.trim().length > 0 &&
+                                    !isValidPhoneNumber(phoneVal, "NG");
+
+                                  return (
+                                    <FormItem>
+                                      <FormLabel className="text-xs">
+                                        Phone number
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          {...phoneField}
+                                          value={phoneVal}
+                                          placeholder="e.g. 0803 123 4567"
+                                        />
+                                      </FormControl>
+                                      {showInvalid ? (
+                                        <p className="text-xs text-destructive">
+                                          Enter a valid Nigerian phone number.
+                                        </p>
+                                      ) : (
+                                        <FormMessage />
+                                      )}
+                                    </FormItem>
+                                  );
+                                }}
+                              />
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
+                    ) : null}
+
                     {/* Cash */}
                     {cash ? (
                       <MethodCard
@@ -365,7 +497,7 @@ export function CheckoutPaymentSection({
         isLoading={isSubmitting}
         disabled={!canPayNow || isSubmitting}
       >
-        Pay now
+        {submitLabel}
       </Button>
     </section>
   );

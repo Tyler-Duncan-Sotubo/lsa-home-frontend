@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Form } from "@/shared/ui/form";
 import { CheckoutContactSection } from "@/features/checkout/ui/checkout-contact-section";
 import { CheckoutDeliverySection } from "@/features/checkout/ui/checkout-delivery-section";
+import { CheckoutShippingSection } from "@/features/checkout/ui/checkout-shipping-section";
 import { CheckoutPaymentSection } from "@/features/checkout/ui/checkout-payment-section";
 import { CheckoutOrderSummary } from "@/features/checkout/ui/checkout-order-summary";
 
@@ -77,14 +78,15 @@ export function CheckoutClient({
               noValidate
             >
               <CheckoutContactSection form={form} />
-              <CheckoutDeliverySection
+              <CheckoutDeliverySection form={form} />
+              <CheckoutShippingSection
                 form={form}
                 pickupLocations={pickupLocations}
                 isLoadingPickupLocations={isLoadingPickupLocations}
-                isSettingPickup={isSettingPickup}
                 shippingOptions={shippingOptions}
                 isLoadingShippingOptions={isLoadingShippingOptions}
                 isSettingShipping={isSettingShipping}
+                isSettingPickup={isSettingPickup}
               />
               <CheckoutPaymentSection
                 form={form}

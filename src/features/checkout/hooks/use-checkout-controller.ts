@@ -53,7 +53,7 @@ function useDebouncedValue<T>(value: T, ms: number) {
 }
 
 type NormalizedPayment = {
-  paymentMethodType: "gateway" | "bank_transfer" | "cash";
+  paymentMethodType: "gateway" | "bank_transfer" | "cash" | "whatsapp";
   paymentProvider?: string | null;
 };
 
@@ -67,6 +67,7 @@ function normalizePaymentMethod(raw: string): NormalizedPayment {
   }
   if (v === "bank") return { paymentMethodType: "bank_transfer" };
   if (v === "cash") return { paymentMethodType: "cash" };
+  if (v === "whatsapp") return { paymentMethodType: "whatsapp" };
   return { paymentMethodType: "bank_transfer" };
 }
 
@@ -126,16 +127,20 @@ export function useCheckoutController(checkoutId: string) {
   const paymentMethod = useWatch({
     control: form.control,
     name: "paymentMethod",
-  }) as "bank" | "cash" | `gateway:${string}` | "" | undefined;
+  }) as "bank" | "cash" | "whatsapp" | `gateway:${string}` | "" | undefined;
 
   const shippingOptionId = useWatch({
     control: form.control,
     name: "shippingOptionId",
   });
 
+  // WhatsApp checkout doesn't reconcile a shipping fee against an online
+  // payment, so it only needs the delivery method decided, not a priced
+  // shipping option — matches the "no detailed address fields" simplification.
   const canCalculateShipping =
     deliveryMethod === "pickup" ||
-    (deliveryMethod === "shipping" && !!shippingOptionId?.trim());
+    (deliveryMethod === "shipping" &&
+      (paymentMethod === "whatsapp" || !!shippingOptionId?.trim()));
 
   // -----------------------------
   // Query: checkout
@@ -408,13 +413,17 @@ export function useCheckoutController(checkoutId: string) {
   // -----------------------------
   type CompleteCheckoutInput = {
     checkoutId: string;
-    paymentMethod: "bank" | "cash" | `gateway:${string}`;
+    paymentMethod: "bank" | "cash" | "whatsapp" | `gateway:${string}`;
+    customerName?: string;
+    customerPhone?: string;
   };
 
   const completeMutation = useMutation({
     mutationFn: async ({
       checkoutId,
       paymentMethod,
+      customerName,
+      customerPhone,
     }: CompleteCheckoutInput) => {
       const normalized = normalizePaymentMethod(paymentMethod);
 
@@ -424,6 +433,9 @@ export function useCheckoutController(checkoutId: string) {
         body: JSON.stringify({
           checkoutId,
           ...normalized,
+          ...(normalized.paymentMethodType === "whatsapp"
+            ? { customerName, customerPhone }
+            : {}),
         }),
       });
     },
@@ -432,6 +444,17 @@ export function useCheckoutController(checkoutId: string) {
       const normalized = normalizePaymentMethod(variables.paymentMethod);
 
       dispatch(refreshCartAndHydrate());
+
+      // WhatsApp -> hand off to wa.me (same-tab, immune to popup blockers)
+      if (normalized.paymentMethodType === "whatsapp") {
+        if (order?.whatsappUrl) {
+          window.location.href = order.whatsappUrl;
+        } else {
+          toast.error("Unable to start WhatsApp checkout.");
+          router.push(`/order/pending/${order.id}`);
+        }
+        return;
+      }
 
       // Bank transfer / cash -> pending page
       if (normalized.paymentMethodType !== "gateway") {
@@ -532,7 +555,11 @@ export function useCheckoutController(checkoutId: string) {
       return;
     }
 
-    if (deliveryMethod === "shipping" && !shippingOptionId?.trim()) {
+    if (
+      deliveryMethod === "shipping" &&
+      paymentMethod !== "whatsapp" &&
+      !shippingOptionId?.trim()
+    ) {
       form.setError("shippingOptionId" as any, {
         message: "Select a shipping option",
       });
@@ -558,9 +585,28 @@ export function useCheckoutController(checkoutId: string) {
       return;
     }
 
+    const v = form.getValues();
+
+    if (normalized.paymentMethodType === "whatsapp") {
+      if (!v.firstName?.trim() || !v.lastName?.trim()) {
+        form.setError("firstName" as any, { message: "Required" });
+        return;
+      }
+      if (!v.phone?.trim()) {
+        form.setError("phone" as any, { message: "Required" });
+        return;
+      }
+    }
+
     await completeMutation.mutateAsync({
       checkoutId: checkout.id,
       paymentMethod,
+      ...(normalized.paymentMethodType === "whatsapp"
+        ? {
+            customerName: `${v.firstName ?? ""} ${v.lastName ?? ""}`.trim(),
+            customerPhone: v.phone,
+          }
+        : {}),
     });
   };
 

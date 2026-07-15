@@ -51,7 +51,7 @@ export type RuntimeConfigState = {
   meta?: Record<string, any>;
 };
 
-const initialState: RuntimeConfigState = {
+export const runtimeConfigInitialState: RuntimeConfigState = {
   version: 1,
   store: undefined,
   locale: "en-NG",
@@ -85,7 +85,7 @@ const initialState: RuntimeConfigState = {
   meta: {},
 };
 
-function deepMerge<T extends Record<string, any>>(
+export function deepMerge<T extends Record<string, any>>(
   base: T,
   patch: Partial<T>,
 ): T {
@@ -103,7 +103,7 @@ function deepMerge<T extends Record<string, any>>(
 
 const runtimeConfigSlice = createSlice({
   name: "runtimeConfig",
-  initialState,
+  initialState: runtimeConfigInitialState,
   reducers: {
     hydrateRuntimeConfig(
       state,

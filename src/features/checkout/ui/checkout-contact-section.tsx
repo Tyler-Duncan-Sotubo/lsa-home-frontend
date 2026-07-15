@@ -39,7 +39,7 @@ export function CheckoutContactSection({ form }: CheckoutContactSectionProps) {
   }, [isAuthenticated, userEmail, form]);
 
   return (
-    <section className="space-y-4 rounded-xl border bg-card p-4 shadow-sm md:p-6 mb-6">
+    <section className="space-y-4 bg-white p-4 md:p-6 mb-6">
       <CheckoutStepHeading
         step={1}
         title="Contact"

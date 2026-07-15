@@ -2,16 +2,30 @@
 // app/checkout/_components/checkout-order-summary.tsx
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CartItemRow } from "./cart-item-row";
 import { CartUpsellRail } from "@/features/cart/ui/cart-upsell-rail";
 import type { Product } from "@/features/Products/types/products";
+import type { CheckoutFormInstance } from "@/features/checkout/types/checkout";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
 import { toast } from "sonner";
+import { usePaymentMethods } from "../hooks/use-payment-methods";
+import type { ApiPaymentMethod } from "../types/payment-methods.type";
+
+// Helper: does this look like a valid selection?
+function isValidPaymentValue(v: unknown) {
+  if (typeof v !== "string") return false;
+  if (v === "bank") return true;
+  if (v === "cash") return true;
+  if (v === "whatsapp") return true;
+  if (v.startsWith("gateway:") && v.split(":")[1]?.trim()) return true;
+  return false;
+}
 
 interface CheckoutOrderSummaryProps {
+  form: CheckoutFormInstance;
   items: any[]; // or your CartItem type
   formattedSubtotal: string;
   formattedShipping: string | null;
@@ -26,9 +40,11 @@ interface CheckoutOrderSummaryProps {
   isApplyingDiscountCode?: boolean;
   onRemoveDiscountCode?: () => Promise<any>;
   isRemovingDiscountCode?: boolean;
+  isSubmitting?: boolean;
 }
 
 export function CheckoutOrderSummary({
+  form,
   items,
   formattedSubtotal,
   formattedShipping,
@@ -43,8 +59,30 @@ export function CheckoutOrderSummary({
   isApplyingDiscountCode,
   onRemoveDiscountCode,
   isRemovingDiscountCode,
+  isSubmitting = false,
 }: CheckoutOrderSummaryProps) {
   const [codeInput, setCodeInput] = useState("");
+
+  const { data, isLoading: isLoadingMethods } = usePaymentMethods();
+  const methods: ApiPaymentMethod[] = useMemo(() => {
+    const raw = (data as any)?.methods ?? (data as any)?.data?.methods ?? [];
+    return Array.isArray(raw) ? (raw as ApiPaymentMethod[]) : [];
+  }, [data]);
+
+  const selectedValue = form.watch("paymentMethod") as unknown;
+  const isWhatsAppSelected = selectedValue === "whatsapp";
+
+  const canPayNow =
+    !isLoadingMethods &&
+    methods.length > 0 &&
+    isValidPaymentValue(selectedValue) &&
+    canCalculateShipping;
+
+  const submitLabel = isWhatsAppSelected
+    ? "Continue on WhatsApp"
+    : selectedValue === "bank" || selectedValue === "cash"
+      ? "Place order"
+      : "Pay now";
 
   const handleApply = async () => {
     if (!codeInput.trim() || !onApplyDiscountCode) return;
@@ -74,7 +112,7 @@ export function CheckoutOrderSummary({
     >
       <div
         className={cn(
-          "mb-4 rounded-xl border bg-card p-4 shadow-sm md:mb-0 md:block md:p-6",
+          "mb-4 rounded-xl border bg-card p-4 md:mb-0 md:block md:p-6",
           !isSummaryOpen && "hidden md:block",
         )}
       >
@@ -204,6 +242,20 @@ export function CheckoutOrderSummary({
             <span>{formattedTotal}</span>
           </div>
         </div>
+
+        <Button
+          type="submit"
+          form="checkout-form"
+          className={cn(
+            "w-full h-12 mt-4 text-base font-bold",
+            isWhatsAppSelected &&
+              "bg-[#25D366] hover:bg-[#1ebe5a] text-white focus-visible:ring-[#25D366]",
+          )}
+          isLoading={isSubmitting}
+          disabled={!canPayNow || isSubmitting}
+        >
+          {submitLabel}
+        </Button>
 
         {relatedProducts.length > 0 && (
           <div className="pt-4 mt-5 border-t">

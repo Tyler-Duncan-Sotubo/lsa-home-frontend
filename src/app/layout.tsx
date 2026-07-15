@@ -49,7 +49,7 @@ export default async function RootLayout({
         <ThemeProvider theme={config.theme} />
 
         <AuthProvider>
-          <AppProviders>
+          <AppProviders config={config}>
             <QueryProvider>
               {!isSystemPage && <AnalyticsTagLoader />}
               {!isSystemPage && (

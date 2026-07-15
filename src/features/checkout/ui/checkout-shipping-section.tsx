@@ -90,7 +90,7 @@ export function CheckoutShippingSection({
   const isWhatsAppCheckout = paymentMethod === "whatsapp";
 
   return (
-    <section className="p-4 space-y-5 border shadow-sm rounded-xl bg-card md:p-6">
+    <section className="p-4 space-y-5 bg-white md:p-6">
       <CheckoutStepHeading
         step={3}
         title="Shipping"

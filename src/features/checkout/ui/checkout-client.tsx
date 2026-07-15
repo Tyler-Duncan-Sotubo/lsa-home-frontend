@@ -73,6 +73,7 @@ export function CheckoutClient({
         <section className="flex-1 space-y-6">
           <Form {...form}>
             <form
+              id="checkout-form"
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-8"
               noValidate
@@ -90,7 +91,6 @@ export function CheckoutClient({
               />
               <CheckoutPaymentSection
                 form={form}
-                isSubmitting={isSubmitting}
                 canProceedToPayment={canCalculateShipping}
               />
 
@@ -112,6 +112,7 @@ export function CheckoutClient({
         </section>
 
         <CheckoutOrderSummary
+          form={form}
           items={items}
           formattedSubtotal={formattedSubtotal}
           formattedShipping={formattedShipping}
@@ -126,6 +127,7 @@ export function CheckoutClient({
           isApplyingDiscountCode={isApplyingDiscountCode}
           onRemoveDiscountCode={removeDiscountCode}
           isRemovingDiscountCode={isRemovingDiscountCode}
+          isSubmitting={isSubmitting}
         />
       </main>
     </div>

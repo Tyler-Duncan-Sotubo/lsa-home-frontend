@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@/shared/ui/button";
 import {
   FormField,
   FormItem,
@@ -16,9 +15,8 @@ import type { CheckoutFormInstance } from "@/features/checkout/types/checkout";
 import { Card, CardContent } from "@/shared/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 import { FaCreditCard, FaUniversity, FaWhatsapp } from "react-icons/fa";
-import { HiLockClosed } from "react-icons/hi";
 import { FiCopy, FiCheck } from "react-icons/fi";
-import { MdAttachMoney } from "react-icons/md";
+import { RiBankFill } from "react-icons/ri";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { usePaymentMethods } from "../hooks/use-payment-methods";
 import type {
@@ -30,10 +28,10 @@ import type {
 } from "../types/payment-methods.type";
 import Image from "next/image";
 import { CheckoutStepHeading } from "./checkout-step-heading";
+import { IoCashOutline } from "react-icons/io5";
 
 interface CheckoutPaymentSectionProps {
   form: CheckoutFormInstance;
-  isSubmitting?: boolean;
   // false while a shipping option (or pickup point) hasn't been chosen yet —
   // paying before that would let an order through with no fulfillment plan.
   canProceedToPayment?: boolean;
@@ -50,7 +48,7 @@ function GatewayIcon({ provider }: { provider: string }) {
   const src = GATEWAY_LOGOS[provider];
   if (src) {
     return (
-      <div className="relative w-20 h-14">
+      <div className="relative w-24 h-20">
         <Image
           src={src}
           alt={`${provider} logo`}
@@ -129,10 +127,6 @@ function MethodCard(props: {
 
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <p className="text-sm font-semibold whitespace-nowrap">{title}</p>
-          <span className="text-xs text-muted-foreground">·</span>
-          <p className="text-xs truncate text-muted-foreground">
-            {description}
-          </p>
         </div>
 
         <div className="flex items-center justify-center w-20 h-14 shrink-0">
@@ -155,7 +149,6 @@ function isValidPaymentValue(v: unknown) {
 
 export function CheckoutPaymentSection({
   form,
-  isSubmitting = false,
   canProceedToPayment = true,
 }: CheckoutPaymentSectionProps) {
   const { data, isLoading, isError } = usePaymentMethods();
@@ -202,28 +195,10 @@ export function CheckoutPaymentSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [methods.length, gateways.length, !!bankTransfer, !!cash, !!whatsapp]);
 
-  const selectedValue = form.watch("paymentMethod") as unknown;
-  const canPayNow =
-    !isLoading &&
-    methods.length > 0 &&
-    isValidPaymentValue(selectedValue) &&
-    canProceedToPayment;
-
-  const submitLabel =
-    selectedValue === "whatsapp"
-      ? "Continue on WhatsApp"
-      : selectedValue === "bank" || selectedValue === "cash"
-        ? "Place order"
-        : "Pay now";
-
   return (
-    <section className="p-4 mt-6 space-y-4 border shadow-sm rounded-xl bg-card md:p-6">
+    <section className="p-4 mt-6 space-y-2 bg-white md:p-6">
       <div className="space-y-1">
         <CheckoutStepHeading step={4} title="Payment" />
-        <div className="flex items-center gap-1 my-4 text-xs text-muted-foreground">
-          <HiLockClosed className="h-3.5 w-3.5" />
-          <span>All transactions are secure and encrypted.</span>
-        </div>
       </div>
 
       {isLoading ? (
@@ -248,10 +223,6 @@ export function CheckoutPaymentSection({
             const isBank = val === "bank";
             const isCash = val === "cash";
             const isWhatsApp = val === "whatsapp";
-            const isGatewaySelected = val.startsWith("gateway:");
-            const gatewayProvider = isGatewaySelected
-              ? (val.split(":")[1] ?? "")
-              : "";
 
             return (
               <FormItem>
@@ -284,17 +255,6 @@ export function CheckoutPaymentSection({
                       );
                     })}
 
-                    {/* Optional: gateway helper text */}
-                    {isGatewaySelected ? (
-                      <div className="text-xs text-muted-foreground">
-                        You’ll be redirected to complete payment via{" "}
-                        <span className="font-medium">
-                          {TitleCase(gatewayProvider)}
-                        </span>
-                        .
-                      </div>
-                    ) : null}
-
                     {/* Bank transfer */}
                     {bankTransfer ? (
                       <div className="space-y-2">
@@ -303,7 +263,7 @@ export function CheckoutPaymentSection({
                           selected={isBank}
                           title="Bank transfer"
                           description="Transfer directly to our bank account"
-                          icon={<FaUniversity className="w-5 h-5" />}
+                          icon={<RiBankFill className="w-8 h-8" />}
                         />
 
                         {isBank && bankDetails && (
@@ -466,7 +426,9 @@ export function CheckoutPaymentSection({
                         description={
                           cash.note ?? "Pay with cash on delivery/pickup."
                         }
-                        icon={<MdAttachMoney className="w-6 h-6" />}
+                        icon={
+                          <IoCashOutline className="w-8 h-8 text-green-600" />
+                        }
                       />
                     ) : null}
 
@@ -490,15 +452,6 @@ export function CheckoutPaymentSection({
           Select a shipping option or pickup point above to continue.
         </p>
       )}
-
-      <Button
-        type="submit"
-        className="w-full h-12 text-base font-bold"
-        isLoading={isSubmitting}
-        disabled={!canPayNow || isSubmitting}
-      >
-        {submitLabel}
-      </Button>
     </section>
   );
 }

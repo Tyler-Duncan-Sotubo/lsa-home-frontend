@@ -1,9 +1,15 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import { store } from "@/store/store";
+import { makeStore, type AppStore } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { buildRuntimeConfigPayload } from "@/config/runtime/build-runtime-config-payload";
+import {
+  deepMerge,
+  runtimeConfigInitialState,
+} from "@/store/runtimeConfigSlice";
+import type { StorefrontConfigV1 } from "@/config/types/types";
 
 import {
   hydrateWishlist,
@@ -114,9 +120,32 @@ function ReduxPersistence({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-export function AppProviders({ children }: { children: ReactNode }) {
+export function AppProviders({
+  children,
+  config,
+}: {
+  children: ReactNode;
+  config?: StorefrontConfigV1;
+}) {
+  // useRef (not useState) so this never gets recreated across re-renders,
+  // and — critically — each request gets a fresh instance on the server
+  // instead of a module-level singleton leaking state across requests.
+  const storeRef = useRef<AppStore | null>(null);
+  if (!storeRef.current) {
+    storeRef.current = makeStore(
+      config
+        ? {
+            runtimeConfig: deepMerge(
+              runtimeConfigInitialState,
+              buildRuntimeConfigPayload(config),
+            ),
+          }
+        : undefined,
+    );
+  }
+
   return (
-    <ReduxProvider store={store}>
+    <ReduxProvider store={storeRef.current}>
       <ReduxPersistence>{children}</ReduxPersistence>
     </ReduxProvider>
   );

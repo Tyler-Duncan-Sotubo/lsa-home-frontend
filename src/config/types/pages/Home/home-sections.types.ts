@@ -25,6 +25,7 @@ export type HomeSectionV1 =
 
 export type TopCategoriesSectionV1 = {
   type: "topCategories";
+  enabled?: boolean; // default true — hidden only when explicitly false
 
   title?: string;
   subtitle?: string;

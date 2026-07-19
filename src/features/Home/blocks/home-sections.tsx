@@ -30,6 +30,7 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
 
         switch (section.type) {
           case "topCategories":
+            if (section.enabled === false) return null;
             return (
               <Suspense
                 key={key}

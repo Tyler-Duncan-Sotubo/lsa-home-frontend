@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppDispatch } from "@/store/hooks";
 import { refreshCartAndHydrate } from "@/store/cart-refresh-thunk";
 import { toast } from "sonner";
+import { usePaystackCheckout } from "@/features/checkout/hooks/use-paystack-checkout";
 
 function formatNGN(amount: number) {
   return new Intl.NumberFormat("en-NG", {
@@ -95,6 +96,14 @@ export function useCheckoutController(checkoutId: string) {
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+
+  const { resumeCheckout } = usePaystackCheckout(async (reference: string) => {
+    const res = await fetchJson(`/api/paystack/verify/${reference}`);
+    if (!res?.verified) {
+      throw new Error("Payment not verified yet");
+    }
+    return res;
+  });
 
   // ✅ stop auto-mutations while refreshing checkout
   const [isRefreshingCheckout, setIsRefreshingCheckout] = useState(false);
@@ -358,9 +367,13 @@ export function useCheckoutController(checkoutId: string) {
       checkoutId: checkout.id,
       deliveryMethodType: "pickup",
       pickupLocationId,
+      // Pickup orders don't collect a shipping address, so this is the
+      // only place the customer's email reaches the checkout record —
+      // without it, order-confirmation emails have nowhere to send to.
+      billingAddress: email ? { email } : undefined,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkout?.id, deliveryMethod, pickupLocationId, isRefreshingCheckout]);
+  }, [checkout?.id, deliveryMethod, pickupLocationId, isRefreshingCheckout, email]);
 
   // reset pickup location when state changes
   useEffect(() => {
@@ -451,14 +464,14 @@ export function useCheckoutController(checkoutId: string) {
           window.location.href = order.whatsappUrl;
         } else {
           toast.error("Unable to start WhatsApp checkout.");
-          router.push(`/order/pending/${order.id}`);
+          router.push(`/order/${order.id}`);
         }
         return;
       }
 
       // Bank transfer / cash -> pending page
       if (normalized.paymentMethodType !== "gateway") {
-        router.push(`/order/pending/${order.id}`);
+        router.push(`/order/${order.id}`);
         return;
       }
 
@@ -473,7 +486,7 @@ export function useCheckoutController(checkoutId: string) {
               amount: Number(order.total ?? order.totalAmount ?? 0),
               currency: order.currency ?? "NGN",
               reference: order.reference ?? order.orderNumber ?? order.id,
-              callbackUrl: `${window.location.origin}/order/pending/${order.id}`,
+              callbackUrl: `${window.location.origin}/order/${order.id}`,
               metadata: {
                 orderId: order.id,
                 orderNumber: order.orderNumber ?? null,
@@ -481,29 +494,49 @@ export function useCheckoutController(checkoutId: string) {
             }),
           });
 
-          const authorizationUrl =
-            paystack?.data?.authorizationUrl ??
-            paystack?.data?.data?.authorizationUrl;
+          const accessCode =
+            paystack?.data?.accessCode ?? paystack?.data?.data?.accessCode;
+          const reference =
+            paystack?.data?.reference ??
+            paystack?.data?.data?.reference ??
+            order.reference ??
+            order.orderNumber ??
+            order.id;
 
-          if (!authorizationUrl) {
+          if (!accessCode) {
             toast.error("Unable to start Paystack payment.");
-            // ✅ /order/[orderId] isn't a real route (only
-            // /order/pending/[orderId] is) — this used to 404.
-            router.push(`/order/pending/${order.id}`);
+            router.push(`/order/${order.id}`);
             return;
           }
 
-          window.location.href = authorizationUrl;
+          await resumeCheckout(accessCode, reference, {
+            onSuccess: () => {
+              dispatch(refreshCartAndHydrate());
+              router.push(`/order/${order.id}`);
+            },
+            onPendingConfirmation: () => {
+              toast.info(
+                "Still confirming your payment — this can take a few minutes for bank transfers.",
+              );
+            },
+            onCancel: () => {
+              router.push(`/order/${order.id}`);
+            },
+            onError: (message) => {
+              toast.error(message);
+              router.push(`/order/${order.id}`);
+            },
+          });
           return;
         } catch (err: any) {
           toast.error(getErrMsg(err) || "Unable to start Paystack payment.");
-          router.push(`/order/pending/${order.id}`);
+          router.push(`/order/${order.id}`);
           return;
         }
       }
 
       // Unknown gateway fallback
-      router.push(`/order/pending/${order.id}`);
+      router.push(`/order/${order.id}`);
     },
 
     onError: async (err: any) => {

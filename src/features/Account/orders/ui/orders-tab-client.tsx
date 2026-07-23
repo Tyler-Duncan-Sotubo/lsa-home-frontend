@@ -54,7 +54,7 @@ export default function OrdersTabClient({
 
       <div className="space-y-6">
         {orders.map((order) => {
-          const detailHref = `/order/pending/${order.id}`;
+          const detailHref = `/order/${order.id}`;
           const canReorder = order.status === "paid";
 
           return (

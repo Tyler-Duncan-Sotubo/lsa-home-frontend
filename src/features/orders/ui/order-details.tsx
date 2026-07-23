@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from "react";
 import Image from "next/image";
-import { HiLockClosed } from "react-icons/hi";
+import { HiLockClosed, HiCheckCircle, HiClock } from "react-icons/hi";
 import { cn } from "@/lib/utils";
 import { formatPriceDisplay } from "@/shared/utils/format-naira";
 import {
@@ -18,11 +18,12 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStorefrontOrder } from "../hooks/use-order";
 import { LoadingProgress } from "@/shared/ui/loading/loading-progress";
-import { OrderPaystackVerifier } from "./order-paystack-verifier";
 
 type Props = {
   orderId: string;
 };
+
+const PAID_STATUSES = ["paid", "completed"];
 
 export function OrderDetails({ orderId }: Props) {
   const qc = useQueryClient();
@@ -43,15 +44,16 @@ export function OrderDetails({ orderId }: Props) {
 
   const items = useMemo(() => order?.items ?? [], [order]);
 
+  const status = String(order?.status ?? "").toLowerCase();
+  const isPaid = PAID_STATUSES.includes(status);
+
   // Determine if this order is bank transfer
   const paymentMethodType = String(
     order?.paymentMethodType ?? "",
   ).toLowerCase();
   const isBankTransfer = paymentMethodType === "bank_transfer";
-
-  const isCash = order?.paymentMethodType === "cash";
-  const isGateway =
-    String(order?.paymentMethodType ?? "").toLowerCase() === "gateway";
+  const isCash = paymentMethodType === "cash";
+  const isGateway = paymentMethodType === "gateway";
 
   const methods = paymentMethods?.methods ?? [];
   const cashMethod = methods.find((m: any) => m?.method === "cash");
@@ -119,82 +121,49 @@ export function OrderDetails({ orderId }: Props) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
-      <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-        Order confirmation
-      </p>
-      <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">
-        {order?.orderNumber ? `Order #${order.orderNumber}` : "Your order"}
-      </h1>
+      {/* ── Header ── */}
+      <div className="flex flex-col gap-4 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            {isPaid ? "Order confirmation" : "Order details"}
+          </p>
+          <h1 className="mt-2 text-balance font-heading text-3xl font-semibold tracking-tight md:text-4xl">
+            {order?.orderNumber ? `Order #${order.orderNumber}` : "Your order"}
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Placed{" "}
+            {order?.createdAt
+              ? new Date(order.createdAt).toLocaleDateString("en-NG", {
+                  dateStyle: "long",
+                })
+              : "—"}
+          </p>
+        </div>
+
+        <Badge
+          variant="outline"
+          className={cn(
+            "w-fit shrink-0 rounded-full px-3 py-1 text-xs font-medium capitalize",
+            getOrderStatusClasses(status),
+          )}
+        >
+          {orderStatusLabel(status)}
+        </Badge>
+      </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-12">
         {/* LEFT: Order info */}
         <div className="space-y-6 lg:col-span-8">
-          {/* Header */}
-          <div className="rounded-xl border bg-card p-5 shadow-sm md:p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Status</p>
-                <p className="mt-1 text-sm font-medium">
-                  Placed{" "}
-                  {order?.createdAt
-                    ? new Date(order.createdAt).toLocaleDateString("en-NG", {
-                        dateStyle: "medium",
-                      })
-                    : ""}
-                </p>
-              </div>
-
-              <Badge
-                variant="outline"
-                className={cn(
-                  "capitalize",
-                  getOrderStatusClasses(order?.status ?? ""),
-                )}
-              >
-                {orderStatusLabel(order?.status ?? "")}
-              </Badge>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-lg bg-muted/40 p-3">
-                <p className="text-xs text-muted-foreground">Subtotal</p>
-                <p className="mt-1 font-semibold">
-                  {order?.subtotal != null
-                    ? formatPriceDisplay(String(order.subtotal))
-                    : "—"}
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-muted/40 p-3">
-                <p className="text-xs text-muted-foreground">Shipping</p>
-                <p className="mt-1 font-semibold">
-                  {order?.shippingTotal != null
-                    ? formatPriceDisplay(String(order.shippingTotal))
-                    : "—"}
-                </p>
-              </div>
-
-              <div className="col-span-2 rounded-lg bg-primary/5 p-3">
-                <p className="text-xs text-muted-foreground">Total</p>
-                <p className="mt-1 text-lg font-semibold">
-                  {order?.total != null
-                    ? formatPriceDisplay(String(order.total))
-                    : "—"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Items */}
-          <div className="rounded-xl border bg-card shadow-sm">
-            <div className="border-b p-5 md:p-6">
-              <h2 className="text-base font-semibold">Items</h2>
+          {/* Items — receipt style */}
+          <div className="rounded-xl border border-border bg-card shadow-sm">
+            <div className="flex items-baseline justify-between border-b border-border p-5 md:p-6">
+              <h2 className="font-heading text-base font-semibold">Items</h2>
               <p className="text-sm text-muted-foreground">
                 {items.length} item{items.length === 1 ? "" : "s"}
               </p>
             </div>
 
-            <div className="divide-y">
+            <div className="divide-y divide-border">
               {items.map((it: any) => {
                 const name = it?.name ?? "Item";
                 const qty = Number(it?.quantity ?? 0);
@@ -206,7 +175,7 @@ export function OrderDetails({ orderId }: Props) {
                     key={it?.id ?? `${name}-${qty}`}
                     className="flex gap-4 p-5 md:p-6"
                   >
-                    <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+                    <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
                       {imageUrl ? (
                         <Image
                           src={imageUrl}
@@ -224,7 +193,7 @@ export function OrderDetails({ orderId }: Props) {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-3">
                         <p className="line-clamp-2 font-medium">{name}</p>
-                        <p className="whitespace-nowrap font-semibold">
+                        <p className="whitespace-nowrap font-semibold tabular-nums">
                           {lineTotal != null
                             ? formatPriceDisplay(String(lineTotal))
                             : "—"}
@@ -232,15 +201,43 @@ export function OrderDetails({ orderId }: Props) {
                       </div>
 
                       <div className="mt-1 text-sm text-muted-foreground">
-                        Qty: {qty}
+                        Qty {qty}
                         {it?.sku ? (
-                          <span className="ml-3">SKU: {it.sku}</span>
+                          <span className="ml-3">SKU {it.sku}</span>
                         ) : null}
                       </div>
                     </div>
                   </div>
                 );
               })}
+            </div>
+
+            {/* Totals — right-aligned, receipt-style summation */}
+            <div className="space-y-2 border-t border-border p-5 md:p-6">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="tabular-nums">
+                  {order?.subtotal != null
+                    ? formatPriceDisplay(String(order.subtotal))
+                    : "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Shipping</span>
+                <span className="tabular-nums">
+                  {order?.shippingTotal != null
+                    ? formatPriceDisplay(String(order.shippingTotal))
+                    : "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-t border-border pt-3 text-base font-semibold">
+                <span>Total</span>
+                <span className="tabular-nums">
+                  {order?.total != null
+                    ? formatPriceDisplay(String(order.total))
+                    : "—"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -249,8 +246,8 @@ export function OrderDetails({ orderId }: Props) {
         <div className="space-y-4 lg:col-span-4">
           {isBankTransfer ? (
             <>
-              <div className="rounded-xl border bg-card p-5 shadow-sm md:p-6">
-                <p className="text-base font-semibold">Payment</p>
+              <div className="rounded-xl border border-border bg-card p-5 shadow-sm md:p-6">
+                <p className="font-heading text-base font-semibold">Payment</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Transfer to the bank account below.
                 </p>
@@ -258,7 +255,6 @@ export function OrderDetails({ orderId }: Props) {
 
               {bankDetails ? <BankTransferCard details={bankDetails} /> : null}
 
-              {/* evidence upload only if pending & no evidence */}
               {order?.payment?.status === "pending" ? (
                 <BankTransferEvidenceSection
                   payment={order?.payment ?? null}
@@ -275,9 +271,9 @@ export function OrderDetails({ orderId }: Props) {
               ) : null}
             </>
           ) : isCash ? (
-            <div className="rounded-xl border bg-card p-5 shadow-sm md:p-6">
-              <p className="text-base font-semibold">Payment</p>
-              <div className="mt-3 rounded-lg bg-muted/40 p-3">
+            <div className="rounded-xl border border-border bg-card p-5 shadow-sm md:p-6">
+              <p className="font-heading text-base font-semibold">Payment</p>
+              <div className="mt-3 rounded-lg bg-muted/60 p-3">
                 <p className="text-sm">{cashNote}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Please have the exact amount ready at pickup/delivery.
@@ -285,9 +281,36 @@ export function OrderDetails({ orderId }: Props) {
               </div>
             </div>
           ) : isGateway ? (
-            <OrderPaystackVerifier orderId={orderId} />
+            <div className="rounded-xl border border-border bg-card p-5 shadow-sm md:p-6">
+              <div className="flex items-start gap-3">
+                <div
+                  className={cn(
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                    isPaid
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-amber-100 text-amber-700",
+                  )}
+                >
+                  {isPaid ? (
+                    <HiCheckCircle className="h-5 w-5" />
+                  ) : (
+                    <HiClock className="h-5 w-5" />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-heading text-base font-semibold">
+                    Payment
+                  </p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">
+                    {isPaid
+                      ? "Your payment was successful."
+                      : "We're confirming your payment — this can take a moment."}
+                  </p>
+                </div>
+              </div>
+            </div>
           ) : (
-            <div className="rounded-xl border bg-card p-5 shadow-sm md:p-6">
+            <div className="rounded-xl border border-border bg-card p-5 shadow-sm md:p-6">
               <p className="text-sm">
                 Payment method: {String(order?.paymentMethodType ?? "—")}
               </p>

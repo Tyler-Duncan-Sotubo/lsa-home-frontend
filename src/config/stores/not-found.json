@@ -16,7 +16,7 @@
       "title": "Not Found",
       "description": "We couldn’t find a storefront for this domain.",
       "image": {
-        "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/Group.png",
+        "src": "/illustrations/store-not-found.svg",
         "alt": "Store not found"
       }
     },

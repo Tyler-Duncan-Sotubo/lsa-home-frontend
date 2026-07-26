@@ -16,7 +16,7 @@
       "title": "We’ll be back soon",
       "description": "Our storefront is currently undergoing maintenance. Please check back shortly.",
       "image": {
-        "src": "https://centa-hr.s3.amazonaws.com/019b40f4-a8f1-7b26-84d0-45069767fa8c/maintanance.png",
+        "src": "/illustrations/maintenance.svg",
         "alt": "Maintenance in progress"
       }
     },

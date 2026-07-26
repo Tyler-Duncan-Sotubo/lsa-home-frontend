@@ -23,9 +23,13 @@ export type StorefrontConfigResult =
 export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigResult> {
   const hostHeader = await getStoreHostHeader();
   const host = hostHeader["X-Store-Host"] ?? "";
+  const previewToken = hostHeader["X-Preview-Token"];
+
+  const qs = new URLSearchParams({ host });
+  if (previewToken) qs.set("preview_token", previewToken);
 
   const res = await storefrontFetchSafe<StorefrontConfigV1>(
-    `/api/storefront-config/config?host=${encodeURIComponent(host)}`,
+    `/api/storefront-config/config?${qs.toString()}`,
     {
       method: "GET",
       cache: "no-store", // 🔴 critical
@@ -40,12 +44,13 @@ export async function fetchRemoteStorefrontConfig(): Promise<StorefrontConfigRes
 
     const code =
       err?.code ??
+      err?.error?.code ??
       (res.statusCode === 400
         ? StorefrontConfigErrorCode.DOMAIN_NOT_FOUND
         : res.statusCode === 404
           ? StorefrontConfigErrorCode.THEME_NOT_READY
-          : res.statusCode === 400
-            ? StorefrontConfigErrorCode.LOCALHOST_BLOCKED
+          : res.statusCode === 409
+            ? StorefrontConfigErrorCode.THEME_NOT_READY
             : StorefrontConfigErrorCode.UNKNOWN);
 
     return {

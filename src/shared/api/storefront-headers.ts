@@ -11,8 +11,12 @@ export async function getStoreHostHeader() {
       .split(":")[0]
       .trim()
       .toLowerCase();
+    const previewToken = h.get("x-preview-token");
 
-    return resolved ? { "X-Store-Host": resolved } : {};
+    return {
+      ...(resolved ? { "X-Store-Host": resolved } : {}),
+      ...(previewToken ? { "X-Preview-Token": previewToken } : {}),
+    };
   } catch {
     return {};
   }

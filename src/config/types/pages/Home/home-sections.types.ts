@@ -21,6 +21,7 @@ export type HomeSectionV1 =
   | LatestProductsSectionV1
   | OnSaleProductsSectionV1
   | BestSellersProductsSectionV1
+  | CategoryShowcaseSectionV1
   | LocalGallerySectionV1; // ← add this
 
 export type TopCategoriesSectionV1 = {
@@ -242,6 +243,23 @@ export type BestSellersProductsSectionV1 = {
   subtitle?: string;
   limit?: number;
   windowDays?: number;
+  layout?: { sectionClassName?: string };
+};
+
+// A merchant-curated "Shop <Category>" block — unlike the algorithmic
+// rails above, this shows whatever's in one specific category. A store can
+// have several of these (one per featured category), each independently
+// identified by `id` since `type` alone isn't unique across them.
+export type CategoryShowcaseSectionV1 = {
+  type: "categoryShowcase";
+  id: string;
+  enabled?: boolean;
+  categoryId: string;
+  categorySlug: string;
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+  display?: "rail" | "grid"; // default: rail
   layout?: { sectionClassName?: string };
 };
 

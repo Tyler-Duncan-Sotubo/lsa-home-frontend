@@ -12,6 +12,7 @@ import ProductTabsRailSection from "./product-rails/product-tabs-rail/product-ta
 import LatestProductsSection from "./product-rails/latest-products/latest-products";
 import OnSaleProductsSection from "./product-rails/on-sale-products/on-sale-products";
 import BestSellersProductsSection from "./product-rails/best-sellers-products/best-sellers-products";
+import CategoryShowcaseSection from "./product-rails/category-showcase/category-showcase";
 import ProductCategoryGridSection from "./categories/product-category-grid/product-category-grid";
 import {
   CategoryGridSkeleton,
@@ -26,7 +27,10 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
   return (
     <div className="space-y-12">
       {sections.map((section, idx) => {
-        const key = `${section.type}-${idx}`;
+        const key =
+          section.type === "categoryShowcase"
+            ? `categoryShowcase-${section.id}`
+            : `${section.type}-${idx}`;
 
         switch (section.type) {
           case "topCategories":
@@ -98,6 +102,17 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
                 fallback={<ProductRailSkeleton count={section.limit ?? 6} />}
               >
                 <BestSellersProductsSection config={section} />
+              </Suspense>
+            );
+
+          case "categoryShowcase":
+            if (section.enabled === false) return null;
+            return (
+              <Suspense
+                key={key}
+                fallback={<ProductRailSkeleton count={section.limit ?? 6} />}
+              >
+                <CategoryShowcaseSection config={section} />
               </Suspense>
             );
 

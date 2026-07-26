@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import type { Product as WooProduct } from "@/features/Products/types/products";
 import { createStableKey } from "@/shared/utils/unique-key";
+import { isProductInStock } from "@/shared/utils/product-stock";
 import { Button } from "@/shared/ui/button";
 import Link from "next/link";
 import { ProductCardSwitch } from "../ProductCard/product-card-switch";
@@ -120,6 +121,7 @@ export function ProductRail({
                     regularPrice={product.regular_price}
                     salePrice={product.sale_price}
                     onSale={product.on_sale}
+                    inStock={isProductInStock(product)}
                     size="large"
                   />
                 </div>
@@ -146,6 +148,7 @@ export function ProductRail({
                   regularPrice={product.regular_price}
                   salePrice={product.sale_price}
                   onSale={product.on_sale}
+                    inStock={isProductInStock(product)}
                   size="compact"
                 />
               ))}
@@ -181,6 +184,7 @@ export function ProductRail({
                       regularPrice={product.regular_price}
                       salePrice={product.sale_price}
                       onSale={product.on_sale}
+                    inStock={isProductInStock(product)}
                     />
                   </div>
                 ))}

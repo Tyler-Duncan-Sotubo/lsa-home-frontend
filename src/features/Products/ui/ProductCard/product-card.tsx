@@ -37,8 +37,12 @@ export interface ProductCardProps {
   regularPrice?: string;
   salePrice?: string;
   onSale?: boolean;
+  inStock?: boolean;
   size?: "compact" | "default" | "large";
 }
+
+const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
+const SOLD_OUT_BADGE_EXCLUDED_STORES = ["serene", "greysteed"];
 
 export function ProductCard({
   id,
@@ -53,6 +57,7 @@ export function ProductCard({
   regularPrice,
   salePrice,
   onSale,
+  inStock,
   size = "default",
 }: ProductCardProps) {
   const href = slug ? `/products/${slug}` : "#";
@@ -68,6 +73,10 @@ export function ProductCard({
   const showWishListButton = useAppSelector(
     (s) => s.runtimeConfig.ui.product.showWishlistButton,
   );
+  const storeName = useAppSelector((s) => s.runtimeConfig.store?.name);
+  const showSoldOutBadge =
+    inStock === false &&
+    !SOLD_OUT_BADGE_EXCLUDED_STORES.includes(norm(storeName));
 
   const pricePrefix = priceRange ? "From " : "";
 
@@ -159,6 +168,21 @@ export function ProductCard({
     "
             >
               -{discountPercent}%
+            </span>
+          )}
+
+          {showSoldOutBadge && (
+            <span
+              className="
+                absolute left-3 top-3 z-10
+                px-3 py-1
+                rounded-full
+                bg-foreground/80 text-background
+                text-xs md:text-[9px] text-[7px] font-semibold uppercase
+                shadow
+              "
+            >
+              Sold out
             </span>
           )}
 

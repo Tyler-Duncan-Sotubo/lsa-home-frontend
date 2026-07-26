@@ -11,6 +11,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { storefrontAxios } from "@/shared/api/axios-storefront";
 import { Button } from "@/shared/ui/button";
 import { ProductCardSwitch } from "@/features/Products/ui/ProductCard/product-card-switch";
+import { isProductInStock } from "@/shared/utils/product-stock";
 import {
   ShopFiltersSidebar,
   ShopFiltersState,
@@ -386,6 +387,7 @@ export function ShopPageClient({
                     regularPrice={(p as any)?.regular_price}
                     salePrice={(p as any)?.sale_price}
                     onSale={Boolean((p as any)?.on_sale)}
+                    inStock={isProductInStock(p)}
                   />
                 ))}
               </div>

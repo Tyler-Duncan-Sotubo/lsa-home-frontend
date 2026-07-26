@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import React, { useMemo } from "react";
 import { ProductDetailsQuoteOne } from "./variants/Quote/product-details-quote-one";
 import { ProductDetailsCartOne } from "./variants/Cart/product-details-cart-one";
 import { Product } from "../../types/products";
 import { StorefrontConfigV1 } from "@/config/types/types";
+import { isProductInStock } from "@/shared/utils/product-stock";
 
 type ProductUiConfig = NonNullable<
   NonNullable<NonNullable<StorefrontConfigV1["ui"]>["product"]>
@@ -20,25 +21,6 @@ interface ProductDetailsProps {
 }
 
 const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
-
-const isProductInStock = (product: Product) => {
-  const p: any = product;
-
-  // Variable product: if any variation is buyable/in stock, treat as in stock
-  if (Array.isArray(p.variations) && p.variations.length > 0) {
-    return p.variations.some((v: any) => {
-      if (v?.manage_stock) return Number(v?.stock_quantity ?? 0) > 0;
-      if (v?.stock_status) return v.stock_status === "instock";
-      return true;
-    });
-  }
-
-  // Simple product fallback
-  if (p?.manage_stock) return Number(p?.stock_quantity ?? 0) > 0;
-  if (p?.stock_status) return p.stock_status === "instock";
-
-  return true;
-};
 
 const ProductDetails = ({
   siteName,

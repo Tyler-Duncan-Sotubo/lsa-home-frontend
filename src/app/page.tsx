@@ -1,8 +1,7 @@
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
-import { Hero } from "@/features/Home/blocks/hero/hero";
 import { Metadata } from "next";
 import { buildMetadata } from "@/shared/seo/build-metadata";
-import { HomeSections } from "@/features/Home/blocks/home-sections";
+import { getTheme } from "@/themes/registry";
 import { ContactSectionCompact } from "@/features/Contact/blocks/contact-form/contact-compact/contact-compact";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,6 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const config = await getStorefrontConfig();
+  const { Hero, HomeSections } = getTheme(config);
 
   return (
     <div>

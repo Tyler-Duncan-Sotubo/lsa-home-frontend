@@ -46,5 +46,8 @@ export function buildRuntimeConfigPayload(
         },
       },
     },
+    meta: {
+      themeKey: config.meta?.themeKey ?? null,
+    },
   };
 }

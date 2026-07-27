@@ -11,7 +11,7 @@ import ScrollToTop from "@/shared/ui/scroll-to-top";
 import { AnalyticsTagLoader } from "@/shared/analytics/analytics-tag-loader";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { ThemeProvider } from "@/config/theme/ThemeProvider";
-import { SiteHeaderSwitch, SiteFooterSwitch } from "@/features/layout/site-chrome";
+import { getTheme } from "@/themes/registry";
 import { QuoteSheet } from "@/features/quote/ui/quote-sheet";
 import { Toaster } from "@/shared/ui/sonner";
 import { RuntimeConfigHydrator } from "@/config/runtime/RuntimeConfigHydrator";
@@ -40,6 +40,7 @@ export default async function RootLayout({
   const integrations = await getStorefrontAnalyticsIntegrations();
 
   const isSystemPage = !!config.ui?.systemPage;
+  const { SiteHeaderSwitch, SiteFooterSwitch } = getTheme(config);
 
   return (
     <html lang="en">

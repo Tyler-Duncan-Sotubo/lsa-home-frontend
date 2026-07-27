@@ -155,3 +155,5 @@ export const selectRuntimeConfig = (s: RootState) => s.runtimeConfig;
 export const selectCurrency = (s: RootState) => s.runtimeConfig.currency;
 export const selectLocale = (s: RootState) => s.runtimeConfig.locale;
 export const selectQuickView = (s: RootState) => s.runtimeConfig.features;
+export const selectThemeKey = (s: RootState) =>
+  (s.runtimeConfig.meta?.themeKey as string | null | undefined) ?? null;

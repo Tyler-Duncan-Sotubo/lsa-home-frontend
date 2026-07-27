@@ -1,18 +1,21 @@
-import { useAppSelector } from "@/store/hooks";
-import { ProductCard, ProductCardProps } from "./product-card";
-import { ProductCardHoverActions } from "./product-card-hover-actions";
+"use client";
 
-export type ProductCardVariant = "DEFAULT" | "HOVER_ACTIONS";
+// Theme-dispatching facade — see ../ProductRail/product-rail.tsx for the pattern.
+import * as React from "react";
+import { useThemeKey } from "@/themes/use-theme-key";
+import { ProductCardSwitch as ModaveProductCardSwitch } from "@/themes/modave/product/ProductCard/product-card-switch";
 
-export function ProductCardSwitch({ ...props }: ProductCardProps) {
-  const { product } = useAppSelector((s) => s.runtimeConfig.ui);
-  const variant = product.productCardVariant;
+const BY_THEME: Record<
+  string,
+  React.ComponentType<React.ComponentProps<typeof ModaveProductCardSwitch>>
+> = {
+  modave: ModaveProductCardSwitch,
+};
 
-  switch (variant) {
-    case "HOVER_ACTIONS":
-      return <ProductCardHoverActions {...props} />;
-    case "DEFAULT":
-    default:
-      return <ProductCard {...props} />;
-  }
+export function ProductCardSwitch(
+  props: React.ComponentProps<typeof ModaveProductCardSwitch>,
+) {
+  const key = useThemeKey();
+  const Impl = BY_THEME[key] ?? BY_THEME.modave;
+  return <Impl {...props} />;
 }

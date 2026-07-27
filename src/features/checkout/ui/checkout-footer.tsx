@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { StorefrontConfigV1 } from "@/config/types/types";
-import { PaymentFooterBar } from "@/features/layout/Footer/payment-footer-bar";
+import { PaymentFooterBar } from "@/themes/modave/layout/Footer/payment-footer-bar";
 
 const POLICY_LINKS = [
   { href: "/policies/refund-policy", label: "Refund policy" },

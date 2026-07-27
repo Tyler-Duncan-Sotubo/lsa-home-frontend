@@ -97,4 +97,14 @@ export type StorefrontConfigV1 = {
     account?: AccountPageConfigV1;
     collections?: CollectionsPageConfigV1;
   };
+
+  /* ---------------------------------- */
+  /* Resolution metadata (server-attached) */
+  /* ---------------------------------- */
+  meta?: {
+    storeId?: string;
+    primaryDomain?: string | null;
+    /** Key of the active theme preset — selects the component set in src/themes/registry.ts. */
+    themeKey?: string | null;
+  };
 };

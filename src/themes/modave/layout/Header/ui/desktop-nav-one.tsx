@@ -95,8 +95,12 @@ export function DesktopOne({ items, specialItems }: Props) {
   }
 
   return (
-    <div className="hidden md:block">
-      <div className="flex items-center justify-center gap-2">
+    <div className="hidden md:block min-w-0">
+      {/* Long menus overflow horizontally instead of compressing each item
+          until multi-word labels break mid-name ("About / Us"). Mega
+          panels are absolutely positioned, so scrolling here doesn't clip
+          them. */}
+      <div className="flex items-center justify-center gap-2 max-w-full overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item) => {
           const active =
             item.type === "mega"
@@ -153,6 +157,9 @@ export function DesktopOne({ items, specialItems }: Props) {
               href={(item as any).href}
               className={[
                 "px-3 py-1 2xl:text-lg text-base font-medium transition-all",
+                // shrink-0 + nowrap: see the nav wrapper below — long
+                // menus scroll rather than breaking labels mid-name.
+                "shrink-0 whitespace-nowrap",
                 "hover:underline hover:font-semibold",
                 active ? "font-semibold underline" : "",
                 getSpecialClass(item.label),

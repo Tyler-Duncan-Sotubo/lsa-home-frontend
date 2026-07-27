@@ -15,6 +15,7 @@ import { addRecentlyViewed } from "@/store/recentlyViewedSlice";
 import { QuickViewDialog } from "../ProductQuickView/quick-view-modal";
 import { usePriceDisplay } from "@/shared/hooks/use-price-display";
 import { useCanSeePrice } from "@/shared/hooks/use-can-see-price";
+import { useHasHover } from "@/shared/hooks/use-has-hover";
 
 const WishlistButton = dynamic(
   () =>
@@ -65,6 +66,7 @@ export function ProductCardHoverActions({
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
   const reduceMotion = useReducedMotion();
+  const hasHover = useHasHover();
 
   const dispatch = useAppDispatch();
   const formatPrice = usePriceDisplay();
@@ -140,8 +142,8 @@ export function ProductCardHoverActions({
           group flex flex-col w-full bg-background overflow-hidden transition
           hover:-translate-y-1 mt-10
         "
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseEnter={() => hasHover && setHovered(true)}
+        onMouseLeave={() => hasHover && setHovered(false)}
       >
         {/* Image */}
         <div className="relative w-full aspect-square overflow-hidden">
@@ -202,82 +204,110 @@ export function ProductCardHoverActions({
             transition={{ duration: 0.25, ease: "easeOut" }}
           />
 
-          {/* Icons: slide in from right */}
-          <motion.div
-            className="absolute right-3 z-20 flex flex-col gap-2 pointer-events-auto"
-            style={{ top: 12 }} // ~top-14 / top-3 in px
-            initial={false}
-            animate={
-              reduceMotion
-                ? { opacity: hovered ? 1 : 0 }
-                : {
-                    opacity: hovered ? 1 : 0,
-                    x: hovered ? 0 : 24, // from right
-                  }
-            }
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            {showWishListButton && (
-              <div className="rounded-full bg-background/90 shadow">
-                <WishlistButton
-                  item={{
-                    id,
-                    slug,
-                    name,
-                    regularPrice,
-                    salePrice,
-                    onSale,
-                    priceHtml,
-                    image: imageSrc ?? null,
-                    rating: averageRating,
-                    reviews: ratingCount,
+          {/* Icons: slide in from right — desktop only */}
+          {hasHover && (
+            <motion.div
+              className="absolute right-3 z-20 flex flex-col gap-2 pointer-events-auto"
+              style={{ top: 12 }} // ~top-14 / top-3 in px
+              initial={false}
+              animate={
+                reduceMotion
+                  ? { opacity: hovered ? 1 : 0 }
+                  : {
+                      opacity: hovered ? 1 : 0,
+                      x: hovered ? 0 : 24, // from right
+                    }
+              }
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              {showWishListButton && (
+                <div className="rounded-full bg-background/90 shadow">
+                  <WishlistButton
+                    item={{
+                      id,
+                      slug,
+                      name,
+                      regularPrice,
+                      salePrice,
+                      onSale,
+                      priceHtml,
+                      image: imageSrc ?? null,
+                      rating: averageRating,
+                      reviews: ratingCount,
+                    }}
+                  />
+                </div>
+              )}
+
+              {hasQuickView && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full bg-background/90 shadow"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setQuickViewOpen(true);
                   }}
-                />
-              </div>
-            )}
+                  aria-label="Quick view"
+                >
+                  <FaEye />
+                </Button>
+              )}
+            </motion.div>
+          )}
 
-            {hasQuickView && (
-              <Button
-                type="button"
-                variant="secondary"
-                size="icon"
-                className="rounded-full bg-background/90 shadow"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setQuickViewOpen(true);
-                }}
-                aria-label="Quick view"
-              >
-                <FaEye />
+          {/* CTA button: reveal from bottom — desktop only */}
+          {hasHover && (
+            <motion.div
+              className="absolute inset-x-3 bottom-3 z-20 pointer-events-auto"
+              initial={false}
+              animate={
+                reduceMotion
+                  ? { opacity: hovered ? 1 : 0 }
+                  : {
+                      opacity: hovered ? 1 : 0,
+                      y: hovered ? 0 : 16, // from bottom
+                    }
+              }
+              transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
+            >
+              <Button variant="clean" asChild className="w-full font-semibold">
+                <Link href={href} onClick={handleMarkRecentlyViewed}>
+                  Select options
+                </Link>
               </Button>
-            )}
-          </motion.div>
+            </motion.div>
+          )}
 
-          {/* CTA button: reveal from bottom */}
-          <motion.div
-            className="absolute inset-x-3 bottom-3 z-20 pointer-events-auto"
-            initial={false}
-            animate={
-              reduceMotion
-                ? { opacity: hovered ? 1 : 0 }
-                : {
-                    opacity: hovered ? 1 : 0,
-                    y: hovered ? 0 : 16, // from bottom
-                  }
-            }
-            transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
-          >
-            <Button variant="clean" asChild className="w-full font-semibold">
-              <Link href={href} onClick={handleMarkRecentlyViewed}>
-                Select options
-              </Link>
-            </Button>
-          </motion.div>
+          {/* Touch devices get a always-visible quick view trigger instead
+              of the hover-revealed cluster above. */}
+          {!hasHover && hasQuickView && (
+            <button
+              type="button"
+              aria-label="Quick view"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setQuickViewOpen(true);
+              }}
+              className="
+                absolute bottom-3 right-3 z-20
+                flex items-center justify-center
+                h-9 w-9 rounded-full
+                bg-background/90 shadow
+                text-foreground text-lg font-semibold
+                pointer-events-auto
+              "
+            >
+              +
+            </button>
+          )}
         </div>
 
         {/* Content */}

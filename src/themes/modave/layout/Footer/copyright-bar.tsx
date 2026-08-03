@@ -58,7 +58,6 @@ interface CopyrightBarProps {
 }
 
 export const CopyrightBar = ({
-  leftText,
   year,
   payments,
   config,
@@ -67,61 +66,73 @@ export const CopyrightBar = ({
 
   const showPayments = Boolean(payments?.enabled);
 
-  const defaultLeft = `© ${computedYear} ${config.store.name}. All rights reserved.`;
-  const hasContent = Boolean(leftText || showPayments);
+  // The store's own copyright line is always shown — "leftText" used to be
+  // an arbitrary per-store override (e.g. a stale "Theme Powered by Centa"
+  // string stored in the DB), but the platform credit below should never
+  // be store-configurable, so it's no longer sourced from leftText at all.
+  const copyrightLine = `© ${computedYear} ${config.store.name}. All rights reserved.`;
 
   return (
     <section className="w-full py-2 text-xs text-center border-t border-secondary/20 text-secondary">
-      {hasContent && (
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm font-bold">{leftText ?? defaultLeft}</p>
+      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+        <p className="text-sm font-bold">{copyrightLine}</p>
 
-          {showPayments && (
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {Object.entries(payments?.methods ?? {}).map(
-                ([method, enabled]) => {
-                  if (!enabled) return null;
-
-                  const { label, visual } =
-                    PAYMENT_VISUAL[method as PaymentMethod];
-                  if (visual.type === "icon") {
-                    const Icon = visual.Icon;
-                    return (
-                      <Icon
-                        key={method}
-                        aria-label={label}
-                        title={label}
-                        className="w-10 h-10 opacity-80"
-                      />
-                    );
-                  }
-
-                  if (visual.type === "image") {
-                    return (
-                      <span
-                        key={method}
-                        className="relative w-12 h-12 opacity-80"
-                        title={label}
-                        aria-label={label}
-                      >
-                        <Image
-                          src={visual.src}
-                          alt={label}
-                          fill
-                          sizes="40px"
-                          className="object-contain"
-                        />
-                      </span>
-                    );
-                  }
-
-                  return null;
-                },
-              )}
-            </div>
-          )}
+        <div className="flex items-center gap-1.5 text-xs text-secondary/70">
+          <span>Powered by</span>
+          <Image
+            src="/images/logo/salescenta-logo.png"
+            alt="SalesCenta"
+            width={90}
+            height={20}
+            className="h-4 w-auto object-contain opacity-80"
+          />
         </div>
-      )}
+
+        {showPayments && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {Object.entries(payments?.methods ?? {}).map(
+              ([method, enabled]) => {
+                if (!enabled) return null;
+
+                const { label, visual } =
+                  PAYMENT_VISUAL[method as PaymentMethod];
+                if (visual.type === "icon") {
+                  const Icon = visual.Icon;
+                  return (
+                    <Icon
+                      key={method}
+                      aria-label={label}
+                      title={label}
+                      className="w-10 h-10 opacity-80"
+                    />
+                  );
+                }
+
+                if (visual.type === "image") {
+                  return (
+                    <span
+                      key={method}
+                      className="relative w-12 h-12 opacity-80"
+                      title={label}
+                      aria-label={label}
+                    >
+                      <Image
+                        src={visual.src}
+                        alt={label}
+                        fill
+                        sizes="40px"
+                        className="object-contain"
+                      />
+                    </span>
+                  );
+                }
+
+                return null;
+              },
+            )}
+          </div>
+        )}
+      </div>
     </section>
   );
 };

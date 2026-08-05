@@ -62,9 +62,9 @@ type Props = {
 // product rather than a bolted-on secondary flow.
 const GATEWAY_LOGOS: Record<string, string> = {
   paystack:
-    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019bcb41-c4c8-7a3b-8e2d-3f78def4a2e5-Integrations-Paystack-1724x970-1.svg",
+    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019fd441-7141-7621-9c95-0c99bcca0ccb-Paystack.png",
   stripe:
-    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/theme/tmp/019bc8ed-fcfc-77b5-a786-46c38e22266d-1768602598286-logo.png",
+    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019fd43f-c44d-7b47-be2f-05b18d4166e8-Stripe_Logo_revised_2016.svg.webp",
 };
 
 function GatewayIcon({ provider }: { provider: string }) {
@@ -180,6 +180,8 @@ export function PaymentLinkClient({ link, token, config }: Props) {
   const [bankLoading, setBankLoading] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [evidenceUploaded, setEvidenceUploaded] = useState(false);
+
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   const gateways = useMemo(
     () =>
@@ -312,8 +314,45 @@ export function PaymentLinkClient({ link, token, config }: Props) {
   }, [selected]);
 
   const isBank = selected === "bank";
+  const selectedProvider = selected.startsWith("gateway:")
+    ? selected.split(":")[1]
+    : null;
+  const isPaystack = selectedProvider === "paystack";
+  const isStripe = selectedProvider === "stripe";
   const noMethodsAvailable = methods !== null && methods.length === 0;
   const expiresAt = link.expiresAt ? new Date(link.expiresAt) : null;
+
+  // Stripe Checkout is a hosted redirect — chosen over an embedded form
+  // because Stripe's own checkout page carries more trust weight for a
+  // real-money payment link than a custom-built one, at the cost of
+  // leaving the site (Stripe Checkout has no popup mode).
+  const handleStartStripe = async () => {
+    setStripeLoading(true);
+    setError(null);
+    try {
+      const res = await fetchJson(`/api/pay/${token}/stripe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          successUrl: `${window.location.origin}/pay/${token}/success?stripeSession={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.href,
+        }),
+      });
+
+      if (!res.checkoutUrl) {
+        setError("Unable to start Stripe payment.");
+        setStripeLoading(false);
+        return;
+      }
+
+      window.location.href = res.checkoutUrl;
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Failed to start Stripe payment",
+      );
+      setStripeLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-[80vh] bg-muted/30 px-4 py-8 md:py-12">
@@ -362,7 +401,7 @@ export function PaymentLinkClient({ link, token, config }: Props) {
                 </div>
 
                 {/* Active method's form/detail, shown below the option list */}
-                {selected.startsWith("gateway:") && (
+                {isPaystack && (
                   <form onSubmit={handlePay} className="space-y-4 pt-2">
                     <div className="space-y-1.5">
                       <Label htmlFor="email">Your email address</Label>
@@ -413,6 +452,34 @@ export function PaymentLinkClient({ link, token, config }: Props) {
                       <span>Secured by Paystack · SSL encrypted</span>
                     </div>
                   </form>
+                )}
+
+                {isStripe && (
+                  <div className="space-y-4 pt-2">
+                    {error && (
+                      <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5">
+                        <FiAlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                        <p className="text-sm text-destructive">{error}</p>
+                      </div>
+                    )}
+
+                    <Button
+                      type="button"
+                      className="w-full"
+                      size="lg"
+                      disabled={stripeLoading}
+                      onClick={handleStartStripe}
+                    >
+                      {stripeLoading
+                        ? "Redirecting…"
+                        : `Pay ${formatAmount(link.amountMinor, link.currency)}`}
+                    </Button>
+
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                      <HiLockClosed className="h-3 w-3" />
+                      <span>Secured by Stripe · SSL encrypted</span>
+                    </div>
+                  </div>
                 )}
 
                 {isBank && (

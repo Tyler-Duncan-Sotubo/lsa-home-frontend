@@ -29,20 +29,55 @@ async function verifyPayment(
   }
 }
 
+async function verifyStripeSession(
+  token: string,
+  sessionId: string,
+): Promise<VerifyResult | null> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/api/pay/${token}/stripe/verify?sessionId=${encodeURIComponent(sessionId)}`,
+      { cache: "no-store" },
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      verified: data.verified,
+      reference: data.reference,
+      status: data.status,
+      amount: data.amount,
+      currency: data.currency,
+      paidAt: data.paidAt,
+      channel: "stripe",
+      customer: null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default async function PaymentLinkSuccessPage({
   params,
   searchParams,
 }: {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ reference?: string; trxref?: string }>;
+  searchParams: Promise<{
+    reference?: string;
+    trxref?: string;
+    stripeSession?: string;
+  }>;
 }) {
   const { token } = await params;
   const sp = await searchParams;
   const reference = sp.reference ?? sp.trxref ?? null;
+  const stripeSessionId = sp.stripeSession ?? null;
 
   const [config, verification] = await Promise.all([
     getStorefrontConfig(),
-    reference ? verifyPayment(token, reference) : Promise.resolve(null),
+    stripeSessionId
+      ? verifyStripeSession(token, stripeSessionId)
+      : reference
+        ? verifyPayment(token, reference)
+        : Promise.resolve(null),
   ]);
 
   const verified = verification?.verified === true;

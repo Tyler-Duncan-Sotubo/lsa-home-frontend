@@ -39,16 +39,16 @@ interface CheckoutPaymentSectionProps {
 
 const GATEWAY_LOGOS: Record<string, string> = {
   paystack:
-    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019bcb41-c4c8-7a3b-8e2d-3f78def4a2e5-Integrations-Paystack-1724x970-1.svg",
+    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019fd441-7141-7621-9c95-0c99bcca0ccb-Paystack.png",
   stripe:
-    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/theme/tmp/019bc8ed-fcfc-77b5-a786-46c38e22266d-1768602598286-logo.png",
+    "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019fd43f-c44d-7b47-be2f-05b18d4166e8-Stripe_Logo_revised_2016.svg.webp",
 };
 
 function GatewayIcon({ provider }: { provider: string }) {
   const src = GATEWAY_LOGOS[provider];
   if (src) {
     return (
-      <div className="relative w-24 h-20">
+      <div className="relative w-14 h-8">
         <Image
           src={src}
           alt={`${provider} logo`}
@@ -58,7 +58,7 @@ function GatewayIcon({ provider }: { provider: string }) {
       </div>
     );
   }
-  return <FaCreditCard className="w-10 h-10" />;
+  return <FaCreditCard className="w-8 h-8" />;
 }
 
 function CopyRow({ label, value }: { label: string; value: string }) {
@@ -129,7 +129,7 @@ function MethodCard(props: {
           <p className="text-sm font-semibold whitespace-nowrap">{title}</p>
         </div>
 
-        <div className="flex items-center justify-center w-20 h-14 shrink-0">
+        <div className="flex items-center justify-center w-14 h-10 shrink-0">
           {icon}
         </div>
       </div>
@@ -230,30 +230,45 @@ export function CheckoutPaymentSection({
                   <RadioGroup
                     value={val}
                     onValueChange={field.onChange}
-                    className="space-y-3"
+                    className="space-y-5"
                   >
-                    {/* Gateways */}
-                    {gateways.map((g) => {
-                      const value = `gateway:${g.provider}`;
-                      const selected = val === value;
+                    {/* Online — gateways */}
+                    {gateways.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          Online payment
+                        </p>
+                        <div className="space-y-3">
+                          {gateways.map((g) => {
+                            const value = `gateway:${g.provider}`;
+                            const selected = val === value;
 
-                      const title = TitleCase(g.provider);
-                      const description =
-                        g.provider === "paystack"
-                          ? "Pay with card, bank transfer, or USSD"
-                          : "Pay with card or supported options";
+                            const title = TitleCase(g.provider);
+                            const description =
+                              g.provider === "paystack"
+                                ? "Pay with card, bank transfer, or USSD"
+                                : "Pay with card or supported options";
 
-                      return (
-                        <MethodCard
-                          key={value}
-                          value={value}
-                          selected={selected}
-                          title={title}
-                          description={description}
-                          icon={<GatewayIcon provider={g.provider} />}
-                        />
-                      );
-                    })}
+                            return (
+                              <MethodCard
+                                key={value}
+                                value={value}
+                                selected={selected}
+                                title={title}
+                                description={description}
+                                icon={<GatewayIcon provider={g.provider} />}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {(bankTransfer || whatsapp || cash) && (
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Manual payment
+                      </p>
+                    )}
 
                     {/* Bank transfer */}
                     {bankTransfer ? (

@@ -1,7 +1,8 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { HiLockClosed, HiCheckCircle, HiClock } from "react-icons/hi";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,8 @@ const PAID_STATUSES = ["paid", "completed"];
 
 export function OrderDetails({ orderId }: Props) {
   const qc = useQueryClient();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Fetch available payment methods (includes bank details)
   const {
@@ -40,7 +43,24 @@ export function OrderDetails({ orderId }: Props) {
     isLoading,
     isError,
     error,
+    refetch,
   } = useStorefrontOrder(orderId);
+
+  // Stripe's Checkout Session redirect lands back here with
+  // ?stripeSession=... — the popup-based Paystack flow verifies before
+  // ever navigating, but a hosted redirect has no such moment, so this is
+  // the equivalent "did it actually succeed" check for Stripe.
+  useEffect(() => {
+    const sessionId = searchParams.get("stripeSession");
+    if (!sessionId) return;
+
+    fetch(`/api/stripe/verify/${sessionId}`, { cache: "no-store" })
+      .then(() => refetch())
+      .finally(() => {
+        router.replace(`/order/${orderId}`);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId]);
 
   const items = useMemo(() => order?.items ?? [], [order]);
 

@@ -535,6 +535,50 @@ export function useCheckoutController(checkoutId: string) {
         }
       }
 
+      // Stripe gateway — hosted Checkout Session redirect. Chosen over the
+      // embedded Payment Element because Stripe's own checkout page carries
+      // more trust weight for a real-money surface than a custom form,
+      // even though it means leaving the site (Stripe Checkout has no
+      // popup mode, unlike Paystack's inline.js).
+      if (normalized.paymentProvider === "stripe") {
+        try {
+          const stripe = await fetchJson("/api/stripe/initialize", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              amount: Number(order.total ?? order.totalAmount ?? 0),
+              currency: order.currency ?? "NGN",
+              reference: order.reference ?? order.orderNumber ?? order.id,
+              customerEmail: email,
+              successUrl: `${window.location.origin}/order/${order.id}?stripeSession={CHECKOUT_SESSION_ID}`,
+              cancelUrl: `${window.location.origin}/order/${order.id}`,
+              productName: order.orderNumber
+                ? `Order ${order.orderNumber}`
+                : "Order payment",
+              metadata: {
+                orderId: order.id,
+                orderNumber: order.orderNumber ?? null,
+              },
+            }),
+          });
+
+          const checkoutUrl = stripe?.data?.checkoutUrl ?? stripe?.checkoutUrl;
+
+          if (!checkoutUrl) {
+            toast.error("Unable to start Stripe payment.");
+            router.push(`/order/${order.id}`);
+            return;
+          }
+
+          window.location.href = checkoutUrl;
+          return;
+        } catch (err: any) {
+          toast.error(getErrMsg(err) || "Unable to start Stripe payment.");
+          router.push(`/order/${order.id}`);
+          return;
+        }
+      }
+
       // Unknown gateway fallback
       router.push(`/order/${order.id}`);
     },

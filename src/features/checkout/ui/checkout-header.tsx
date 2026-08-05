@@ -16,19 +16,18 @@ export function CheckoutHeader({ config }: { config: StorefrontConfigV1 }) {
   return (
     <header className="border-b">
       <div className="mx-auto flex w-[95%] max-w-6xl items-center justify-between py-4">
-        <Link href="/" className="inline-flex items-center gap-2">
-          {logoUrl ? (
+        <Link href="/" className="inline-flex items-center gap-2.5">
+          {logoUrl && (
             <Image
               src={logoUrl}
               alt={storeName}
-              width={110}
-              height={40}
-              className="h-8 w-auto object-contain"
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-full object-contain"
               priority
             />
-          ) : (
-            <span className="text-lg font-semibold">{storeName}</span>
           )}
+          <span className="text-sm font-medium">{storeName}</span>
         </Link>
 
         <div className="flex items-center gap-4">

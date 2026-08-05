@@ -308,12 +308,12 @@ export function PaymentLinkClient({ link, token, config }: Props) {
           )}
 
           {showSelector && (hasGateway || hasBank) && (
-            <div className="px-6 pt-5 flex gap-2">
+            <div className="px-6 pt-5 grid grid-cols-2 gap-2">
               {hasGateway && (
                 <button
                   type="button"
                   onClick={() => setSelected("gateway")}
-                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
+                  className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
                     selected === "gateway"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-muted-foreground/30"
@@ -326,7 +326,7 @@ export function PaymentLinkClient({ link, token, config }: Props) {
                 <button
                   type="button"
                   onClick={() => setSelected("bank_transfer")}
-                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
+                  className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
                     selected === "bank_transfer"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-muted-foreground/30"

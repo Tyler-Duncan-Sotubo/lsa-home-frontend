@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 type PaymentLink = {
   id: string;
   token: string;
+  reference: string;
   title: string;
   description?: string | null;
   currency: string;
@@ -68,5 +69,7 @@ export default async function PaymentLinkPage({
     );
   }
 
-  return <PaymentLinkClient link={result.data} token={token} />;
+  const config = await getStorefrontConfig();
+
+  return <PaymentLinkClient link={result.data} token={token} config={config} />;
 }

@@ -72,7 +72,12 @@ function GatewayIcon({ provider }: { provider: string }) {
   if (src) {
     return (
       <div className="relative w-20 h-8">
-        <Image src={src} alt={`${provider} logo`} fill className="object-contain" />
+        <Image
+          src={src}
+          alt={`${provider} logo`}
+          fill
+          className="object-contain"
+        />
       </div>
     );
   }
@@ -103,7 +108,7 @@ function MethodOption(props: {
       className={cn(
         "w-full flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition",
         selected
-          ? "border-primary ring-1 ring-primary bg-primary/[0.03]"
+          ? "border-primary ring-1 ring-primary bg-primary/3"
           : "border-border hover:border-muted-foreground/40",
       )}
     >
@@ -143,7 +148,11 @@ function CopyRow({ label, value }: { label: string; value: string }) {
         onClick={onCopy}
         className="inline-flex items-center gap-2 rounded-md border bg-background px-2.5 py-1.5 text-xs transition hover:bg-muted"
       >
-        {copied ? <FiCheck className="h-3 w-3" /> : <FiCopy className="h-3 w-3" />}
+        {copied ? (
+          <FiCheck className="h-3 w-3" />
+        ) : (
+          <FiCopy className="h-3 w-3" />
+        )}
       </button>
     </div>
   );
@@ -360,7 +369,9 @@ export function PaymentLinkClient({ link, token, config }: Props) {
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] items-start">
           {/* Left panel: method selection + active form */}
           <div className="rounded-2xl border bg-card p-6 md:p-8">
-            <h1 className="text-xl font-bold mb-6">Select your payment method</h1>
+            <h1 className="text-xl font-bold mb-6">
+              Select your payment method
+            </h1>
 
             {noMethodsAvailable && (
               <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5">
@@ -395,7 +406,9 @@ export function PaymentLinkClient({ link, token, config }: Props) {
                       selected={isBank}
                       onSelect={setSelected}
                       title="Bank transfer"
-                      icon={<RiBankFill className="w-6 h-6 text-muted-foreground" />}
+                      icon={
+                        <RiBankFill className="w-6 h-6 text-muted-foreground" />
+                      }
                     />
                   )}
                 </div>
@@ -578,11 +591,15 @@ export function PaymentLinkClient({ link, token, config }: Props) {
                   <div className="space-y-1.5 text-sm">
                     <div className="flex justify-between gap-4">
                       <span className="text-muted-foreground">Item</span>
-                      <span className="font-medium text-right">{link.title}</span>
+                      <span className="font-medium text-right">
+                        {link.title}
+                      </span>
                     </div>
                     {link.description && (
                       <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Description</span>
+                        <span className="text-muted-foreground">
+                          Description
+                        </span>
                         <span className="font-medium text-right">
                           {link.description}
                         </span>

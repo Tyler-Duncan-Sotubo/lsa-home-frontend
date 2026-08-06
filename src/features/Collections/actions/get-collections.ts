@@ -43,7 +43,11 @@ export async function listCollectionProducts(
 
   const res = await storefrontFetchSafe<CollectionResponse>(
     `/api/catalog/products/storefront/collections/${slug}?${qs.toString()}`,
-    { tags: [`collection:${slug}`] },
+    // Tags alone (no revalidate) cache indefinitely in Next's Data Cache
+    // until an explicit revalidateTag call — nothing in this codebase
+    // ever calls that for collection:${slug}, so a product's channel/
+    // status/category change would never be reflected without this TTL.
+    { revalidate: 60, tags: [`collection:${slug}`] },
   );
 
   if (!res.ok) {
@@ -114,7 +118,9 @@ export async function getCollectionProductsGroupedBySlug(
 
   const res = await storefrontFetchSafe<StorefrontCollectionsHubResponse>(
     `/api/catalog/products/storefront/collections/${slug}/grouped?${qs.toString()}`,
-    { tags: [`collection-grouped:${slug}`] },
+    // Same reasoning as listCollectionProducts above — tags without a
+    // revalidate TTL cache forever with no invalidation path.
+    { revalidate: 60, tags: [`collection-grouped:${slug}`] },
   );
 
   if (!res.ok) {

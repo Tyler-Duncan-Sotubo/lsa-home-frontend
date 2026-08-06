@@ -6,7 +6,10 @@ import { storefrontFetchSafe } from "@/shared/api/fetch";
 export async function getProductBySlugWithVariations(slug: string) {
   const res = await storefrontFetchSafe<WooProduct>(
     `/api/catalog/products/storefront/${slug}`,
-    { tags: [`product:${slug}`, `product:${slug}:reviews`] },
+    // Tags alone (no revalidate) cache indefinitely — nothing calls
+    // revalidateTag for these, so a status/channel/stock change would
+    // never be reflected without this TTL.
+    { revalidate: 60, tags: [`product:${slug}`, `product:${slug}:reviews`] },
   );
 
   if (!res.ok) {

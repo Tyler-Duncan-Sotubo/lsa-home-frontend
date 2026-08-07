@@ -24,6 +24,11 @@ export interface ProductDetailsPanelProps {
   showInfoSections?: boolean;
   /** Pass siteName so Serene-specific hybrid logic can activate */
   siteName?: string;
+  /** Fires whenever the currently-selected variant combination (color,
+   * size, or any other attribute) resolves to a different image than
+   * before — lets the gallery swap on ANY attribute change, not just
+   * color, whenever that specific variant actually has its own photo. */
+  onActiveVariantImageChange?: (src: string | null) => void;
 }
 
 const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
@@ -49,6 +54,7 @@ export function ProductDetailsCartOne({
   onAddedToCart,
   showInfoSections = true,
   siteName,
+  onActiveVariantImageChange,
 }: ProductDetailsPanelProps) {
   const [quantity, setQuantity] = useState<string>("1");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -191,18 +197,31 @@ export function ProductDetailsCartOne({
   const canAddToCart =
     isInStock && Number(quantity) <= Math.min(10, Math.max(1, maxQty || 0));
 
-  const variationImageSrc = useMemo(() => {
-    const hero = product.images?.[0]?.src ?? null;
-    if (!activeVariation) return hero;
+  // The active variant's OWN image, no hero fallback — used to decide
+  // whether to swap the gallery at all. A variant with no distinct photo
+  // (e.g. most size-only variants) should leave the gallery as-is rather
+  // than snapping back to the hero image.
+  const activeVariantOwnImage = useMemo(() => {
+    if (!activeVariation) return null;
     const av: any = activeVariation;
     return (
-      av.image?.src ??
-      av.image?.url ??
-      av.images?.[0]?.src ??
-      av.images?.[0]?.url ??
-      hero
+      av.image?.src ?? av.image?.url ?? av.images?.[0]?.src ?? av.images?.[0]?.url ?? null
     );
-  }, [activeVariation, product.images]);
+  }, [activeVariation]);
+
+  const variationImageSrc = useMemo(() => {
+    const hero = product.images?.[0]?.src ?? null;
+    return activeVariantOwnImage ?? hero;
+  }, [activeVariantOwnImage, product.images]);
+
+  // Notify the gallery whenever the selected variant combination
+  // (whichever attribute changed — color, size, anything) resolves to a
+  // variant with its own image. Generic by design: no attribute is
+  // special-cased here, unlike the color-only sync this replaces.
+  useEffect(() => {
+    onActiveVariantImageChange?.(activeVariantOwnImage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeVariantOwnImage]);
 
   const { regularPrice, salePrice, onSale } = useMemo(() => {
     const vAny = activeVariation as any | null;

@@ -50,9 +50,16 @@ export function ProductPageClient({
     getFirstColor(product),
   );
 
+  // Whatever image the currently-selected variant combination resolves
+  // to (color, size, or any other attribute) — generic, not color-only.
+  const [activeVariantImage, setActiveVariantImage] = useState<
+    string | null
+  >(null);
+
   // eventized setter (always sees latest product)
   const resetSelectedColor = useEffectEvent((p: Product) => {
     setSelectedColor(getFirstColor(p));
+    setActiveVariantImage(null);
   });
 
   // run only when the product identity changes
@@ -123,6 +130,7 @@ export function ProductPageClient({
             <ProductGallery
               product={product}
               selectedColor={selectedColor}
+              activeVariantImage={activeVariantImage}
               config={productUiConfig}
             />
           </div>
@@ -132,6 +140,7 @@ export function ProductPageClient({
               product={product}
               selectedColor={selectedColor}
               setSelectedColor={setSelectedColor}
+              onActiveVariantImageChange={setActiveVariantImage}
               siteName={siteName}
             />
           </SectionReveal>

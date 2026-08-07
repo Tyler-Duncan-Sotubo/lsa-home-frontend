@@ -18,6 +18,7 @@ interface ProductDetailsProps {
   setSelectedColor: (color: string | null) => void;
   isModal?: boolean;
   onAddedToCart?: () => void;
+  onActiveVariantImageChange?: (src: string | null) => void;
 }
 
 const norm = (s?: string | null) => (s ?? "").trim().toLowerCase();
@@ -30,6 +31,7 @@ const ProductDetails = ({
   setSelectedColor,
   isModal,
   onAddedToCart,
+  onActiveVariantImageChange,
 }: ProductDetailsProps) => {
   const configContext = config?.productDetails?.context ?? "CART";
   const showInfoSections = config?.productDetails?.showInfoSections ?? true;
@@ -54,6 +56,7 @@ const ProductDetails = ({
           isModal={isModal}
           onAddedToCart={onAddedToCart}
           showInfoSections={showInfoSections}
+          onActiveVariantImageChange={onActiveVariantImageChange}
         />
       );
     }
@@ -69,6 +72,7 @@ const ProductDetails = ({
           onAddedToCart={onAddedToCart}
           showInfoSections={showInfoSections}
           siteName={siteName}
+          onActiveVariantImageChange={onActiveVariantImageChange}
         />
       );
     }

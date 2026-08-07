@@ -17,6 +17,10 @@ import { StorefrontConfigV1 } from "@/config/types/types";
 
 interface GalleryProps extends ProductGalleryProps {
   selectedColor?: string | null;
+  /** The currently-selected variant's own image, from ANY attribute
+   * (color, size, material, etc) — generic swap trigger, distinct from
+   * selectedColor which only seeds the default color-grouped image set. */
+  activeVariantImage?: string | null;
   config?: NonNullable<
     NonNullable<NonNullable<StorefrontConfigV1["ui"]>["product"]>
   >;
@@ -49,10 +53,12 @@ function productHasAnyColor(product: any) {
 export function ProductGallery({
   product,
   selectedColor,
+  activeVariantImage,
   config,
 }: GalleryProps) {
   const [activeImage, setActiveImage] = useState(0);
   const lastColorRef = useRef<string | null>(null);
+  const lastVariantImageRef = useRef<string | null>(null);
 
   const hasColor = useMemo(() => productHasAnyColor(product), [product]);
 
@@ -79,7 +85,7 @@ export function ProductGallery({
     const variations: any[] = product?.variations ?? [];
 
     if (hasColor) {
-      // keep ONE image per color
+      // one representative image per color, for the default gallery view
       const colorToSrc = new Map<string, string>();
 
       for (const v of variations) {
@@ -90,10 +96,13 @@ export function ProductGallery({
       }
 
       for (const src of colorToSrc.values()) pushSrc(src);
-    } else {
-      // size-only etc: include any variation images
-      for (const v of variations) pushSrc(v?.image?.src ?? null);
     }
+
+    // Always include every variant's own distinct image, regardless of
+    // which attribute defines it — so switching size (or any other
+    // attribute) to a variant with its own photo has something in this
+    // array for the sync effect below to actually find and select.
+    for (const v of variations) pushSrc(v?.image?.src ?? null);
 
     return out.length ? out : ["/placeholder.png"];
   }, [product, hasColor]);
@@ -130,6 +139,22 @@ export function ProductGallery({
   useLayoutEffect(() => {
     syncSelectedColor(selectedColor);
   }, [selectedColor]);
+
+  // Generic swap: whatever attribute changed (color, size, material...),
+  // if the resulting variant has its own image, show it. Falls back to
+  // leaving the gallery as-is when the new variant has no distinct photo.
+  const syncActiveVariantImage = useEffectEvent((src?: string | null) => {
+    if (!src) return;
+    if (lastVariantImageRef.current === src) return;
+    lastVariantImageRef.current = src;
+
+    const idx = galleryImages.indexOf(src);
+    if (idx !== -1) setActiveImage(idx);
+  });
+
+  useLayoutEffect(() => {
+    syncActiveVariantImage(activeVariantImage);
+  }, [activeVariantImage]);
 
   const safeActive = Math.min(activeImage, galleryImages.length - 1);
 

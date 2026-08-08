@@ -22,7 +22,8 @@ export type HomeSectionV1 =
   | OnSaleProductsSectionV1
   | BestSellersProductsSectionV1
   | CategoryShowcaseSectionV1
-  | LocalGallerySectionV1; // ← add this
+  | LocalGallerySectionV1
+  | PricingCardsSectionV1;
 
 export type TopCategoriesSectionV1 = {
   type: "topCategories";
@@ -296,4 +297,44 @@ export type LocalGallerySectionV1 = {
   dataPath?: string; // e.g. "/api/gallery"
 
   seed?: LocalGalleryItemV1[]; // shown before any uploads exist
+};
+
+/**
+ * Static, hand-authored service/pricing tiers with a starting price and
+ * a feature checklist — informational only, not tied to real products
+ * (no inventory, no checkout). For stores selling services (bridal
+ * makeup packages, consultations, etc.) rather than physical goods.
+ * `ctaHref`, if set, should point at wherever enquiries/bookings are
+ * currently handled (e.g. the contact page) — there's no dedicated
+ * booking pipeline yet.
+ */
+export type PricingTierV1 = {
+  id: string;
+  title: string; // e.g. "Facials"
+  price: string; // e.g. "$30" — pre-formatted, currency-agnostic
+  priceSuffix?: string; // e.g. "/Onwards"
+  features: string[]; // e.g. ["Foundation", "Contouring", ...]
+  /** Per-card CTA — overrides the section-level ctaLabel/ctaHref for
+   * this tier only. */
+  ctaLabel?: string;
+  ctaHref?: string;
+};
+
+export type PricingCardsSectionV1 = {
+  type: "pricingCards";
+  enabled?: boolean;
+
+  eyebrow?: string; // e.g. "Face & Eyes"
+  title?: string; // e.g. "To Lips & Nails"
+  subtitle?: string; // e.g. "Pricing is less than you think!"
+
+  /** Fallback CTA used by any tier that doesn't set its own ctaLabel/ctaHref. */
+  ctaLabel?: string;
+  ctaHref?: string;
+
+  tiers: PricingTierV1[];
+
+  layout?: {
+    columns?: 2 | 3 | 4; // default 4
+  };
 };

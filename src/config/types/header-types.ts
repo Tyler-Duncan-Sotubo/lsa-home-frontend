@@ -20,11 +20,13 @@ export type HeaderConfigV1 = {
   /* Main site header / nav */
   nav: {
     /**
-     * V1: Centered nav with mega menus (DTC / retail)
-     * V2: Simple nav, corporate / B2B
+     * V1: Centered nav with mega menus (DTC / retail) — modave
+     * V2: Simple nav, corporate / B2B — modave
+     * V3: Pill-button nav (active = pillClean/black, hover = pill/primary)
+     *     — andrea only
      */
     enabled: boolean;
-    variant: "V1" | "V2";
+    variant: "V1" | "V2" | "V3";
     items: NavItem[];
     icons?: {
       search?: boolean;

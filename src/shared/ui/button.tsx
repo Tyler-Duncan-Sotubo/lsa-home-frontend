@@ -22,6 +22,17 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         clean:
           "bg-white text-secondary-foreground border border-primary/20 hover:bg-primary hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/40 transition-colors",
+        // Top-left and bottom-right rounded, top-right and bottom-left
+        // sharp — the andrea hero CTA shape. On hover the diagonal flips:
+        // top-right/bottom-left become rounded, top-left/bottom-right go
+        // sharp. The ! suffix beats any size variant's own radius (e.g.
+        // lg's rounded-md) since tailwind-merge resolves conflicts by
+        // last-class-wins.
+        pill: "bg-primary text-white hover:bg-black font-semibold text-lg !rounded-tl-[15px] !rounded-tr-none !rounded-br-[15px] !rounded-bl-none hover:!rounded-tl-none hover:!rounded-tr-[15px] hover:!rounded-br-none hover:!rounded-bl-[15px]",
+        // Same shape as `pill`, but black instead of the primary color —
+        // for secondary CTAs sitting next to a pill button.
+        pillClean:
+          "bg-black text-white hover:bg-black/90 font-semibold text-lg !rounded-tl-[15px] !rounded-tr-none !rounded-br-[15px] !rounded-bl-none hover:!rounded-tl-none hover:!rounded-tr-[15px] hover:!rounded-br-none hover:!rounded-bl-[15px]",
       },
       size: {
         default: "2xl:h-15 sm:h-13 h-12 px-10 py-2 has-[>svg]:px-3",
@@ -36,7 +47,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 type ButtonProps = React.ComponentProps<"button"> &

@@ -109,4 +109,20 @@ export type ContactSectionLayoutV1 =
       };
 
       containerClassName?: string;
+    }
+  | {
+      /**
+       * Map on one side, a card grid of contact methods (social, address,
+       * phone/whatsapp, email) on the other — no form. andrea theme only.
+       */
+      variant: "mapCards";
+
+      map: {
+        embedUrl: string;
+        heightClassName?: string; // default "h-full min-h-[420px]"
+        title?: string;
+      };
+
+      mapPosition?: "left" | "right"; // default "left"
+      containerClassName?: string;
     };

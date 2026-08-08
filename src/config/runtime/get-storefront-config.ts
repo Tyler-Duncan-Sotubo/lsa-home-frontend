@@ -37,7 +37,7 @@ type LocalPreset =
   | "default"
   | "maintenance"
   | "not-found"
-  | "emilia-duncan"
+  | "andrea"
   | "serene";
 
 export async function loadLocalStorefrontConfig(
@@ -50,6 +50,10 @@ export async function loadLocalStorefrontConfig(
     }
     case "not-found": {
       const mod = await import("../stores/not-found.json");
+      return mod.default as StorefrontConfigV1;
+    }
+    case "andrea": {
+      const mod = await import("../stores/andrea.json");
       return mod.default as StorefrontConfigV1;
     }
     default: {

@@ -20,6 +20,7 @@ import {
 } from "../modave/layout/site-chrome";
 import { Hero } from "../modave/home/blocks/hero/hero";
 import { HomeSections } from "../modave/home/blocks/home-sections";
+import { ContactSectionCompact } from "@/features/Contact/blocks/contact-form/contact-compact/contact-compact";
 
 export const venam: ThemeComponents = {
   key: "venam",
@@ -27,4 +28,5 @@ export const venam: ThemeComponents = {
   SiteFooterSwitch,
   Hero,
   HomeSections,
+  HomeContactSection: ContactSectionCompact,
 };

@@ -11,6 +11,7 @@ import ScrollToTop from "@/shared/ui/scroll-to-top";
 import { AnalyticsTagLoader } from "@/shared/analytics/analytics-tag-loader";
 import { getStorefrontConfig } from "@/config/runtime/get-storefront-config";
 import { ThemeProvider } from "@/config/theme/ThemeProvider";
+import { GoogleFontsLink } from "@/config/theme/GoogleFontsLink";
 import { getTheme } from "@/themes/registry";
 import { QuoteSheet } from "@/features/quote/ui/quote-sheet";
 import { Toaster } from "@/shared/ui/sonner";
@@ -44,6 +45,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <GoogleFontsLink theme={config.theme} />
+      </head>
       <body
         className={`${montserrat.variable} ${dosis.variable} antialiased min-h-dvh flex flex-col`}
       >

@@ -2,6 +2,7 @@ import type { StorefrontConfigV1 } from "@/config/types/types";
 import { SiteHeaderSwitch, SiteFooterSwitch } from "./modave/layout/site-chrome";
 import { Hero } from "./modave/home/blocks/hero/hero";
 import { HomeSections } from "./modave/home/blocks/home-sections";
+import { ContactSectionCompact } from "@/features/Contact/blocks/contact-form/contact-compact/contact-compact";
 
 /**
  * A theme is a named set of top-level visual components rendered over the
@@ -23,6 +24,11 @@ import { HomeSections } from "./modave/home/blocks/home-sections";
  *    implementation via useThemeKey(). A new theme registers there too.
  *    Theme implementations must never import the facades (cycle) — within
  *    a theme, import theme-local components directly.
+ *
+ * HomeContactSection is the homepage's "get in touch" block (distinct
+ * from the standalone /contact page, which isn't theme-dispatched).
+ * Default is the shared ContactSectionCompact (form + side image); a
+ * theme can override it with its own layout.
  */
 export type ThemeComponents = {
   key: string;
@@ -30,6 +36,7 @@ export type ThemeComponents = {
   SiteFooterSwitch: typeof SiteFooterSwitch;
   Hero: typeof Hero;
   HomeSections: typeof HomeSections;
+  HomeContactSection: typeof ContactSectionCompact;
 };
 
 const modave: ThemeComponents = {
@@ -38,13 +45,16 @@ const modave: ThemeComponents = {
   SiteFooterSwitch,
   Hero,
   HomeSections,
+  HomeContactSection: ContactSectionCompact,
 };
 
 import { venam } from "./venam";
+import { andrea } from "./andrea";
 
 const THEMES: Record<string, ThemeComponents> = {
   modave,
   venam,
+  andrea,
 };
 
 export { DEFAULT_THEME_KEY } from "./theme-keys";

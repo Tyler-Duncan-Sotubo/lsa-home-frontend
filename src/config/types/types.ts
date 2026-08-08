@@ -7,6 +7,8 @@ import { CataloguePageConfigV1 } from "./pages/Catalogue/catalogue-page.types";
 import { CollectionsPageConfigV1 } from "./pages/Collections/collections-page.types";
 import { ContactPageConfigV1 } from "./pages/Contact/contact-page.types";
 import { HomePageConfigV1 } from "./pages/Home/home-page.types";
+import { ServicesPageConfigV1 } from "./pages/Services/services-page.types";
+import { TestimonialsPageConfigV1 } from "./pages/Testimonials/testimonials-page.types";
 import { SeoConfigV1 } from "./seo.types";
 import { ThemeConfigV1 } from "./theme-types";
 
@@ -96,6 +98,8 @@ export type StorefrontConfigV1 = {
     blog?: BlogPageConfigV1;
     account?: AccountPageConfigV1;
     collections?: CollectionsPageConfigV1;
+    testimonials?: TestimonialsPageConfigV1;
+    services?: ServicesPageConfigV1;
   };
 
   /* ---------------------------------- */

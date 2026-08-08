@@ -1,5 +1,8 @@
 {
   "version": 1,
+  "meta": {
+    "themeKey": "andrea"
+  },
   "store": {
     "id": "emilia-duncan",
     "name": "Emilia Duncan",
@@ -52,7 +55,7 @@
       "light": {
         "background": "oklch(0.99 0 0)",
         "foreground": "oklch(0.12 0 0)",
-        "primary": "oklch(0.55 0 0)",
+        "primary": "oklch(0.677 0.179 14.1)",
         "primaryForeground": "oklch(0.98 0 0)",
         "secondary": "oklch(0.95 0 0)",
         "secondaryForeground": "oklch(0.25 0 0)"
@@ -60,7 +63,7 @@
       "dark": {
         "background": "oklch(0.145 0 0)",
         "foreground": "oklch(0.985 0 0)",
-        "primary": "oklch(0.75 0 0)",
+        "primary": "oklch(0.677 0.179 14.1)",
         "primaryForeground": "oklch(0.12 0 0)"
       }
     },
@@ -97,19 +100,20 @@
     },
     "nav": {
       "enabled": true,
-      "variant": "V1",
+      "variant": "V3",
       "items": [
         { "label": "Home", "href": "/" },
         { "label": "About", "href": "/about-us" },
+        { "label": "Gallery", "href": "/gallery" },
         { "label": "Testimonials", "href": "/testimonials" },
         { "label": "Contact", "href": "/contact" },
-        { "label": "Book Now", "href": "/book" }
+        { "label": "Book Appointment", "href": "/book" }
       ],
       "icons": {
         "search": false,
-        "account": false,
-        "wishlist": false,
-        "cart": false,
+        "account": true,
+        "wishlist": true,
+        "cart": true,
         "quote": false
       }
     }
@@ -124,11 +128,11 @@
       {
         "title": "Services",
         "links": [
-          { "label": "Bridal Packages", "href": "/bridal/packages" },
-          { "label": "Bridal Trials", "href": "/bridal/trials" },
-          { "label": "Bridal Party", "href": "/bridal/party" },
-          { "label": "Editorial", "href": "/services/editorial" },
-          { "label": "Events & Occasions", "href": "/services/events" }
+          { "label": "Bridal Packages", "href": "/services" },
+          { "label": "Bridal Trials", "href": "/services" },
+          { "label": "Bridal Party", "href": "/services" },
+          { "label": "Editorial", "href": "/services" },
+          { "label": "Events & Occasions", "href": "/services" }
         ]
       },
       {
@@ -221,13 +225,8 @@
       "hero": {
         "variant": "V4",
         "image": {
-          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd62-aca8-7bdf-a90d-127e13fd44ca-SnapInsta.to_475551405_17865702795327722_8901680687412819020_n.jpg",
-          "alt": "Emilia Duncan bridal makeup",
-          "position": "right",
-          "accent": {
-            "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd89-2ede-7d4a-9168-53c4f4eeb4bc-SnapInsta.to_476580676_17865703059327722_8495680340133268471_n-1.jpg",
-            "alt": "Bridal makeup close-up"
-          }
+          "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019fde26-8dfc-7ce7-af4c-d5adf426c0d2/stores/019fde27-3bb7-72da-97f8-fbbd0cf47118/media/files/tmp/019fde4e-a6a3-7551-9d4b-7754f3d3a89e-Bridal_hero.webp",
+          "alt": "Emilia Duncan bridal makeup"
         },
         "content": {
           "eyebrow": "Luxury Bridal Makeup Artist",
@@ -235,17 +234,8 @@
           "description": "Timeless, elegant makeup artistry crafted for the modern bride. Covering London, Croydon & beyond.",
           "cta": {
             "label": "View Bridal Packages",
-            "href": "/bridal/packages"
-          },
-          "secondaryCta": {
-            "label": "See the Gallery",
-            "href": "/gallery"
-          },
-          "tagline": "Now booking 2026 · Complimentary trials available"
-        },
-        "badge": {
-          "text": "Award Winning · Bridal Specialist ·",
-          "subtext": "Est. 2023"
+            "href": "/services"
+          }
         },
         "bottomStrip": {
           "enabled": true,
@@ -254,8 +244,8 @@
         },
         "layout": {
           "heightClass": "min-h-[85svh]",
-          "contentAlign": "center",
-          "split": "55/45"
+          "contentPosition": "right",
+          "contentAlign": "center"
         }
       },
       "sections": [
@@ -330,28 +320,109 @@
               "url": "https://audio.tooxclusive.com/SnapInsta.to_AQPwrWpDEBX5X0-gAXrZRPNowl9F5-WrWH5zXVO4Idbk5dskj0JoNHptVRr6ZKs1206YWRpwYHdXnBAC5jDxJOhxYfX583tUM0aL55c.mp4",
               "type": "video",
               "caption": "The final look 👰"
+            },
+            {
+              "id": "seed-7",
+              "url": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019fde26-8dfc-7ce7-af4c-d5adf426c0d2/stores/019fde27-3bb7-72da-97f8-fbbd0cf47118/media/files/tmp/019fdeb5-6735-7a2c-b3e1-a57b0311c70f-SnapInsta.to_728606782_17931780225327722_2401965609619064550_n.jpg",
+              "type": "image"
+            },
+            {
+              "id": "seed-v4",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQP0x4yHd0ViJzb8-GWSWesFonJcfXquaoOl41w5R9e2HFmmZziSdzsc8TWDcyi2g76UjjEfoXyGqqZ1G-zCbkqCPMmBYSEl-opgZsQ.mp4",
+              "type": "video"
+            },
+            {
+              "id": "seed-v5",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQOnxkoFr8DROe1QUzMYqbxgL9P9WWc6XI95VSy8HwnU0fe8g-Ii_JNBFbK8spuDTObG_gxvumgl7JZR3iYFjyZhkSBmDDs3lfiY6kw.mp4",
+              "type": "video"
+            },
+            {
+              "id": "seed-v6",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQO5966iQti_QgzDtY51ht3uxp_hidWrVuoFRW67oRp3zuPc_MLuFr-SKS8yaBWjU1H_5hhzrBHOEGrpe1I0Edi-0DqiQmISzl3fvoE.mp4",
+              "type": "video"
+            },
+            {
+              "id": "seed-v7",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQP_gTW0jxhmEHETWsNOUWtDvaKy64xFrOPOvrqCWWzWOMIdmg-Ngmj7MaGvaCIZFs5Zv9XZwMLus5EiBtXvEppme4Cglw4vCXiW33Q.mp4",
+              "type": "video"
+            },
+            {
+              "id": "seed-v8",
+              "url": "https://audio.tooxclusive.com/SnapInsta.to_AQPJhN-vHk04UBjIojTnZOzMDXXEitGidLiGxZ-WZ81o4KuruqzDYIVJccregbKrCj3PHelpef0vwMcfeIC6cEk9GTOt5NK5McTpe7c.mp4",
+              "type": "video"
+            }
+          ]
+        },
+        {
+          "type": "pricingCards",
+          "enabled": true,
+          "eyebrow": "Bridal & Beauty",
+          "title": "Services & Pricing",
+          "subtitle": "Pricing is less than you think!",
+          "ctaLabel": "View All Services",
+          "ctaHref": "/services",
+          "layout": {
+            "columns": 4
+          },
+          "tiers": [
+            {
+              "id": "bridal-trial",
+              "title": "Bridal Trial",
+              "price": "£80",
+              "priceSuffix": "/Onwards",
+              "features": ["Full consultation", "Soft glam or full glam", "Skin prep & longevity test", "Photos for reference"]
+            },
+            {
+              "id": "bridal-day",
+              "title": "Bridal Packages",
+              "price": "£180",
+              "priceSuffix": "/Onwards",
+              "features": ["Full bridal makeup", "Skin prep for all-day wear", "False lashes included", "Touch-up kit"]
+            },
+            {
+              "id": "bridal-party",
+              "title": "Bridal Party",
+              "price": "£60",
+              "priceSuffix": "/person",
+              "features": ["Soft or full glam", "Matched to bridal look", "On-location available", "Group booking discounts"]
+            },
+            {
+              "id": "editorial-events",
+              "title": "Editorial & Events",
+              "price": "£70",
+              "priceSuffix": "/Onwards",
+              "features": ["Photoshoots & campaigns", "Graduations & birthdays", "Baby showers", "Camera-ready finish"]
             }
           ]
         }
       ],
       "contact": {
         "type": "contact",
-        "title": "Start Your Bridal Journey",
-        "subtitle": "Get in touch to check availability and discuss your wedding day vision.",
+        "title": "Get In Touch",
+        "subtitle": "With Us",
         "info": {
-          "email": ["hello@emiliaduncan.co.uk"]
-        },
-        "form": {
-          "enabled": true,
-          "fields": ["name", "email", "phone", "message"],
-          "submitLabel": "Send Enquiry",
-          "successMessage": "Thank you! Emilia will be in touch within 48 hours."
+          "email": ["hello@emiliaduncan.co.uk"],
+          "whatsapp": "447700000000",
+          "locations": [
+            {
+              "label": "BASED IN",
+              "address": "Croydon & London, United Kingdom"
+            }
+          ],
+          "social": [
+            {
+              "platform": "instagram",
+              "handle": "@emiliaduncanmakeup",
+              "href": "https://www.instagram.com/emiliaduncanmakeup/"
+            }
+          ]
         },
         "layout": {
-          "variant": "compact",
-          "image": {
-            "src": "https://centa-hr.s3.eu-west-3.amazonaws.com/companies/019b40f4-a8f1-7b26-84d0-45069767fa8c/stores/019b40f5-7fce-7d21-b580-8724aa347d2b/media/files/tmp/019dfd4e-fab2-7eb5-86e5-fd8d8d1be78e-SnapInsta.to_476600255_17865692520327722_661566850615509507_n.jpg",
-            "alt": "Emilia Duncan bridal makeup artist"
+          "variant": "mapCards",
+          "mapPosition": "left",
+          "map": {
+            "embedUrl": "https://www.google.com/maps?q=Croydon,+London,+United+Kingdom&output=embed",
+            "title": "Emilia Duncan — Croydon & London"
           }
         }
       }
@@ -529,6 +600,204 @@
           "variant": "grid",
           "columns": 3,
           "showExcerpt": true
+        }
+      ]
+    },
+    "testimonials": {
+      "version": 1,
+      "seo": {
+        "title": "Testimonials | Emilia Duncan Bridal Makeup Artist",
+        "description": "Real reviews from Emilia Duncan's brides and clients — bridal makeup, soft glam, full glam, and event makeup in Croydon & London."
+      },
+      "sections": [
+        {
+          "type": "googleReviews",
+          "enabled": true,
+          "title": "What Our Clients Say",
+          "subtitle": "Real reviews from Google — unedited, straight from the people we've worked with.",
+          "summary": {
+            "businessName": "Emilia Duncan Makeup Studio",
+            "address": "1 Cliffe Rd, Croydon CR2 6PQ, United Kingdom",
+            "averageRating": 4.9,
+            "reviewCount": 51,
+            "profileUrl": "https://share.google/4R6ZVbiegYfaE7iyT"
+          },
+          "layout": {
+            "columns": 2
+          },
+          "reviews": [
+            {
+              "id": "abiola-b",
+              "author": "Abiola B (BiBi)",
+              "rating": 5,
+              "date": "3 months ago",
+              "isLocalGuide": true,
+              "reviewCount": 9,
+              "quote": "Emilia Duncan is a fantastic makeup artist. She did my makeup for my baby shower, and it lasted beautifully throughout the entire day. From the moment I arrived, she made me feel comfortable, relaxed, and most importantly, beautiful.",
+              "ownerReply": {
+                "date": "2 months ago",
+                "message": "Awwww thank you so much Abiola for kinds words…means a lot to me."
+              }
+            },
+            {
+              "id": "izno-jolock",
+              "author": "IzNo Jolock",
+              "rating": 5,
+              "date": "a month ago",
+              "reviewCount": 8,
+              "quote": "Emilia was absolutely incredible on the morning of my wedding. She made me look and feel like a princess, and I couldn't have asked for a better makeup artist.",
+              "ownerReply": {
+                "date": "a month ago",
+                "message": "Reading this brought on so much emotions…thank you so much for taking the time to write me such a lovely review. You are an amazing woman and it was my pleasure to be part of your big day ❤️"
+              }
+            },
+            {
+              "id": "mutondo-kakundu",
+              "author": "Mutondo Kakundu",
+              "rating": 5,
+              "date": "2 months ago",
+              "isLocalGuide": true,
+              "reviewCount": 28,
+              "quote": "I booked a home service with Emelia due to being heavily pregnant for a baby shower makeup and wig install. Emelia was professional and did such an amazing job. She was attentive to my needs throughout the session.",
+              "ownerReply": {
+                "date": "a month ago",
+                "message": "Thank you so much Mutondo. So glad you are happy with your makeup."
+              }
+            },
+            {
+              "id": "syreana-hall",
+              "author": "Syreana Hall",
+              "rating": 5,
+              "date": "11 months ago",
+              "reviewCount": 2,
+              "quote": "I can't recommend Emilia Duncan highly enough! She did the makeup for my 5 bridesmaids and mum (soft glam) and mine (full glam) for my wedding day, and we were all absolutely thrilled with the results. Everyone commented on how beautiful we looked.",
+              "ownerReply": {
+                "date": "7 months ago",
+                "message": "Oh Syreana, your review got me so emotional. Thank you so much for being so kind. It was my honour to be part of your big day."
+              }
+            },
+            {
+              "id": "amina-hassan",
+              "author": "Amina Hassan",
+              "rating": 5,
+              "date": "7 months ago",
+              "reviewCount": 1,
+              "quote": "I had a great experience getting my makeup done. The makeup was really well done, exactly what I wanted, and it lasted beautifully. I was very happy with the result and I'll definitely be booking another session. Highly recommend.",
+              "ownerReply": {
+                "date": "7 months ago",
+                "message": "So glad you loved your makeup. Thanks for coming."
+              }
+            },
+            {
+              "id": "alrene-barr",
+              "author": "Alrene Barr",
+              "rating": 5,
+              "date": "a year ago",
+              "reviewCount": 5,
+              "quote": "Emilia Duncan is absolutely amazing! She listened to my vision, matched my skin tone perfectly, and created a flawless look that lasted all day. Professional, talented, and detail-oriented, she made me feel beautiful and confident.",
+              "ownerReply": {
+                "date": "4 months ago",
+                "message": "Thank you so much"
+              }
+            },
+            {
+              "id": "sharon-edwards",
+              "author": "Sharon Edwards",
+              "rating": 5,
+              "date": "a year ago",
+              "reviewCount": 9,
+              "quote": "I needed makeup for my sons wedding and booked Emilia Duncan Makeup Studio. Right from the start, the booking process and communication was easy and thorough. On the day, i trusted her expertise and colour suggestion - it paid off.",
+              "ownerReply": {
+                "date": "4 months ago",
+                "message": "Thank you"
+              }
+            },
+            {
+              "id": "vimbai-chikoko",
+              "author": "Vimbai Chikoko",
+              "rating": 5,
+              "date": "a year ago",
+              "reviewCount": 9,
+              "quote": "Emilia is amazing. Her knowledge of make up products and different skin types is unmatched. She takes her time with skin prep so her make up stays in place all night. From now on she is my go to person for my photoshoots and events.",
+              "ownerReply": {
+                "date": "a month ago",
+                "message": "Thank you so much for the lovely review Vimbai."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "services": {
+      "version": 1,
+      "seo": {
+        "title": "Services & Pricing | Emilia Duncan Bridal Makeup Artist",
+        "description": "Explore bridal trials, bridal packages, bridal party makeup, and editorial & event makeup services from Emilia Duncan."
+      },
+      "sections": [
+        {
+          "type": "Hero",
+          "enabled": true,
+          "background": {
+            "image": {
+              "src": "/images/services-hero.jpg",
+              "alt": "Emilia Duncan bridal makeup services",
+              "overlayClassName": "bg-black/45"
+            }
+          },
+          "content": {
+            "eyebrow": "Services & Pricing",
+            "title": "View Bridal Packages",
+            "description": "Bridal trials, full bridal packages, bridal party makeup, and editorial & event looks — pricing is less than you think."
+          },
+          "layout": {
+            "align": "center",
+            "textAlign": "center",
+            "heightClass": "min-h-[55svh]",
+            "maxWidthClassName": "max-w-3xl"
+          }
+        },
+        {
+          "type": "pricingCards",
+          "enabled": true,
+          "eyebrow": "Bridal & Beauty",
+          "title": "Services & Pricing",
+          "subtitle": "Pricing is less than you think!",
+          "ctaLabel": "Enquire Now",
+          "ctaHref": "/contact",
+          "layout": {
+            "columns": 4
+          },
+          "tiers": [
+            {
+              "id": "bridal-trial",
+              "title": "Bridal Trial",
+              "price": "£80",
+              "priceSuffix": "/Onwards",
+              "features": ["Full consultation", "Soft glam or full glam", "Skin prep & longevity test", "Photos for reference"]
+            },
+            {
+              "id": "bridal-day",
+              "title": "Bridal Packages",
+              "price": "£180",
+              "priceSuffix": "/Onwards",
+              "features": ["Full bridal makeup", "Skin prep for all-day wear", "False lashes included", "Touch-up kit"]
+            },
+            {
+              "id": "bridal-party",
+              "title": "Bridal Party",
+              "price": "£60",
+              "priceSuffix": "/person",
+              "features": ["Soft or full glam", "Matched to bridal look", "On-location available", "Group booking discounts"]
+            },
+            {
+              "id": "editorial-events",
+              "title": "Editorial & Events",
+              "price": "£70",
+              "priceSuffix": "/Onwards",
+              "features": ["Photoshoots & campaigns", "Graduations & birthdays", "Baby showers", "Camera-ready finish"]
+            }
+          ]
         }
       ]
     }

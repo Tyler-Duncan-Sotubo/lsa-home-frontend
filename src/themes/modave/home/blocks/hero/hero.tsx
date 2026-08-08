@@ -3,8 +3,9 @@ import { HeroConfigV1 } from "@/config/types/pages/Hero/hero.types";
 import { HeroOne } from "./hero-one";
 import { HeroTwo } from "./hero-two";
 import { HeroThree } from "./hero-three";
-import { HeroFour } from "./hero-four";
 
+// V4 moved to src/themes/andrea/home/blocks/hero — built for Emilia
+// Duncan's bridal/beauty storefront, now owned by the andrea theme.
 export function Hero({ hero }: { hero?: HeroConfigV1 }) {
   if (!hero || hero.enabled === false) return null;
 
@@ -15,8 +16,6 @@ export function Hero({ hero }: { hero?: HeroConfigV1 }) {
       return <HeroTwo config={hero} />;
     case "V3":
       return <HeroThree config={hero} />;
-    case "V4":
-      return <HeroFour config={hero} />;
     default:
       return null;
   }

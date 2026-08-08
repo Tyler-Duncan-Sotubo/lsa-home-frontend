@@ -10,6 +10,7 @@ import type {
 } from "@/config/types/pages/Home/home-sections.types";
 import { Play, ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { FaInstagram } from "react-icons/fa6";
+import { Button } from "@/shared/ui/button";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface GalleryApiItem {
@@ -45,13 +46,13 @@ function getInstagramUrl(item: GalleryItem): string | undefined {
 function SkeletonGrid({ count, gap }: { count: number; gap: string }) {
   return (
     <div
-      className="grid mx-auto w-full max-w-7xl px-4"
-      style={{ gridTemplateColumns: "repeat(3, 1fr)", gap }}
+      className="grid w-full grid-cols-1 md:grid-cols-3"
+      style={{ gap }}
     >
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="aspect-square animate-pulse bg-gradient-to-r from-neutral-100 via-neutral-200 to-neutral-100"
+          className="aspect-square animate-pulse bg-linear-to-r from-neutral-100 via-neutral-200 to-neutral-100"
         />
       ))}
     </div>
@@ -322,9 +323,13 @@ function Tile({
 
 interface Props {
   config: LocalGallerySectionV1;
+  // Page grid into maxItems-sized pages with Previous/Next controls,
+  // instead of showing (and capping at) a single page. Used by the
+  // standalone /gallery page; the homepage section leaves this off.
+  paginated?: boolean;
 }
 
-export default function LocalGallery({ config }: Props) {
+export default function LocalGallery({ config, paginated = false }: Props) {
   const {
     title,
     subtitle,
@@ -343,8 +348,13 @@ export default function LocalGallery({ config }: Props) {
   const [ready, setReady] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [modalIndex, setModalIndex] = useState<number | null>(null);
+  const [page, setPage] = useState(0);
 
-  const items = seed.slice(0, maxItems);
+  const pageSize = maxItems;
+  const pageCount = paginated ? Math.max(1, Math.ceil(seed.length / pageSize)) : 1;
+  const items = paginated
+    ? seed.slice(page * pageSize, page * pageSize + pageSize)
+    : seed.slice(0, maxItems);
 
   useEffect(() => {
     // Single rAF so the skeleton flashes just long enough
@@ -369,7 +379,7 @@ export default function LocalGallery({ config }: Props) {
 
   return (
     <>
-      <section className="w-full max-w-7xl mx-auto py-16">
+      <section className="w-[95%] mx-auto py-16">
         {/* ── Header ── */}
         <div className="text-center mb-10 px-6">
           {handle && (
@@ -392,8 +402,8 @@ export default function LocalGallery({ config }: Props) {
           <SkeletonGrid count={maxItems} gap={gap} />
         ) : (
           <div
-            className="grid mx-auto w-full max-w-7xl px-4"
-            style={{ gridTemplateColumns: "repeat(3, 1fr)", gap }}
+            className="grid w-full grid-cols-1 md:grid-cols-3"
+            style={{ gap }}
           >
             {items.map((item, i) => (
               <Tile
@@ -409,22 +419,42 @@ export default function LocalGallery({ config }: Props) {
           </div>
         )}
 
-        {/* ── Footer ── */}
-        <div className="flex flex-col items-center gap-2 mt-8 px-6">
-          {ctaHref ? (
-            <Link
-              href={ctaHref}
-              className="inline-flex items-center gap-1.5 text-[0.78rem] tracking-[0.12em] uppercase text-foreground border-b border-current pb-0.5 transition-opacity duration-200 hover:opacity-50"
+        {/* ── Pagination ── */}
+        {paginated && pageCount > 1 && (
+          <div className="flex items-center justify-center gap-6 mt-10 px-6">
+            <Button
+              variant="pill"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
             >
-              {ctaLabel}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-[0.78rem] tracking-[0.12em] uppercase text-foreground">
-              {ctaLabel}
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </Button>
+            <span className="text-[0.75rem] tracking-widest text-neutral-400">
+              {page + 1} / {pageCount}
             </span>
-          )}
-        </div>
+            <Button
+              variant="pill"
+              onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
+              disabled={page === pageCount - 1}
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
+
+        {/* ── Footer ── */}
+        {ctaHref && (
+          <div className="flex flex-col items-center gap-2 mt-8 px-6">
+            <Link href={ctaHref}>
+              <Button variant="pillClean" className="px-8">
+                {ctaLabel}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </section>
 
       {/* ── Modal ── */}

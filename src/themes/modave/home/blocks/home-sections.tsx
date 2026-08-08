@@ -14,12 +14,12 @@ import OnSaleProductsSection from "./product-rails/on-sale-products/on-sale-prod
 import BestSellersProductsSection from "./product-rails/best-sellers-products/best-sellers-products";
 import CategoryShowcaseSection from "./product-rails/category-showcase/category-showcase";
 import ProductCategoryGridSection from "./categories/product-category-grid/product-category-grid";
+import { PricingCardsSection } from "./pricing-cards/pricing-cards";
 import {
   CategoryGridSkeleton,
   ProductRailSkeleton,
   TopCategoriesSkeleton,
 } from "@/features/skeletons";
-import LocalGallery from "./local-gallery/local-gallery";
 
 export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
   if (!sections?.length) return null;
@@ -116,12 +116,12 @@ export function HomeSections({ sections }: { sections?: HomeSectionV1[] }) {
               </Suspense>
             );
 
-          case "localGallery":
+          // localGallery moved to src/themes/andrea/home/blocks — built for
+          // Emilia Duncan's bridal/beauty storefront, now owned by andrea.
+
+          case "pricingCards":
             if (section.enabled === false) return null;
-            console.warn(
-              "Rendering local gallery section. Ensure that the images are optimized for web and that the number of images is reasonable to avoid performance issues.",
-            );
-            return <LocalGallery key={key} config={section} />;
+            return <PricingCardsSection key={key} config={section} />;
 
           default:
             return null;

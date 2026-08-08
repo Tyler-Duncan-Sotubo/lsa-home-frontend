@@ -28,12 +28,27 @@ export default async function Home() {
   const config = await getStorefrontConfig();
   const { Hero, HomeSections, HomeContactSection } = getTheme(config);
 
+  // Reuse the /contact page's contact-details section (address/phone/
+  // email/social) instead of a separate pages.home.contact value, so
+  // there's one source for that data instead of two independently-edited
+  // copies. Layout (map embed, positioning) still comes from
+  // pages.home.contact since the /contact page's own layout includes a
+  // form the homepage block doesn't render.
+  const contactDetails = config.pages?.contact?.sections?.find(
+    (s) => s.type === "contact",
+  );
+  const homeContact = config.pages?.home?.contact;
+  const contactSection =
+    contactDetails && homeContact
+      ? { ...homeContact, info: contactDetails.info }
+      : homeContact;
+
   return (
     <div>
       {/* Config-driven hero */}
       <Hero hero={config.pages?.home?.hero} />
       <HomeSections sections={config.pages?.home?.sections} />
-      <HomeContactSection section={config.pages?.home?.contact} />
+      <HomeContactSection section={contactSection} />
     </div>
   );
 }
